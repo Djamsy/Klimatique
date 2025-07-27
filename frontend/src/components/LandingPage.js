@@ -20,14 +20,16 @@ import {
   Users,
   Clock,
   Target,
-  Loader2
+  Loader2,
+  Brain,
+  Globe
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Badge } from './ui/badge';
-import { CachedWeatherService, SubscriptionService, ConfigService } from '../services/weatherService';
+import { CachedWeatherService, SubscriptionService, ConfigService, CycloneAIService } from '../services/weatherService';
 import { useToast } from '../hooks/use-toast';
 
 const LandingPage = () => {
