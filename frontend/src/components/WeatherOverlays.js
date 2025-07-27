@@ -221,7 +221,7 @@ const WeatherOverlays = ({ onOverlayChange }) => {
       {Object.keys(overlays).map(type => renderTileOverlay(type))}
       
       {/* Panneau de contrôle */}
-      <Card className="absolute top-6 left-6 bg-white/95 backdrop-blur-sm shadow-lg border-0 z-1000">
+      <Card className="absolute top-20 left-6 bg-white/95 backdrop-blur-sm shadow-lg border-0 z-1000 w-64">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center space-x-2 text-sm">
             <Layers className="h-4 w-4 text-blue-600" />
