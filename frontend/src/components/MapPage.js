@@ -16,7 +16,8 @@ import {
   Eye,
   EyeOff,
   Brain,
-  Globe
+  Globe,
+  Activity
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -24,6 +25,8 @@ import { Card, CardContent } from './ui/card';
 import { Switch } from './ui/switch';
 import { CachedWeatherService, CycloneAIService } from '../services/weatherService';
 import { GUADELOUPE_COMMUNES } from '../data/communesData';
+import WeatherOverlays from './WeatherOverlays';
+import PluviometerWidget from './PluviometerWidget';
 import 'leaflet/dist/leaflet.css';
 
 // Fix for default markers in react-leaflet
