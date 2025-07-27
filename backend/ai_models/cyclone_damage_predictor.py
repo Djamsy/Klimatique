@@ -238,24 +238,41 @@ class CycloneDamagePredictor:
             self.train_model()
         
         try:
-            # Préparation features
+            # Calcul du score de risque amélioré
+            enhanced_risk_score, risk_factors = self._calculate_enhanced_risk_score(weather_data, commune_info)
+            
+            # Préparation features pour le modèle ML
             features = self._prepare_features(weather_data, commune_info)
             
-            # Prédiction
+            # Prédiction ML
             features_scaled = self.scaler.transform([features])
             predictions = self.model.predict(features_scaled)[0]
             
             # Post-traitement des prédictions
-            damage_infrastructure = max(0, min(100, predictions[0]))
-            damage_agriculture = max(0, min(100, predictions[1])) 
-            damage_population = max(0, min(50, predictions[2]))  # Max 50% pour population
+            base_damage_infrastructure = max(0, min(100, predictions[0]))
+            base_damage_agriculture = max(0, min(100, predictions[1])) 
+            base_damage_population = max(0, min(50, predictions[2]))
             
-            # Calcul niveau de risque global
-            risk_score = (damage_infrastructure * 0.4 + 
-                         damage_agriculture * 0.3 + 
-                         damage_population * 0.3)
+            # Ajustement avec le score de risque météorologique
+            weather_factor = enhanced_risk_score / 100
             
-            risk_level = self._calculate_risk_level(risk_score)
+            damage_infrastructure = min(100, base_damage_infrastructure * (1 + weather_factor * 0.3))
+            damage_agriculture = min(100, base_damage_agriculture * (1 + weather_factor * 0.2))
+            damage_population = min(50, base_damage_population * (1 + weather_factor * 0.4))
+            
+            # Calcul niveau de risque basé sur le score amélioré
+            final_risk_score = max(enhanced_risk_score, 
+                                 (damage_infrastructure * 0.4 + 
+                                  damage_agriculture * 0.3 + 
+                                  damage_population * 0.3))
+            
+            risk_level = self._calculate_risk_level(final_risk_score)
+            
+            # Génération recommandations améliorées
+            recommendations = self._generate_enhanced_recommendations(
+                damage_infrastructure, damage_agriculture, damage_population, 
+                commune_info, weather_data, risk_factors
+            )
             
             result = {
                 'damage_predictions': {
@@ -264,9 +281,19 @@ class CycloneDamagePredictor:
                     'population_impact': round(damage_population, 1)
                 },
                 'risk_level': risk_level,
-                'risk_score': round(risk_score, 1),
+                'risk_score': round(final_risk_score, 1),
                 'confidence': self._calculate_confidence(features, weather_data),
-                'recommendations': self._generate_recommendations(damage_infrastructure, damage_agriculture, damage_population, commune_info)
+                'recommendations': recommendations,
+                'weather_risk_factors': risk_factors,
+                'enhanced_analysis': {
+                    'weather_risk_score': enhanced_risk_score,
+                    'ml_predictions': {
+                        'infrastructure': round(base_damage_infrastructure, 1),
+                        'agriculture': round(base_damage_agriculture, 1),
+                        'population': round(base_damage_population, 1)
+                    },
+                    'weather_adjustment': round(weather_factor * 100, 1)
+                }
             }
             
             return result
