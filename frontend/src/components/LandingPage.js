@@ -385,6 +385,122 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* Global Risk Section */}
+      {globalRisk && (
+        <section className="py-16 bg-gradient-to-br from-blue-50 to-purple-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 flex items-center justify-center gap-3">
+                <Brain className="w-8 h-8 text-blue-600" />
+                Analyse IA - Risque Cyclonique
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Notre intelligence artificielle analyse en temps réel les conditions météorologiques pour prédire les risques cycloniques
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-8">
+              {/* Risque Global */}
+              <div className="bg-white rounded-lg shadow-lg p-6 text-center">
+                <div className="flex items-center justify-center mb-4">
+                  <Globe className="w-8 h-8 text-blue-600 mr-2" />
+                  <h3 className="text-xl font-semibold text-gray-900">Risque Régional</h3>
+                </div>
+                <div className={`text-3xl font-bold mb-2 ${
+                  globalRisk.global_risk_level === 'critique' ? 'text-red-600' :
+                  globalRisk.global_risk_level === 'élevé' ? 'text-orange-600' :
+                  globalRisk.global_risk_level === 'modéré' ? 'text-yellow-600' :
+                  'text-green-600'
+                }`}>
+                  {globalRisk.global_risk_level.toUpperCase()}
+                </div>
+                <p className="text-gray-600 text-sm">
+                  Analyse globale Guadeloupe
+                </p>
+              </div>
+              
+              {/* Communes à risque */}
+              <div className="bg-white rounded-lg shadow-lg p-6 text-center">
+                <div className="flex items-center justify-center mb-4">
+                  <AlertTriangle className="w-8 h-8 text-orange-600 mr-2" />
+                  <h3 className="text-xl font-semibold text-gray-900">Zones d'Alerte</h3>
+                </div>
+                <div className="text-3xl font-bold text-orange-600 mb-2">
+                  {globalRisk.high_risk_count + globalRisk.critical_risk_count}
+                </div>
+                <p className="text-gray-600 text-sm">
+                  Communes en vigilance
+                </p>
+                <div className="mt-3 text-xs text-gray-500">
+                  {globalRisk.critical_risk_count > 0 && (
+                    <span className="text-red-600 font-medium">
+                      {globalRisk.critical_risk_count} critiques
+                    </span>
+                  )}
+                  {globalRisk.high_risk_count > 0 && (
+                    <span className="text-orange-600 font-medium">
+                      {globalRisk.critical_risk_count > 0 ? ' • ' : ''}
+                      {globalRisk.high_risk_count} élevées
+                    </span>
+                  )}
+                </div>
+              </div>
+              
+              {/* Recommandations */}
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <div className="flex items-center justify-center mb-4">
+                  <Shield className="w-8 h-8 text-green-600 mr-2" />
+                  <h3 className="text-xl font-semibold text-gray-900">Recommandations</h3>
+                </div>
+                <div className="space-y-2 text-sm">
+                  {globalRisk.regional_recommendations.length > 0 ? (
+                    globalRisk.regional_recommendations.slice(0, 3).map((rec, index) => (
+                      <div key={index} className="flex items-start space-x-2">
+                        <span className="text-green-600 mt-1">•</span>
+                        <span className="text-gray-700">{rec}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center text-gray-500">
+                      <span className="text-green-600 text-2xl">✓</span>
+                      <p className="mt-2">Conditions normales</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            
+            {/* Communes affectées */}
+            {globalRisk.affected_communes.length > 0 && (
+              <div className="mt-8 bg-white rounded-lg shadow-lg p-6">
+                <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  <MapPin className="w-5 h-5 text-blue-600" />
+                  Communes sous surveillance
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {globalRisk.affected_communes.map((commune, index) => (
+                    <Badge
+                      key={index}
+                      variant="outline"
+                      className="px-3 py-1 text-sm border-orange-200 text-orange-800 bg-orange-50"
+                    >
+                      {commune}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            <div className="mt-8 text-center">
+              <p className="text-xs text-gray-500 flex items-center justify-center gap-1">
+                <Brain className="w-3 h-3" />
+                Analyse IA mise à jour: {new Date(globalRisk.last_analysis).toLocaleString('fr-FR')}
+              </p>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Weather Forecast Section */}
       <section id="previsions" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
