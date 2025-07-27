@@ -32,15 +32,7 @@ const PluviometerWidget = ({ commune, className = "" }) => {
       setLoading(true);
       setError(null);
       
-      const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/api/weather/pluviometer/${commune}`
-      );
-      
-      if (!response.ok) {
-        throw new Error('Erreur lors du chargement des données pluviométriques');
-      }
-      
-      const data = await response.json();
+      const data = await WeatherOverlayService.getPluviometerData(commune);
       setPluvioData(data);
       
     } catch (err) {
