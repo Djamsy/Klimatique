@@ -225,6 +225,64 @@ async def get_subscription_statistics():
         raise HTTPException(status_code=500, detail="Erreur serveur")
 
 # =============================================================================
+# ENDPOINTS VIGILANCES MÉTÉO FRANCE
+# =============================================================================
+
+@api_router.get("/vigilance/guadeloupe")
+async def get_vigilance_guadeloupe():
+    """Récupère les données de vigilance officielle Météo France pour la Guadeloupe"""
+    try:
+        vigilance_data = await meteo_france_service.get_vigilance_data('guadeloupe')
+        return vigilance_data
+    except Exception as e:
+        logger.error(f"Error getting vigilance data: {e}")
+        raise HTTPException(status_code=500, detail="Erreur récupération vigilance")
+
+@api_router.get("/vigilance/theme")
+async def get_vigilance_theme():
+    """Récupère les couleurs et thème adaptatif basé sur la vigilance"""
+    try:
+        vigilance_data = await meteo_france_service.get_vigilance_data('guadeloupe')
+        
+        # Génération du thème adaptatif
+        theme = {
+            'primary_color': vigilance_data['color_info']['color'],
+            'level': vigilance_data['color_level'],
+            'level_name': vigilance_data['color_info']['name'],
+            'risk_score': vigilance_data['global_risk_score'],
+            'header_class': f"bg-{vigilance_data['color_level']}-gradient",
+            'badge_class': f"badge-{vigilance_data['color_level']}",
+            'alert_class': f"alert-{vigilance_data['color_level']}",
+            'risks': vigilance_data['risks'],
+            'recommendations': vigilance_data['recommendations']
+        }
+        
+        return theme
+    except Exception as e:
+        logger.error(f"Error getting vigilance theme: {e}")
+        raise HTTPException(status_code=500, detail="Erreur thème vigilance")
+
+@api_router.get("/vigilance/recommendations")
+async def get_vigilance_recommendations():
+    """Récupère les recommandations officielles basées sur la vigilance"""
+    try:
+        vigilance_data = await meteo_france_service.get_vigilance_data('guadeloupe')
+        
+        return {
+            'vigilance_level': vigilance_data['color_level'],
+            'recommendations': vigilance_data['recommendations'],
+            'risks': vigilance_data['risks'],
+            'official_source': 'Météo France',
+            'valid_from': vigilance_data['valid_from'],
+            'valid_until': vigilance_data['valid_until'],
+            'last_updated': vigilance_data['last_updated'],
+            'is_fallback': vigilance_data.get('is_fallback', False)
+        }
+    except Exception as e:
+        logger.error(f"Error getting vigilance recommendations: {e}")
+        raise HTTPException(status_code=500, detail="Erreur recommandations vigilance")
+
+# =============================================================================
 # ENDPOINTS IA PRÉDICTIVE CYCLONIQUE
 # =============================================================================
 
