@@ -40,6 +40,7 @@ const LandingPage = () => {
   const [weatherData, setWeatherData] = useState(null);
   const [isLoadingWeather, setIsLoadingWeather] = useState(true);
   const [communes, setCommunes] = useState([]);
+  const [globalRisk, setGlobalRisk] = useState(null);
   const [stats, setStats] = useState({
     total: 32,
     precision: 94,
