@@ -223,6 +223,276 @@ async def get_subscription_statistics():
         raise HTTPException(status_code=500, detail="Erreur serveur")
 
 # =============================================================================
+# ENDPOINTS IA PRÉDICTIVE CYCLONIQUE
+# =============================================================================
+
+@api_router.get("/ai/cyclone/predict/{commune}", response_model=CycloneAIResponse)
+async def predict_cyclone_damage(commune: str):
+    """Prédiction IA des dégâts cycloniques pour une commune"""
+    try:
+        # Récupère les données météo actuelles
+        weather_data = await weather_service.get_weather_for_commune(commune)
+        if not weather_data:
+            raise HTTPException(status_code=404, detail=f"Données météo non disponibles pour {commune}")
+        
+        # Récupère les données OpenWeatherMap pour l'IA
+        coords = weather_data.coordinates
+        severe_weather = await openweather_service.get_severe_weather_data(coords[0], coords[1])
+        
+        if not severe_weather:
+            raise HTTPException(status_code=500, detail="Données météo sévères non disponibles")
+        
+        # Prépare les informations de la commune
+        commune_info = {
+            'type': 'urbaine',  # À améliorer avec une base de données
+            'population': 20000,  # À améliorer avec une base de données
+            'coordinates': coords
+        }
+        
+        # Prédiction IA
+        prediction = cyclone_predictor.predict_damage(
+            weather_data=severe_weather['current'],
+            commune_info=commune_info
+        )
+        
+        # Formate la réponse
+        response = CycloneAIResponse(
+            commune=commune,
+            coordinates=coords,
+            damage_predictions=CycloneDamagePrediction(
+                infrastructure=prediction['damage_predictions']['infrastructure'],
+                agriculture=prediction['damage_predictions']['agriculture'],
+                population_impact=prediction['damage_predictions']['population_impact']
+            ),
+            risk_level=RiskLevel(prediction['risk_level']),
+            risk_score=prediction['risk_score'],
+            confidence=prediction['confidence'],
+            recommendations=prediction['recommendations'],
+            weather_context=severe_weather['current']
+        )
+        
+        return response
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error predicting cyclone damage for {commune}: {e}")
+        raise HTTPException(status_code=500, detail="Erreur prédiction IA")
+
+@api_router.get("/ai/cyclone/timeline/{commune}", response_model=CycloneTimelinePrediction)
+async def predict_cyclone_timeline(commune: str):
+    """Prédiction évolution des dégâts cycloniques dans le temps"""
+    try:
+        # Récupère les données météo actuelles
+        weather_data = await weather_service.get_weather_for_commune(commune)
+        if not weather_data:
+            raise HTTPException(status_code=404, detail=f"Données météo non disponibles pour {commune}")
+        
+        coords = weather_data.coordinates
+        severe_weather = await openweather_service.get_severe_weather_data(coords[0], coords[1])
+        
+        if not severe_weather:
+            raise HTTPException(status_code=500, detail="Données météo sévères non disponibles")
+        
+        # Prépare les informations de la commune
+        commune_info = {
+            'type': 'urbaine',
+            'population': 20000,
+            'coordinates': coords
+        }
+        
+        # Prédictions timeline
+        timeline_predictions = cyclone_predictor.predict_timeline_damage(
+            weather_timeline=severe_weather['timeline'],
+            commune_info=commune_info
+        )
+        
+        # Formate les réponses
+        formatted_timeline = {}
+        for time_key, prediction in timeline_predictions.items():
+            formatted_timeline[time_key] = CycloneAIResponse(
+                commune=commune,
+                coordinates=coords,
+                damage_predictions=CycloneDamagePrediction(
+                    infrastructure=prediction['damage_predictions']['infrastructure'],
+                    agriculture=prediction['damage_predictions']['agriculture'],
+                    population_impact=prediction['damage_predictions']['population_impact']
+                ),
+                risk_level=RiskLevel(prediction['risk_level']),
+                risk_score=prediction['risk_score'],
+                confidence=prediction['confidence'],
+                recommendations=prediction['recommendations'],
+                weather_context=severe_weather['timeline'][time_key]
+            )
+        
+        return CycloneTimelinePrediction(
+            commune=commune,
+            coordinates=coords,
+            timeline_predictions=formatted_timeline
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error predicting cyclone timeline for {commune}: {e}")
+        raise HTTPException(status_code=500, detail="Erreur prédiction timeline IA")
+
+@api_router.get("/ai/cyclone/historical/{commune}", response_model=CommuneHistoricalResponse)
+async def get_historical_cyclone_damage(commune: str):
+    """Récupère l'historique des dégâts cycloniques pour une commune"""
+    try:
+        # Données historiques simulées (à remplacer par une vraie base de données)
+        historical_events = [
+            {
+                "year": 2017,
+                "event_name": "Ouragan Irma",
+                "damage_type": "infrastructure",
+                "impact_level": RiskLevel.CRITIQUE,
+                "description": "Destruction massive des infrastructures, coupures d'électricité généralisées",
+                "estimated_damage_percent": 85.0
+            },
+            {
+                "year": 2017,
+                "event_name": "Ouragan Maria",
+                "damage_type": "agriculture",
+                "impact_level": RiskLevel.CRITIQUE,
+                "description": "Cultures détruites, plantations de bananes ravagées",
+                "estimated_damage_percent": 90.0
+            },
+            {
+                "year": 2022,
+                "event_name": "Tempête Fiona",
+                "damage_type": "infrastructure",
+                "impact_level": RiskLevel.MODERE,
+                "description": "Coupures d'électricité temporaires, quelques toitures endommagées",
+                "estimated_damage_percent": 25.0
+            }
+        ]
+        
+        # Analyse de vulnérabilité
+        vulnerability_analysis = {
+            "risk_factors": [
+                "Proximité côtière",
+                "Densité population élevée",
+                "Infrastructures vieillissantes"
+            ],
+            "vulnerability_score": 7.5,
+            "preparedness_level": "moyenne",
+            "evacuation_capacity": "limitée"
+        }
+        
+        coords = [16.25, -61.55]  # Coordonnées par défaut
+        
+        return CommuneHistoricalResponse(
+            commune=commune,
+            coordinates=coords,
+            historical_events=historical_events,
+            vulnerability_analysis=vulnerability_analysis
+        )
+        
+    except Exception as e:
+        logger.error(f"Error getting historical data for {commune}: {e}")
+        raise HTTPException(status_code=500, detail="Erreur données historiques")
+
+@api_router.get("/ai/cyclone/global-risk", response_model=GlobalCycloneRisk)
+async def get_global_cyclone_risk():
+    """Évaluation globale du risque cyclonique en Guadeloupe"""
+    try:
+        # Analyse toutes les communes
+        communes = config.communes_guadeloupe[:10]  # Limite pour la démo
+        high_risk_communes = []
+        critical_risk_communes = []
+        
+        for commune in communes:
+            try:
+                # Récupère prédiction pour chaque commune
+                weather_data = await weather_service.get_weather_for_commune(commune)
+                if not weather_data:
+                    continue
+                    
+                coords = weather_data.coordinates
+                severe_weather = await openweather_service.get_severe_weather_data(coords[0], coords[1])
+                
+                if severe_weather:
+                    commune_info = {'type': 'urbaine', 'population': 15000, 'coordinates': coords}
+                    prediction = cyclone_predictor.predict_damage(
+                        weather_data=severe_weather['current'],
+                        commune_info=commune_info
+                    )
+                    
+                    risk_level = prediction['risk_level']
+                    if risk_level == 'critique':
+                        critical_risk_communes.append(commune)
+                    elif risk_level == 'élevé':
+                        high_risk_communes.append(commune)
+                        
+            except Exception as e:
+                logger.warning(f"Error analyzing {commune}: {e}")
+                continue
+        
+        # Détermine le risque global
+        if critical_risk_communes:
+            global_risk = RiskLevel.CRITIQUE
+        elif len(high_risk_communes) >= 3:
+            global_risk = RiskLevel.ELEVE
+        elif high_risk_communes:
+            global_risk = RiskLevel.MODERE
+        else:
+            global_risk = RiskLevel.FAIBLE
+        
+        # Recommandations régionales
+        regional_recommendations = []
+        if global_risk == RiskLevel.CRITIQUE:
+            regional_recommendations = [
+                "Activation du plan ORSEC",
+                "Évacuation préventive recommandée",
+                "Fermeture des établissements scolaires",
+                "Renforcement des secours"
+            ]
+        elif global_risk == RiskLevel.ELEVE:
+            regional_recommendations = [
+                "Vigilance renforcée",
+                "Préparation des moyens d'évacuation",
+                "Stock d'urgence recommandé",
+                "Surveillance météo continue"
+            ]
+        
+        return GlobalCycloneRisk(
+            global_risk_level=global_risk,
+            affected_communes=high_risk_communes + critical_risk_communes,
+            high_risk_count=len(high_risk_communes),
+            critical_risk_count=len(critical_risk_communes),
+            regional_recommendations=regional_recommendations
+        )
+        
+    except Exception as e:
+        logger.error(f"Error getting global cyclone risk: {e}")
+        raise HTTPException(status_code=500, detail="Erreur analyse risque global")
+
+@api_router.get("/ai/model/info")
+async def get_ai_model_info():
+    """Informations sur le modèle IA"""
+    try:
+        model_info = cyclone_predictor.get_model_info()
+        return model_info
+    except Exception as e:
+        logger.error(f"Error getting AI model info: {e}")
+        raise HTTPException(status_code=500, detail="Erreur informations modèle IA")
+
+@api_router.post("/ai/model/retrain")
+async def retrain_ai_model():
+    """Re-entraîne le modèle IA (admin uniquement)"""
+    try:
+        training_result = cyclone_predictor.train_model(retrain=True)
+        return {
+            "message": "Modèle IA re-entraîné avec succès",
+            "training_metrics": training_result
+        }
+    except Exception as e:
+        logger.error(f"Error retraining AI model: {e}")
+        raise HTTPException(status_code=500, detail="Erreur re-entraînement modèle IA")
+
+# =============================================================================
 # ENDPOINTS CONFIGURATION & UTILITAIRES
 # =============================================================================
 
