@@ -394,32 +394,51 @@ const LandingPage = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Performances en temps réel
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Notre IA analyse 24h/24 les conditions météorologiques pour vous offrir la meilleure protection
+            </p>
+          </div>
+          
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="stat-number text-3xl md:text-4xl font-bold mb-2">
-                {stats.total}<span className="text-lg">/32</span>
+            <div className="text-center group">
+              <div className="relative">
+                <div className="text-4xl md:text-5xl font-bold text-blue-600 mb-2 group-hover:scale-110 transition-transform duration-300">
+                  {stats.total}<span className="text-2xl text-blue-400">/32</span>
+                </div>
+                <div className="absolute -top-2 -right-2 w-4 h-4 bg-green-500 rounded-full animate-pulse"></div>
               </div>
-              <div className="text-gray-600 text-sm md:text-base">Communes couvertes</div>
+              <div className="text-gray-600 text-sm md:text-base font-medium">Communes Surveillées</div>
+              <div className="text-xs text-gray-500 mt-1">En temps réel</div>
             </div>
-            <div className="text-center">
-              <div className="stat-number text-3xl md:text-4xl font-bold mb-2">
-                {stats.precision}<span className="text-lg">%</span>
+            
+            <div className="text-center group">
+              <div className="text-4xl md:text-5xl font-bold text-green-600 mb-2 group-hover:scale-110 transition-transform duration-300">
+                {stats.precision}<span className="text-2xl text-green-400">%</span>
               </div>
-              <div className="text-gray-600 text-sm md:text-base">Précision des alertes</div>
+              <div className="text-gray-600 text-sm md:text-base font-medium">Précision IA</div>
+              <div className="text-xs text-gray-500 mt-1">Prédictions cycloniques</div>
             </div>
-            <div className="text-center">
-              <div className="stat-number text-3xl md:text-4xl font-bold mb-2">
-                {stats.response_time}<span className="text-lg">min</span>
+            
+            <div className="text-center group">
+              <div className="text-4xl md:text-5xl font-bold text-purple-600 mb-2 group-hover:scale-110 transition-transform duration-300">
+                {stats.response_time}<span className="text-2xl text-purple-400">s</span>
               </div>
-              <div className="text-gray-600 text-sm md:text-base">Temps de réaction</div>
+              <div className="text-gray-600 text-sm md:text-base font-medium">Temps de Réponse</div>
+              <div className="text-xs text-gray-500 mt-1">Alertes instantanées</div>
             </div>
-            <div className="text-center">
-              <div className="stat-number text-3xl md:text-4xl font-bold mb-2">
-                {stats.users}<span className="text-lg">+</span>
+            
+            <div className="text-center group">
+              <div className="text-4xl md:text-5xl font-bold text-orange-600 mb-2 group-hover:scale-110 transition-transform duration-300">
+                {stats.users}
               </div>
-              <div className="text-gray-600 text-sm md:text-base">Utilisateurs actifs</div>
+              <div className="text-gray-600 text-sm md:text-base font-medium">Utilisateurs Actifs</div>
+              <div className="text-xs text-gray-500 mt-1">Communauté protégée</div>
             </div>
           </div>
         </div>
