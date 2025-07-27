@@ -68,6 +68,15 @@ const LandingPage = () => {
     CacheUtils.cleanExpiredCache();
   }, []);
 
+  useEffect(() => {
+    // Appliquer le thème de vigilance dynamiquement
+    if (vigilanceTheme && !themeLoading) {
+      document.body.className = `vigilance-${vigilanceTheme.level}`;
+      document.body.style.setProperty('--current-vigilance-primary', vigilanceTheme.primary_color);
+      document.body.style.setProperty('--current-vigilance-level', vigilanceTheme.level);
+    }
+  }, [vigilanceTheme, themeLoading]);
+
   const loadInitialData = async () => {
     try {
       // Charge la configuration et la météo en parallèle
