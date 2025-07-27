@@ -5,8 +5,14 @@ from typing import Dict, Optional, List
 from datetime import datetime, timedelta
 from models import WeatherData, WeatherForecastDay, RiskLevel, WeatherSource
 import asyncio
+from dotenv import load_dotenv
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
+
+# Load environment variables
+ROOT_DIR = Path(__file__).parent.parent
+load_dotenv(ROOT_DIR / '.env')
 
 class OpenWeatherService:
     def __init__(self):
