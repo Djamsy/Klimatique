@@ -216,84 +216,154 @@ const CommunePage = () => {
           </div>
         </div>
 
+        {/* Onglets de navigation */}
+        <div className="border-b border-gray-200 mb-6">
+          <nav className="flex space-x-8">
+            <button
+              onClick={() => setActiveTab('weather')}
+              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'weather'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <Thermometer className="w-4 h-4 mr-2 inline" />
+              Météo Actuelle
+            </button>
+            <button
+              onClick={() => setActiveTab('ai')}
+              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'ai'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <Brain className="w-4 h-4 mr-2 inline" />
+              IA Prédictive
+            </button>
+            <button
+              onClick={() => setActiveTab('forecast')}
+              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'forecast'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <Calendar className="w-4 h-4 mr-2 inline" />
+              Prévisions 5 jours
+            </button>
+          </nav>
+        </div>
+
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Météo actuelle */}
+          {/* Contenu principal selon l'onglet */}
           <div className="lg:col-span-2">
-            <Card className="mb-6">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Thermometer className="w-6 h-6 text-blue-600" />
-                  Conditions météorologiques actuelles
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {weatherData ? (
-                  <div>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
-                      <div className="text-center">
-                        <div className="text-3xl font-bold text-blue-600 mb-2">
-                          {Math.round(weatherData.current.temperature_current || weatherData.current.temperature_max)}°C
+            {activeTab === 'weather' && (
+              <Card className="mb-6">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Thermometer className="w-6 h-6 text-blue-600" />
+                    Conditions météorologiques actuelles
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {weatherData ? (
+                    <div>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+                        <div className="text-center">
+                          <div className="text-3xl font-bold text-blue-600 mb-2">
+                            {Math.round(weatherData.current.temperature_current || weatherData.current.temperature_max)}°C
+                          </div>
+                          <p className="text-sm text-gray-600">Température</p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            Min: {Math.round(weatherData.current.temperature_min)}° 
+                            Max: {Math.round(weatherData.current.temperature_max)}°
+                          </p>
                         </div>
-                        <p className="text-sm text-gray-600">Température</p>
-                        <p className="text-xs text-gray-500 mt-1">
-                          Min: {Math.round(weatherData.current.temperature_min)}° 
-                          Max: {Math.round(weatherData.current.temperature_max)}°
+                        <div className="text-center">
+                          <div className="text-3xl font-bold text-green-600 mb-2 flex items-center justify-center gap-1">
+                            <Wind className="w-6 h-6" />
+                            {Math.round(weatherData.current.wind_speed)}
+                          </div>
+                          <p className="text-sm text-gray-600">Vent (km/h)</p>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-3xl font-bold text-blue-500 mb-2 flex items-center justify-center gap-1">
+                            <CloudRain className="w-6 h-6" />
+                            {weatherData.current.precipitation_probability}%
+                          </div>
+                          <p className="text-sm text-gray-600">Pluie</p>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-3xl font-bold text-cyan-600 mb-2 flex items-center justify-center gap-1">
+                            <Droplets className="w-6 h-6" />
+                            {weatherData.current.humidity}%
+                          </div>
+                          <p className="text-sm text-gray-600">Humidité</p>
+                        </div>
+                      </div>
+                      
+                      <div className="border-t pt-4">
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                            <span className="text-sm">{weatherData.current.weather_icon}</span>
+                          </div>
+                          <span className="font-medium text-gray-900">
+                            {weatherData.current.weather_description}
+                          </span>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-4 text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">Pression:</span>
+                            <span className="font-medium">{weatherData.current.pressure || '---'} hPa</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">Visibilité:</span>
+                            <span className="font-medium">{weatherData.current.visibility || '---'} km</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">UV Index:</span>
+                            <span className="font-medium">{weatherData.current.uv_index || '---'}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">Direction vent:</span>
+                            <span className="font-medium">{weatherData.current.wind_direction || '---'}°</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-4 pt-4 border-t border-gray-200">
+                        <p className="text-xs text-gray-500 flex items-center gap-1">
+                          <Shield className="w-3 h-3" />
+                          Dernière mise à jour: {new Date(weatherData.last_updated).toLocaleString('fr-FR')}
                         </p>
                       </div>
-                      <div className="text-center">
-                        <div className="text-3xl font-bold text-green-600 mb-2 flex items-center justify-center gap-1">
-                          <Wind className="w-6 h-6" />
-                          {Math.round(weatherData.current.wind_speed)}
-                        </div>
-                        <p className="text-sm text-gray-600">Vent (km/h)</p>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-3xl font-bold text-blue-500 mb-2 flex items-center justify-center gap-1">
-                          <CloudRain className="w-6 h-6" />
-                          {weatherData.current.precipitation_probability}%
-                        </div>
-                        <p className="text-sm text-gray-600">Pluie</p>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-3xl font-bold text-cyan-600 mb-2 flex items-center justify-center gap-1">
-                          <Droplets className="w-6 h-6" />
-                          {weatherData.current.humidity}%
-                        </div>
-                        <p className="text-sm text-gray-600">Humidité</p>
-                      </div>
                     </div>
-
-                    <div className="text-center bg-gray-50 rounded-lg p-4">
-                      <p className="text-lg font-medium text-gray-900 mb-2">
-                        {weatherData.current.weather_description}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        <Calendar className="inline w-4 h-4 mr-1" />
-                        Dernière mise à jour: {new Date(weatherData.last_updated).toLocaleString('fr-FR')}
-                      </p>
+                  ) : (
+                    <div className="text-center py-8">
+                      <p className="text-gray-500">Aucune donnée météo disponible</p>
                     </div>
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <p className="text-gray-500">Données météo non disponibles</p>
-                    <Button 
-                      variant="outline" 
-                      onClick={loadWeatherData}
-                      className="mt-4"
-                    >
-                      Réessayer
-                    </Button>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                  )}
+                </CardContent>
+              </Card>
+            )}
 
-            {/* Prévisions 5 jours */}
-            {weatherData?.forecast && (
+            {activeTab === 'ai' && (
+              <div className="space-y-6">
+                <CycloneAIPredictor 
+                  commune={commune.name} 
+                  showTimeline={true} 
+                  showHistorical={true}
+                />
+              </div>
+            )}
+
+            {activeTab === 'forecast' && weatherData && (
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Clock className="w-6 h-6 text-blue-600" />
+                    <Calendar className="w-6 h-6 text-green-600" />
                     Prévisions 5 jours
                   </CardTitle>
                 </CardHeader>
