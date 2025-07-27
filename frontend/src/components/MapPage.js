@@ -587,6 +587,20 @@ const MapPage = () => {
           </div>
         </div>
 
+        {/* Bouton de test pluviomètre */}
+        <div className="absolute bottom-6 left-6 z-1000">
+          <Button
+            onClick={() => {
+              setSelectedCommune({ name: 'Pointe-à-Pitre' });
+              setShowPluviometer(true);
+            }}
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+          >
+            <Activity className="w-4 h-4 mr-2" />
+            Test Pluviomètre
+          </Button>
+        </div>
+
         {/* Panneau de droite avec pluviomètre */}
         {showPluviometer && selectedCommune && (
           <div className="absolute top-6 right-6 w-80 z-1000 space-y-4">
