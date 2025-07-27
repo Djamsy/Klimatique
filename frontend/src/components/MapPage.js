@@ -198,6 +198,8 @@ const MapPage = () => {
     cloudTemp: false,
     precipitation: false
   });
+  const [globalRisk, setGlobalRisk] = useState(null);
+  const [showGlobalRisk, setShowGlobalRisk] = useState(false);
 
   useEffect(() => {
     loadWeatherForCommunes();
