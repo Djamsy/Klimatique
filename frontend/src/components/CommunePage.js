@@ -14,7 +14,8 @@ import {
   Calendar,
   Info,
   Gauge,
-  Home
+  Home,
+  Brain
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
@@ -22,6 +23,7 @@ import { Button } from './ui/button';
 import { Progress } from './ui/progress';
 import { CachedWeatherService } from '../services/weatherService';
 import { COMMUNES_DATA } from '../data/communesData';
+import CycloneAIPredictor from './CycloneAIPredictor';
 
 const getRiskColor = (riskLevel) => {
   const colors = {
