@@ -790,8 +790,8 @@ class AIEndpointTester:
             return False
     
     async def run_all_tests(self):
-        """Exécute tous les tests IA"""
-        print("🚀 Démarrage des tests IA prédictive cyclonique - Météo Sentinelle")
+        """Exécute tous les tests IA et nouveaux endpoints météo"""
+        print("🚀 Démarrage des tests complets - Météo Sentinelle")
         print(f"🌐 Backend URL: {BACKEND_URL}")
         print(f"🏝️ Communes à tester: {', '.join(TEST_COMMUNES)}")
         print("=" * 80)
@@ -799,7 +799,26 @@ class AIEndpointTester:
         # Test intégration OpenWeatherMap
         await self.test_openweather_integration()
         
+        # Tests nouveaux endpoints météo (demande spécifique)
+        print("\n🌦️ Tests nouveaux endpoints météo...")
+        await self.test_cache_stats()
+        await self.test_clouds_overlay()
+        await self.test_precipitation_overlay()
+        await self.test_radar_overlay()
+        await self.test_precipitation_forecast()
+        
+        # Tests cache météo par commune
+        print(f"\n💾 Tests cache météo par commune...")
+        for commune in ["Pointe-à-Pitre", "Basse-Terre", "Sainte-Anne"]:
+            await self.test_cached_weather(commune)
+        
+        # Tests pluviomètre par commune
+        print(f"\n🌧️ Tests pluviomètre par commune...")
+        for commune in ["Pointe-à-Pitre", "Basse-Terre", "Sainte-Anne"]:
+            await self.test_pluviometer_data(commune)
+        
         # Test info modèle IA
+        print("\n🤖 Tests IA prédictive...")
         await self.test_model_info()
         
         # Test re-entraînement modèle (peut être long)
@@ -810,9 +829,9 @@ class AIEndpointTester:
         await self.test_global_risk()
         
         # Tests par commune
-        print(f"\n🏘️ Tests par commune ({len(TEST_COMMUNES)} communes)...")
+        print(f"\n🏘️ Tests IA par commune ({len(TEST_COMMUNES)} communes)...")
         for commune in TEST_COMMUNES:
-            print(f"\n--- Tests pour {commune} ---")
+            print(f"\n--- Tests IA pour {commune} ---")
             
             # Test prédiction IA
             await self.test_cyclone_prediction(commune)
@@ -825,7 +844,7 @@ class AIEndpointTester:
         
         # Résumé final
         print("\n" + "=" * 80)
-        print("📊 RÉSUMÉ DES TESTS IA PRÉDICTIVE")
+        print("📊 RÉSUMÉ DES TESTS COMPLETS")
         print("=" * 80)
         print(f"✅ Tests réussis: {self.results['passed']}")
         print(f"❌ Tests échoués: {self.results['failed']}")
@@ -838,10 +857,10 @@ class AIEndpointTester:
                 print(f"   • {error}")
         
         # Sauvegarde résultats
-        with open("/app/ai_test_results.json", "w", encoding="utf-8") as f:
+        with open("/app/weather_test_results.json", "w", encoding="utf-8") as f:
             json.dump(self.results, f, indent=2, ensure_ascii=False, default=str)
         
-        print(f"\n💾 Résultats sauvegardés dans: /app/ai_test_results.json")
+        print(f"\n💾 Résultats sauvegardés dans: /app/weather_test_results.json")
         
         return self.results["failed"] == 0
 
