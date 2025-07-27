@@ -651,67 +651,158 @@ const LandingPage = () => {
       )}
 
       {/* Weather Forecast Section */}
-      <section id="previsions" className="py-20 bg-gray-50">
+      <section id="previsions" className="py-20 bg-gradient-to-br from-blue-50 via-white to-purple-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center bg-blue-100 rounded-full px-4 py-2 mb-6">
+              <Cloud className="w-5 h-5 text-blue-600 mr-2" />
+              <span className="text-blue-800 font-medium">Données NASA + IA</span>
+            </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Prévisions pour la Guadeloupe
+              Prévisions Intelligentes pour la Guadeloupe
             </h2>
-            <p className="text-lg text-gray-600">
-              Météo détaillée avec indicateurs de risque alimentée par les données NASA
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Météo détaillée avec prédictions de risques cycloniques alimentée par l'IA et les données satellitaires NASA
             </p>
           </div>
           
           {isLoadingWeather ? (
-            <div className="flex justify-center items-center py-12">
-              <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-              <span className="ml-3 text-lg text-gray-600">Chargement des données météo NASA...</span>
+            <div className="text-center py-16">
+              <div className="inline-flex items-center bg-white rounded-2xl px-6 py-4 shadow-lg">
+                <Loader2 className="w-6 h-6 animate-spin text-blue-600 mr-3" />
+                <span className="text-gray-700 font-medium">Analyse IA en cours des conditions météorologiques...</span>
+              </div>
+            </div>
+          ) : weatherData && weatherData.length > 0 ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
+              {weatherData.map((weather, index) => (
+                <Card key={weather.id} className="group relative overflow-hidden bg-white hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 border-0 shadow-lg">
+                  {/* Gradient de risque en header */}
+                  <div className={`absolute top-0 left-0 w-full h-2 ${
+                    weather.riskLevel === 'critique' ? 'bg-gradient-to-r from-red-500 to-red-600' :
+                    weather.riskLevel === 'élevé' ? 'bg-gradient-to-r from-orange-500 to-orange-600' :
+                    weather.riskLevel === 'modéré' ? 'bg-gradient-to-r from-yellow-500 to-yellow-600' :
+                    'bg-gradient-to-r from-green-500 to-green-600'
+                  }`}></div>
+                  
+                  <CardHeader className="pb-3 pt-6">
+                    <div className="flex items-center justify-between mb-2">
+                      <CardTitle className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                        {weather.commune}
+                      </CardTitle>
+                      <Badge 
+                        className={`text-xs px-2 py-1 font-medium ${
+                          weather.riskLevel === 'critique' ? 'bg-red-100 text-red-800 border-red-200' :
+                          weather.riskLevel === 'élevé' ? 'bg-orange-100 text-orange-800 border-orange-200' :
+                          weather.riskLevel === 'modéré' ? 'bg-yellow-100 text-yellow-800 border-yellow-200' :
+                          'bg-green-100 text-green-800 border-green-200'
+                        }`}
+                      >
+                        {weather.riskLevel}
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-gray-500 flex items-center">
+                      <Calendar className="w-4 h-4 mr-1" />
+                      {weather.day}
+                    </p>
+                  </CardHeader>
+                  
+                  <CardContent>
+                    {/* Icône météo et température */}
+                    <div className="text-center mb-4">
+                      <div className="text-4xl mb-2 group-hover:scale-110 transition-transform duration-300">
+                        {weather.icon}
+                      </div>
+                      <div className="text-2xl font-bold text-gray-900 mb-1">
+                        {Math.round(weather.temperature.max)}°
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        Min: {Math.round(weather.temperature.min)}°
+                      </div>
+                    </div>
+                    
+                    {/* Description météo */}
+                    <div className="text-center mb-4">
+                      <p className="text-sm text-gray-700 font-medium">
+                        {weather.weather}
+                      </p>
+                    </div>
+                    
+                    {/* Détails météo */}
+                    <div className="space-y-2 text-xs">
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center text-gray-600">
+                          <Wind className="w-3 h-3 mr-1" />
+                          Vent
+                        </span>
+                        <span className="font-medium text-gray-900">
+                          {Math.round(weather.windSpeed)} km/h
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center text-gray-600">
+                          <CloudRain className="w-3 h-3 mr-1" />
+                          Pluie
+                        </span>
+                        <span className="font-medium text-gray-900">
+                          {weather.precipitation}%
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center text-gray-600">
+                          <Droplets className="w-3 h-3 mr-1" />
+                          Humidité
+                        </span>
+                        <span className="font-medium text-gray-900">
+                          {weather.humidity}%
+                        </span>
+                      </div>
+                    </div>
+                    
+                    {/* Indicateur IA */}
+                    <div className="mt-4 pt-3 border-t border-gray-100">
+                      <div className="flex items-center justify-center text-xs text-gray-500">
+                        <Brain className="w-3 h-3 mr-1" />
+                        <span>Analyse IA • NASA</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
-              {weatherData && weatherData.map((day) => {
-                const IconComponent = getWeatherIcon(day.icon);
-                return (
-                  <Card key={day.id} className="weather-card p-4">
-                    <CardContent className="text-center space-y-3">
-                      <div className="font-semibold text-gray-900">{day.commune}</div>
-                      <IconComponent className="w-12 h-12 mx-auto text-blue-600" />
-                      <div className="text-sm text-gray-600">{day.weather}</div>
-                      <div className="text-lg font-bold text-gray-900">
-                        {Math.round(day.temperature.max)}° / {Math.round(day.temperature.min)}°
-                      </div>
-                      <Badge 
-                        className={`risk-indicator risk-${day.riskLevel}`}
-                        style={{ 
-                          backgroundColor: getRiskColor(day.riskLevel) + '20', 
-                          color: getRiskColor(day.riskLevel),
-                          border: `1px solid ${getRiskColor(day.riskLevel)}40`
-                        }}
-                      >
-                        Risque {day.riskLevel}
-                      </Badge>
-                      <div className="text-xs text-gray-500 space-y-1">
-                        <div>Vent: {Math.round(day.windSpeed)} km/h</div>
-                        <div>Pluie: {day.precipitation}%</div>
-                        <div>Humidité: {day.humidity}%</div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
+            <div className="text-center py-16">
+              <div className="bg-white rounded-2xl p-8 shadow-lg max-w-md mx-auto">
+                <AlertTriangle className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  Données temporairement indisponibles
+                </h3>
+                <p className="text-gray-600">
+                  Nos systèmes analysent les conditions actuelles. Veuillez patienter...
+                </p>
+              </div>
             </div>
           )}
           
-          <div className="text-center">
-            <Button 
-              size="lg" 
-              onClick={handleNavigateToMap}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4"
-            >
-              <Map className="w-5 h-5 mr-2" />
-              Explorer toutes les communes sur la carte
-              <ChevronRight className="w-5 h-5 ml-2" />
-            </Button>
+          {/* Call to action */}
+          <div className="text-center mt-16">
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-8 text-white">
+              <h3 className="text-2xl font-bold mb-4">
+                Explorez toutes les communes en détail
+              </h3>
+              <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
+                Accédez à la carte interactive avec prédictions IA pour chacune des 32 communes de Guadeloupe
+              </p>
+              <Button 
+                size="lg" 
+                className="bg-white text-blue-600 hover:bg-blue-50 font-semibold px-8 py-3 rounded-2xl shadow-xl transform hover:scale-105 transition-all duration-300"
+                onClick={handleNavigateToMap}
+              >
+                <Map className="w-5 h-5 mr-2" />
+                Voir la Carte Interactive
+                <ChevronRight className="w-5 h-5 ml-2" />
+              </Button>
+            </div>
           </div>
         </div>
       </section>
