@@ -229,11 +229,14 @@ const WeatherOverlays = ({ onOverlayChange }) => {
       {Object.keys(overlays).map(type => renderTileOverlay(type))}
       
       {/* Panneau de contrôle */}
-      <Card className="absolute top-20 left-6 bg-white/95 backdrop-blur-sm shadow-lg border-0 z-1000 w-64">
+      <Card className="absolute top-20 left-6 bg-white/95 backdrop-blur-sm shadow-xl border z-[1010] w-64">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center space-x-2 text-sm">
             <Layers className="h-4 w-4 text-blue-600" />
             <span>Overlays Météo</span>
+            <Badge variant="outline" className="ml-auto text-xs">
+              {Object.values(overlays).filter(o => o.active).length}
+            </Badge>
           </CardTitle>
         </CardHeader>
         
@@ -241,7 +244,7 @@ const WeatherOverlays = ({ onOverlayChange }) => {
           {/* Contrôles des overlays */}
           <div className="space-y-3">
             {Object.entries(overlays).map(([type, overlay]) => (
-              <div key={type} className="flex items-center justify-between">
+              <div key={type} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 transition-colors">
                 <div className="flex items-center space-x-2">
                   <div className={getOverlayColor(type)}>
                     {getOverlayIcon(type)}
@@ -251,6 +254,9 @@ const WeatherOverlays = ({ onOverlayChange }) => {
                   </span>
                   {overlay.loading && (
                     <Loader2 className="h-3 w-3 animate-spin text-blue-600" />
+                  )}
+                  {overlay.active && (
+                    <div className="w-2 h-2 bg-green-500 rounded-full" />
                   )}
                 </div>
                 
