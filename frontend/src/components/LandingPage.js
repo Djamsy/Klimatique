@@ -28,6 +28,7 @@ import { Textarea } from './ui/textarea';
 import { Badge } from './ui/badge';
 import { CachedWeatherService, SubscriptionService, ConfigService } from '../services/weatherService';
 import { useToast } from '../hooks/use-toast';
+import InteractiveMap from './InteractiveMap';
 
 const LandingPage = () => {
   const [email, setEmail] = useState('');
@@ -264,6 +265,7 @@ const LandingPage = () => {
             <div className="hidden md:flex space-x-8">
               <a href="#features" className="text-gray-700 hover:text-blue-800 transition-colors">Fonctionnalités</a>
               <a href="#previsions" className="text-gray-700 hover:text-blue-800 transition-colors">Prévisions</a>
+              <a href="#carte" className="text-gray-700 hover:text-blue-800 transition-colors">Carte</a>
               <a href="#temoignages" className="text-gray-700 hover:text-blue-800 transition-colors">Témoignages</a>
               <a href="#contact" className="text-gray-700 hover:text-blue-800 transition-colors">Contact</a>
             </div>
@@ -418,45 +420,18 @@ const LandingPage = () => {
       </section>
 
       {/* Interactive Map Section */}
-      <section className="py-20">
+      <section id="carte" className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Données satellite NASA en temps réel
+              Carte interactive des risques
             </h2>
             <p className="text-lg text-gray-600">
-              Visualisez les zones à risque avec l'imagerie satellitaire de la NASA
+              Explorez chaque commune de la Guadeloupe et découvrez les risques météorologiques en temps réel
             </p>
           </div>
           
-          <div className="map-container rounded-lg h-96 flex items-center justify-center relative">
-            <div className="map-overlay"></div>
-            <div className="relative z-10 text-center">
-              <Map className="w-16 h-16 mx-auto text-blue-600 mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Cartes satellite interactives</h3>
-              <p className="text-gray-600 mb-6">
-                Visualisation des données météo satellitaires NASA sur toute la Guadeloupe
-              </p>
-              <div className="flex flex-wrap gap-3 justify-center">
-                {weatherData && weatherData.slice(0, 4).map((weather) => (
-                  <div key={weather.id} className="flex items-center bg-white rounded-full px-3 py-1 shadow-sm">
-                    <MapPin className="w-4 h-4 mr-2 text-blue-600" />
-                    <span className="text-sm font-medium">{weather.commune}</span>
-                    <Badge 
-                      className={`risk-indicator risk-${weather.riskLevel} ml-2`}
-                      variant="outline"
-                      style={{ 
-                        borderColor: getRiskColor(weather.riskLevel),
-                        color: getRiskColor(weather.riskLevel)
-                      }}
-                    >
-                      {weather.riskLevel}
-                    </Badge>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          <InteractiveMap />
         </div>
       </section>
 
