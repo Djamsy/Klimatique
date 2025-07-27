@@ -210,7 +210,32 @@ const MapPage = () => {
   useEffect(() => {
     loadWeatherForCommunes();
     loadGlobalRisk();
+    loadCacheStats();
   }, []);
+
+  const loadCacheStats = async () => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/cache/stats`);
+      if (response.ok) {
+        const stats = await response.json();
+        setCacheStats(stats);
+      }
+    } catch (error) {
+      console.error('Error loading cache stats:', error);
+    }
+  };
+
+  const handleOverlayChange = (type, active) => {
+    setActiveOverlays(prev => ({
+      ...prev,
+      [type]: active
+    }));
+  };
+
+  const handleCommuneClick = (commune) => {
+    setSelectedCommune(commune);
+    setShowPluviometer(true);
+  };
 
   const loadGlobalRisk = async () => {
     try {
