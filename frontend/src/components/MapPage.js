@@ -14,13 +14,15 @@ import {
   CloudRain,
   Thermometer,
   Eye,
-  EyeOff
+  EyeOff,
+  Brain,
+  Globe
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Card, CardContent } from './ui/card';
 import { Switch } from './ui/switch';
-import { CachedWeatherService } from '../services/weatherService';
+import { CachedWeatherService, CycloneAIService } from '../services/weatherService';
 import { GUADELOUPE_COMMUNES } from '../data/communesData';
 import 'leaflet/dist/leaflet.css';
 
