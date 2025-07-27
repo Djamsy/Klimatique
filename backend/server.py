@@ -225,6 +225,252 @@ async def get_subscription_statistics():
         logger.error(f"Error getting subscription stats: {e}")
         raise HTTPException(status_code=500, detail="Erreur serveur")
 
+# Démarrer le cache optimizer au démarrage
+@app.on_event("startup")
+async def startup_event():
+    """Démarre les services au démarrage de l'application"""
+    await weather_cache_optimizer.start_background_refresh()
+    logger.info("Weather cache optimizer started")
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Arrête les services à la fermeture de l'application"""
+    await weather_cache_optimizer.stop()
+    logger.info("Weather cache optimizer stopped")
+
+# =============================================================================
+# ENDPOINTS CACHE ET OPTIMISATION
+# =============================================================================
+
+@api_router.get("/cache/stats")
+async def get_cache_stats():
+    """Récupère les statistiques du cache et de l'usage API"""
+    try:
+        stats = await weather_cache_optimizer.get_api_usage_stats()
+        return {
+            "cache_stats": stats,
+            "cache_efficiency": {
+                "daily_limit": stats.get('daily_limit', 1000),
+                "today_usage": stats.get('today_usage', 0),
+                "efficiency_percent": stats.get('efficiency', 0),
+                "remaining_calls": stats.get('daily_limit', 1000) - stats.get('today_usage', 0)
+            },
+            "status": "active"
+        }
+    except Exception as e:
+        logger.error(f"Error getting cache stats: {e}")
+        raise HTTPException(status_code=500, detail="Erreur statistiques cache")
+
+@api_router.get("/weather/cached/{commune}")
+async def get_cached_weather(commune: str):
+    """Récupère les données météo depuis le cache"""
+    try:
+        cached_data = await weather_cache_optimizer.get_cached_data(f'weather_{commune}')
+        
+        if not cached_data:
+            raise HTTPException(status_code=404, detail="Données non disponibles en cache")
+        
+        return {
+            "commune": commune,
+            "data": cached_data,
+            "source": "cache",
+            "cached": True
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting cached weather for {commune}: {e}")
+        raise HTTPException(status_code=500, detail="Erreur cache météo")
+
+# =============================================================================
+# ENDPOINTS OVERLAYS MÉTÉO (NUAGES, PLUIE, RADAR)
+# =============================================================================
+
+@api_router.get("/weather/overlay/clouds")
+async def get_clouds_overlay():
+    """Récupère l'overlay des nuages pour la carte"""
+    try:
+        # Vérifier le cache d'abord
+        cached_data = await weather_cache_optimizer.get_cached_data('satellite_guadeloupe')
+        
+        if cached_data and 'clouds' in cached_data:
+            return {
+                "overlay_type": "clouds",
+                "data": cached_data['clouds'],
+                "source": "cache"
+            }
+        
+        # Si pas en cache, récupérer depuis l'API
+        center_lat, center_lon = 16.25, -61.55
+        clouds_data = await openweather_service.get_weather_map_data(center_lat, center_lon, 'clouds_new', 8)
+        
+        if not clouds_data:
+            raise HTTPException(status_code=503, detail="Service nuages temporairement indisponible")
+        
+        return {
+            "overlay_type": "clouds",
+            "data": clouds_data,
+            "source": "api"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting clouds overlay: {e}")
+        raise HTTPException(status_code=500, detail="Erreur overlay nuages")
+
+@api_router.get("/weather/overlay/precipitation")
+async def get_precipitation_overlay():
+    """Récupère l'overlay des précipitations pour la carte"""
+    try:
+        # Vérifier le cache d'abord
+        cached_data = await weather_cache_optimizer.get_cached_data('satellite_guadeloupe')
+        
+        if cached_data and 'precipitation' in cached_data:
+            return {
+                "overlay_type": "precipitation",
+                "data": cached_data['precipitation'],
+                "source": "cache"
+            }
+        
+        # Si pas en cache, récupérer depuis l'API
+        center_lat, center_lon = 16.25, -61.55
+        precip_data = await openweather_service.get_weather_map_data(center_lat, center_lon, 'precipitation_new', 8)
+        
+        if not precip_data:
+            raise HTTPException(status_code=503, detail="Service précipitations temporairement indisponible")
+        
+        return {
+            "overlay_type": "precipitation",
+            "data": precip_data,
+            "source": "api"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting precipitation overlay: {e}")
+        raise HTTPException(status_code=500, detail="Erreur overlay précipitations")
+
+@api_router.get("/weather/overlay/radar")
+async def get_radar_overlay():
+    """Récupère l'overlay radar pour la carte"""
+    try:
+        # Vérifier le cache d'abord
+        cached_data = await weather_cache_optimizer.get_cached_data('satellite_guadeloupe')
+        
+        if cached_data and 'radar' in cached_data:
+            return {
+                "overlay_type": "radar",
+                "data": cached_data['radar'],
+                "source": "cache"
+            }
+        
+        # Si pas en cache, récupérer depuis l'API
+        center_lat, center_lon = 16.25, -61.55
+        radar_data = await openweather_service.get_weather_map_data(center_lat, center_lon, 'radar', 8)
+        
+        if not radar_data:
+            raise HTTPException(status_code=503, detail="Service radar temporairement indisponible")
+        
+        return {
+            "overlay_type": "radar",
+            "data": radar_data,
+            "source": "api"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting radar overlay: {e}")
+        raise HTTPException(status_code=500, detail="Erreur overlay radar")
+
+@api_router.get("/weather/precipitation/forecast")
+async def get_precipitation_forecast():
+    """Récupère les prévisions de précipitations pour les prochaines heures"""
+    try:
+        center_lat, center_lon = 16.25, -61.55
+        forecast_data = await openweather_service.get_precipitation_forecast(center_lat, center_lon, 12)
+        
+        if not forecast_data:
+            raise HTTPException(status_code=503, detail="Service prévisions indisponible")
+        
+        return {
+            "location": "Guadeloupe",
+            "forecast": forecast_data,
+            "type": "precipitation"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting precipitation forecast: {e}")
+        raise HTTPException(status_code=500, detail="Erreur prévisions précipitations")
+
+@api_router.get("/weather/pluviometer/{commune}")
+async def get_pluviometer_data(commune: str):
+    """Récupère les données pluviométriques pour une commune"""
+    try:
+        commune_info = get_commune_info(commune)
+        coords = commune_info['coordinates']
+        
+        # Récupérer les données actuelles et les prévisions
+        current_data = await openweather_service.get_current_and_forecast(coords[0], coords[1])
+        precip_forecast = await openweather_service.get_precipitation_forecast(coords[0], coords[1], 24)
+        
+        if not current_data:
+            raise HTTPException(status_code=503, detail="Données pluviométriques indisponibles")
+        
+        # Traitement des données pluviométriques
+        current_precip = current_data.get('current', {}).get('rain', {}).get('1h', 0)
+        
+        pluviometer_data = {
+            'commune': commune,
+            'coordinates': coords,
+            'current': {
+                'precipitation': current_precip,
+                'intensity': get_precipitation_intensity(current_precip),
+                'description': get_precipitation_description(current_precip)
+            },
+            'forecast': precip_forecast['forecast'] if precip_forecast else [],
+            'daily_total': sum([item.get('precipitation', 0) for item in (precip_forecast['forecast'] if precip_forecast else [])[:24]]),
+            'peak_hour': max((precip_forecast['forecast'] if precip_forecast else [])[:24], key=lambda x: x.get('precipitation', 0), default={}),
+            'last_updated': current_data.get('current', {}).get('dt', 0)
+        }
+        
+        return pluviometer_data
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting pluviometer data for {commune}: {e}")
+        raise HTTPException(status_code=500, detail="Erreur données pluviométriques")
+
+def get_precipitation_intensity(precip_mm: float) -> str:
+    """Détermine l'intensité des précipitations"""
+    if precip_mm == 0:
+        return "nulle"
+    elif precip_mm < 1:
+        return "faible"
+    elif precip_mm < 4:
+        return "modérée"
+    elif precip_mm < 10:
+        return "forte"
+    else:
+        return "très forte"
+
+def get_precipitation_description(precip_mm: float) -> str:
+    """Description des précipitations"""
+    intensity = get_precipitation_intensity(precip_mm)
+    descriptions = {
+        "nulle": "Pas de précipitation",
+        "faible": "Pluie fine",
+        "modérée": "Pluie modérée",
+        "forte": "Pluie forte",
+        "très forte": "Pluie torrentielle"
+    }
+    return descriptions.get(intensity, "Précipitation")
+
 # =============================================================================
 # ENDPOINTS VIGILANCES MÉTÉO FRANCE
 # =============================================================================
