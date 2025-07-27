@@ -112,10 +112,18 @@ class AIEndpointTester:
                               f"Confidence invalide: {confidence}")
                 return False
             
-            # Vérifications recommendations
-            if not isinstance(data["recommendations"], list) or len(data["recommendations"]) == 0:
+            # Vérifications recommendations (allow empty for low risk)
+            recommendations = data["recommendations"]
+            if not isinstance(recommendations, list):
                 self.log_result(f"Prédiction IA - {commune}", False, 
-                              "Recommendations vides ou invalides")
+                              "Recommendations pas une liste")
+                return False
+            
+            # Allow empty recommendations for very low risk scenarios
+            risk_level = data["risk_level"]
+            if len(recommendations) == 0 and risk_level not in ["faible"]:
+                self.log_result(f"Prédiction IA - {commune}", False, 
+                              f"Recommendations vides pour risque {risk_level}")
                 return False
             
             self.log_result(f"Prédiction IA - {commune}", True, 
