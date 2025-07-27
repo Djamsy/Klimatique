@@ -13,12 +13,15 @@ from typing import List, Optional
 from models import (
     WeatherResponse, WeatherConfig, SubscriptionRequest, ContactRequest,
     UnsubscribeRequest, SatelliteImageRequest, AlertResponse, APIUsageStats,
-    RiskLevel, AlertType
+    RiskLevel, AlertType, CycloneAIResponse, CycloneTimelinePrediction,
+    CommuneHistoricalResponse, GlobalCycloneRisk, CycloneDamagePrediction
 )
 from services.weather_cache_service import WeatherCacheService
 from services.weather_service import WeatherService
 from services.alert_service import AlertService
 from services.subscription_service import SubscriptionService
+from services.openweather_service import openweather_service
+from ai_models.cyclone_damage_predictor import cyclone_predictor
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
