@@ -274,11 +274,67 @@ export class CachedWeatherService {
   }
 }
 
+// AI Cyclone Prediction Service
+export class CycloneAIService {
+  
+  // Services IA Prédictive Cyclonique
+  static async getCyclonePrediction(commune) {
+    try {
+      const response = await axios.get(`${API}/ai/cyclone/predict/${encodeURIComponent(commune)}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching cyclone prediction:', error);
+      throw error;
+    }
+  }
+
+  static async getCycloneTimeline(commune) {
+    try {
+      const response = await axios.get(`${API}/ai/cyclone/timeline/${encodeURIComponent(commune)}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching cyclone timeline:', error);
+      throw error;
+    }
+  }
+
+  static async getHistoricalDamage(commune) {
+    try {
+      const response = await axios.get(`${API}/ai/cyclone/historical/${encodeURIComponent(commune)}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching historical damage:', error);
+      throw error;
+    }
+  }
+
+  static async getGlobalCycloneRisk() {
+    try {
+      const response = await axios.get(`${API}/ai/cyclone/global-risk`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching global cyclone risk:', error);
+      throw error;
+    }
+  }
+
+  static async getAIModelInfo() {
+    try {
+      const response = await axios.get(`${API}/ai/model/info`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching AI model info:', error);
+      throw error;
+    }
+  }
+}
+
 // Export par défaut
 export default {
   WeatherService,
   SubscriptionService,
   ConfigService,
   CachedWeatherService,
-  CacheUtils
+  CacheUtils,
+  CycloneAIService
 };
