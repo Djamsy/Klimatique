@@ -392,7 +392,7 @@ async def get_global_cyclone_risk():
     """Évaluation globale du risque cyclonique en Guadeloupe"""
     try:
         # Analyse toutes les communes
-        communes = config.communes_guadeloupe[:10]  # Limite pour la démo
+        communes = get_all_communes()[:10]  # Limite pour la démo
         high_risk_communes = []
         critical_risk_communes = []
         
@@ -407,7 +407,7 @@ async def get_global_cyclone_risk():
                 severe_weather = await openweather_service.get_severe_weather_data(coords[0], coords[1])
                 
                 if severe_weather:
-                    commune_info = {'type': 'urbaine', 'population': 15000, 'coordinates': coords}
+                    commune_info = get_commune_info(commune)
                     prediction = cyclone_predictor.predict_damage(
                         weather_data=severe_weather['current'],
                         commune_info=commune_info
