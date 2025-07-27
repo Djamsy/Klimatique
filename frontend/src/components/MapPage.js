@@ -232,7 +232,7 @@ const MapPage = () => {
     }));
   };
 
-  const handleCommuneClick = (commune) => {
+  const handleCommuneSelect = (commune) => {
     setSelectedCommune(commune);
     setShowPluviometer(true);
   };
