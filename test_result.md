@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Implémentation de l'IA prédictive pour les dégâts cycloniques avec intégration OpenWeatherMap et affichage sur l'interface utilisateur"
+user_problem_statement: "Teste les nouveaux endpoints pour les overlays météo et le pluviomètre avec API Key OpenWeatherMap b767f89584577e8758773709b61cc95c"
 
 backend:
   - task: "Modèles IA pour prédiction cyclonique"
@@ -180,6 +180,66 @@ backend:
         -agent: "testing"
         -comment: "✅ TESTÉ - Base de données communes complète et fonctionnelle. 32 communes avec données détaillées (type, population, coordonnées, vulnérabilités). Intégration parfaite avec l'IA prédictive."
 
+  - task: "Endpoints cache météo"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: true
+        -agent: "testing"
+        -comment: "✅ TESTÉ - Endpoint GET /api/cache/stats fonctionne parfaitement. Statistiques cache affichées correctement avec usage quotidien, limite, efficacité et appels restants. Service cache actif."
+
+  - task: "Endpoints cache météo par commune"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: true
+        -agent: "testing"
+        -comment: "✅ TESTÉ - Endpoint GET /api/weather/cached/{commune} fonctionne correctement. Tests réussis sur Pointe-à-Pitre, Basse-Terre, Sainte-Anne. Données en cache récupérées avec structure correcte."
+
+  - task: "Endpoints overlays météo"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: true
+        -agent: "testing"
+        -comment: "✅ TESTÉ - Endpoints overlays météo fonctionnent parfaitement: GET /api/weather/overlay/clouds, /api/weather/overlay/precipitation, /api/weather/overlay/radar. Données récupérées depuis API OpenWeatherMap avec structure correcte."
+
+  - task: "Endpoint prévisions précipitations"
+    implemented: true
+    working: false
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        -working: false
+        -agent: "testing"
+        -comment: "❌ TESTÉ - Endpoint GET /api/weather/precipitation/forecast retourne erreur 503. Problème avec API OpenWeatherMap hourly forecast (401 Unauthorized) - nécessite abonnement payant. Fonctionnalité non critique."
+
+  - task: "Endpoints pluviomètre"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: true
+        -agent: "testing"
+        -comment: "✅ TESTÉ - Endpoint GET /api/weather/pluviometer/{commune} fonctionne parfaitement. Tests réussis sur Pointe-à-Pitre, Basse-Terre, Sainte-Anne. Données structurées avec précipitations actuelles, intensité, prévisions, total journalier."
+
 frontend:
   - task: "Service IA frontend"
     implemented: true
@@ -243,8 +303,8 @@ frontend:
 
 metadata:
   created_by: "main_agent"
-  version: "1.1"
-  test_sequence: 1
+  version: "1.2"
+  test_sequence: 2
   run_ui: false
 
 test_plan:
@@ -261,3 +321,5 @@ agent_communication:
     -message: "Implémentation complète de l'IA prédictive cyclonique avec backend (modèles, API, service OpenWeatherMap, données communes) et frontend (composant IA, intégration dans pages commune/map/landing). Prêt pour tests backend puis frontend."
     -agent: "testing"
     -message: "✅ TESTS BACKEND IA COMPLÉTÉS AVEC SUCCÈS - Tous les endpoints IA prédictive cyclonique fonctionnent parfaitement (100% réussite). OpenWeatherMap intégré, modèle IA entraîné, prédictions cohérentes pour toutes les communes testées. Fix appliqué pour variables d'environnement. Backend IA prêt pour production. Focus maintenant sur tests frontend."
+    -agent: "testing"
+    -message: "✅ TESTS NOUVEAUX ENDPOINTS MÉTÉO COMPLÉTÉS - Résultats: 29/30 tests réussis (96.7% succès). ✅ Cache stats, overlays météo (nuages/précipitations/radar), cache par commune, pluviomètre fonctionnent parfaitement. ❌ Seul échec: prévisions précipitations (API hourly payante). Service weather_cache_optimizer actif. API Key OpenWeatherMap opérationnelle. Tous les endpoints demandés testés avec communes Pointe-à-Pitre, Basse-Terre, Sainte-Anne."
