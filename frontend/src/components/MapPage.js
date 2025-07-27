@@ -395,6 +395,9 @@ const MapPage = () => {
             />
           )}
           
+          {/* Overlays météo OpenWeatherMap */}
+          <WeatherOverlays onOverlayChange={handleOverlayChange} />
+          
           {/* Markers des communes */}
           {GUADELOUPE_COMMUNES.map((commune, index) => {
             const riskLevel = getCommuneRiskLevel(commune.name);
