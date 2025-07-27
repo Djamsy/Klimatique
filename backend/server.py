@@ -292,11 +292,7 @@ async def predict_cyclone_timeline(commune: str):
             raise HTTPException(status_code=500, detail="Données météo sévères non disponibles")
         
         # Prépare les informations de la commune
-        commune_info = {
-            'type': 'urbaine',
-            'population': 20000,
-            'coordinates': coords
-        }
+        commune_info = get_commune_info(commune)
         
         # Prédictions timeline
         timeline_predictions = cyclone_predictor.predict_timeline_damage(
