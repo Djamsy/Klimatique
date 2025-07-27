@@ -386,6 +386,9 @@ const MapPage = () => {
           {/* Contrôleur de carte pour obtenir la référence */}
           <MapController onMapReady={handleMapReady} />
           
+          {/* Overlays météo OpenWeatherMap */}
+          <WeatherOverlays onOverlayChange={handleOverlayChange} />
+          
           {/* Contrôleur des couches NASA GIBS */}
           {map && (
             <NASAOverlayController 
@@ -394,9 +397,6 @@ const MapPage = () => {
               setActiveOverlays={setActiveOverlays}
             />
           )}
-          
-          {/* Overlays météo OpenWeatherMap */}
-          <WeatherOverlays onOverlayChange={handleOverlayChange} />
           
           {/* Markers des communes */}
           {GUADELOUPE_COMMUNES.map((commune, index) => {
