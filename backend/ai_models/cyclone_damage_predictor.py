@@ -349,16 +349,99 @@ class CycloneDamagePredictor:
         else:
             return 1
     
-    def _calculate_risk_level(self, risk_score):
-        """Calcule le niveau de risque basé sur le score"""
-        if risk_score >= 80:
-            return 'critique'
-        elif risk_score >= 60:
-            return 'élevé'
-        elif risk_score >= 30:
-            return 'modéré'
-        else:
-            return 'faible'
+    def _calculate_enhanced_risk_score(self, weather_data, commune_info):
+        """Calcule un score de risque amélioré basé sur les conditions météorologiques réelles"""
+        
+        # Données météorologiques
+        wind_speed = weather_data.get('wind_speed', 0)
+        pressure = weather_data.get('pressure', 1013)
+        temperature = weather_data.get('temperature', 25)
+        humidity = weather_data.get('humidity', 75)
+        precipitation = weather_data.get('precipitation', 0)
+        
+        risk_score = 0
+        risk_factors = []
+        
+        # 1. Analyse vitesse du vent (facteur principal)
+        if wind_speed > 200:  # Ouragan majeur
+            risk_score += 40
+            risk_factors.append(f"Vents extrêmes: {wind_speed:.0f} km/h")
+        elif wind_speed > 150:  # Ouragan
+            risk_score += 30
+            risk_factors.append(f"Vents d'ouragan: {wind_speed:.0f} km/h")
+        elif wind_speed > 88:  # Tempête tropicale
+            risk_score += 20
+            risk_factors.append(f"Tempête tropicale: {wind_speed:.0f} km/h")
+        elif wind_speed > 62:  # Vents forts
+            risk_score += 10
+            risk_factors.append(f"Vents forts: {wind_speed:.0f} km/h")
+        
+        # 2. Analyse pression atmosphérique
+        if pressure < 950:  # Dépression très intense
+            risk_score += 25
+            risk_factors.append(f"Pression très basse: {pressure:.0f} hPa")
+        elif pressure < 980:  # Dépression intense
+            risk_score += 15
+            risk_factors.append(f"Pression basse: {pressure:.0f} hPa")
+        elif pressure < 1000:  # Dépression modérée
+            risk_score += 5
+            risk_factors.append(f"Pression sous normale: {pressure:.0f} hPa")
+        
+        # 3. Analyse température (cyclogenèse tropicale)
+        if temperature > 29 and humidity > 85:  # Conditions très favorables
+            risk_score += 15
+            risk_factors.append(f"Conditions cyclogenèse: {temperature:.0f}°C, {humidity}% humidité")
+        elif temperature > 27 and humidity > 80:  # Conditions favorables
+            risk_score += 8
+            risk_factors.append(f"Conditions favorables développement: {temperature:.0f}°C")
+        elif temperature > 32:  # Chaleur extrême
+            risk_score += 5
+            risk_factors.append(f"Chaleur extrême: {temperature:.0f}°C")
+        
+        # 4. Analyse humidité
+        if humidity > 90:
+            risk_score += 8
+            risk_factors.append(f"Humidité très élevée: {humidity}%")
+        elif humidity > 85:
+            risk_score += 5
+            risk_factors.append(f"Humidité élevée: {humidity}%")
+        
+        # 5. Analyse précipitations
+        if precipitation > 50:  # Pluies torrentielles
+            risk_score += 15
+            risk_factors.append(f"Pluies torrentielles: {precipitation:.0f} mm/h")
+        elif precipitation > 25:  # Fortes pluies
+            risk_score += 10
+            risk_factors.append(f"Fortes pluies: {precipitation:.0f} mm/h")
+        elif precipitation > 10:  # Pluies modérées
+            risk_score += 5
+            risk_factors.append(f"Pluies modérées: {precipitation:.0f} mm/h")
+        
+        # 6. Facteurs géographiques de la commune
+        commune_type = commune_info.get('type', 'urbaine')
+        if commune_type == 'côtière':
+            risk_score += 8
+            risk_factors.append("Zone côtière exposée")
+        elif commune_type == 'insulaire':
+            risk_score += 12
+            risk_factors.append("Île isolée - évacuation difficile")
+        elif commune_type == 'urbaine':
+            risk_score += 5
+            risk_factors.append("Zone urbaine dense")
+        
+        # 7. Analyse combinée (conditions synergiques)
+        if wind_speed > 100 and pressure < 990 and precipitation > 20:
+            risk_score += 10
+            risk_factors.append("Conditions synergiques critiques")
+        
+        if temperature > 28 and humidity > 85 and wind_speed > 60:
+            risk_score += 8
+            risk_factors.append("Renforcement cyclonique possible")
+        
+        # Normalisation du score (0-100)
+        risk_score = min(100, max(0, risk_score))
+        
+        return risk_score, risk_factors
     
     def _calculate_confidence(self, features, weather_data):
         """Calcule le niveau de confiance de la prédiction"""
