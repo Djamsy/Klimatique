@@ -1,107 +1,103 @@
 {
   "total_tests": 19,
-  "passed": 16,
-  "failed": 3,
-  "errors": [
-    "Prédiction IA - Pointe-à-Pitre: Recommendations vides ou invalides",
-    "Prédiction IA - Basse-Terre: Recommendations vides ou invalides",
-    "Prédiction IA - Marie-Galante: Recommendations vides ou invalides"
-  ],
+  "passed": 19,
+  "failed": 0,
+  "errors": [],
   "detailed_results": {
     "Intégration OpenWeatherMap": {
       "success": true,
       "details": "Données météo OK pour Pointe-à-Pitre",
-      "timestamp": "2025-07-27T22:11:43.052230"
+      "timestamp": "2025-07-27T22:12:23.374342"
     },
     "Info Modèle IA": {
       "success": true,
       "details": "Type: Random Forest Regressor, Entraîné: True",
-      "timestamp": "2025-07-27T22:11:43.102168"
+      "timestamp": "2025-07-27T22:12:23.387433"
     },
     "Re-entraînement IA": {
       "success": true,
       "details": "Message: Modèle IA re-entraîné avec succès",
-      "timestamp": "2025-07-27T22:11:54.109951"
+      "timestamp": "2025-07-27T22:12:34.382230"
     },
     "Risque Global": {
       "success": true,
       "details": "Risk: faible, Communes affectées: 0",
-      "timestamp": "2025-07-27T22:11:55.943956"
+      "timestamp": "2025-07-27T22:12:36.073665"
     },
     "Prédiction IA - Pointe-à-Pitre": {
-      "success": false,
-      "details": "Recommendations vides ou invalides",
-      "timestamp": "2025-07-27T22:11:56.120124"
+      "success": true,
+      "details": "Risk: faible, Score: 11.0",
+      "timestamp": "2025-07-27T22:12:36.250539"
     },
     "Timeline IA - Pointe-à-Pitre": {
       "success": true,
       "details": "Timeline avec 4 prédictions",
-      "timestamp": "2025-07-27T22:11:56.494115"
+      "timestamp": "2025-07-27T22:12:36.448384"
     },
     "Historique - Pointe-à-Pitre": {
       "success": true,
       "details": "3 événements historiques",
-      "timestamp": "2025-07-27T22:11:56.544730"
+      "timestamp": "2025-07-27T22:12:36.497063"
     },
     "Prédiction IA - Basse-Terre": {
-      "success": false,
-      "details": "Recommendations vides ou invalides",
-      "timestamp": "2025-07-27T22:11:56.718669"
+      "success": true,
+      "details": "Risk: faible, Score: 10.2",
+      "timestamp": "2025-07-27T22:12:36.669299"
     },
     "Timeline IA - Basse-Terre": {
       "success": true,
       "details": "Timeline avec 4 prédictions",
-      "timestamp": "2025-07-27T22:11:56.916516"
+      "timestamp": "2025-07-27T22:12:36.864956"
     },
     "Historique - Basse-Terre": {
       "success": true,
       "details": "3 événements historiques",
-      "timestamp": "2025-07-27T22:11:56.926348"
+      "timestamp": "2025-07-27T22:12:36.913554"
     },
     "Prédiction IA - Sainte-Anne": {
       "success": true,
-      "details": "Risk: faible, Score: 11.4",
-      "timestamp": "2025-07-27T22:11:57.148212"
+      "details": "Risk: faible, Score: 13.0",
+      "timestamp": "2025-07-27T22:12:37.090908"
     },
     "Timeline IA - Sainte-Anne": {
       "success": true,
       "details": "Timeline avec 4 prédictions",
-      "timestamp": "2025-07-27T22:11:57.349611"
+      "timestamp": "2025-07-27T22:12:37.286511"
     },
     "Historique - Sainte-Anne": {
       "success": true,
       "details": "3 événements historiques",
-      "timestamp": "2025-07-27T22:11:57.400730"
+      "timestamp": "2025-07-27T22:12:37.294654"
     },
     "Prédiction IA - Le Moule": {
       "success": true,
-      "details": "Risk: faible, Score: 11.7",
-      "timestamp": "2025-07-27T22:11:57.586785"
+      "details": "Risk: faible, Score: 12.4",
+      "timestamp": "2025-07-27T22:12:37.510736"
     },
     "Timeline IA - Le Moule": {
       "success": true,
       "details": "Timeline avec 4 prédictions",
-      "timestamp": "2025-07-27T22:11:57.785697"
+      "timestamp": "2025-07-27T22:12:37.706662"
     },
     "Historique - Le Moule": {
       "success": true,
       "details": "3 événements historiques",
-      "timestamp": "2025-07-27T22:11:57.795287"
+      "timestamp": "2025-07-27T22:12:37.714911"
     },
     "Prédiction IA - Marie-Galante": {
-      "success": false,
-      "details": "Recommendations vides ou invalides",
-      "timestamp": "2025-07-27T22:11:57.974199"
+      "success": true,
+      "details": "Risk: faible, Score: 11.6",
+      "timestamp": "2025-07-27T22:12:37.938428"
     },
     "Timeline IA - Marie-Galante": {
       "success": true,
       "details": "Timeline avec 4 prédictions",
-      "timestamp": "2025-07-27T22:11:58.173453"
+      "timestamp": "2025-07-27T22:12:38.132556"
     },
     "Historique - Marie-Galante": {
       "success": true,
       "details": "3 événements historiques",
-      "timestamp": "2025-07-27T22:11:58.182350"
+      "timestamp": "2025-07-27T22:12:38.180597"
     }
   }
 }
