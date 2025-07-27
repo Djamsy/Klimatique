@@ -22,7 +22,10 @@ import {
   Target,
   Loader2,
   Brain,
-  Globe
+  Globe,
+  Calendar,
+  Wind,
+  Droplets
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
