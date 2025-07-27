@@ -201,3 +201,51 @@ class ContactRequest(BaseModel):
 class UnsubscribeRequest(BaseModel):
     email: str
     reason: Optional[str] = None
+
+# Modèles IA Prédictive Cyclonique
+class CycloneDamagePrediction(BaseModel):
+    infrastructure: float = Field(..., description="Pourcentage de dégâts infrastructure (0-100)")
+    agriculture: float = Field(..., description="Pourcentage de dégâts agriculture (0-100)")
+    population_impact: float = Field(..., description="Impact population (0-50)")
+
+class CycloneAIResponse(BaseModel):
+    commune: str
+    coordinates: List[float]
+    damage_predictions: CycloneDamagePrediction
+    risk_level: RiskLevel
+    risk_score: float
+    confidence: float = Field(..., description="Niveau de confiance (0-100)")
+    recommendations: List[str]
+    weather_context: Dict[str, Any]
+    analysis_timestamp: datetime = Field(default_factory=datetime.utcnow)
+    
+class CycloneTimelinePrediction(BaseModel):
+    commune: str
+    coordinates: List[float]
+    timeline_predictions: Dict[str, CycloneAIResponse]  # H+6, H+12, H+24
+    historical_data: Optional[Dict[str, Any]] = None
+    generated_at: datetime = Field(default_factory=datetime.utcnow)
+
+class CycloneHistoricalDamage(BaseModel):
+    year: int
+    event_name: str
+    damage_type: str  # "infrastructure", "agriculture", "population"
+    impact_level: RiskLevel
+    description: str
+    estimated_damage_percent: float
+    source: str = "historical_records"
+
+class CommuneHistoricalResponse(BaseModel):
+    commune: str
+    coordinates: List[float]
+    historical_events: List[CycloneHistoricalDamage]
+    vulnerability_analysis: Dict[str, Any]
+    last_updated: datetime = Field(default_factory=datetime.utcnow)
+
+class GlobalCycloneRisk(BaseModel):
+    global_risk_level: RiskLevel
+    affected_communes: List[str]
+    high_risk_count: int
+    critical_risk_count: int
+    regional_recommendations: List[str]
+    last_analysis: datetime = Field(default_factory=datetime.utcnow)
