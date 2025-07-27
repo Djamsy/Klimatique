@@ -53,15 +53,20 @@ const WeatherOverlays = ({ onOverlayChange }) => {
       }));
       setError(null);
 
-      const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/api/weather/overlay/${type}`
-      );
-
-      if (!response.ok) {
-        throw new Error(`Erreur lors du chargement de l'overlay ${type}`);
+      let data;
+      switch (type) {
+        case 'clouds':
+          data = await WeatherOverlayService.getCloudsOverlay();
+          break;
+        case 'precipitation':
+          data = await WeatherOverlayService.getPrecipitationOverlay();
+          break;
+        case 'radar':
+          data = await WeatherOverlayService.getRadarOverlay();
+          break;
+        default:
+          throw new Error(`Type d'overlay non supporté: ${type}`);
       }
-
-      const data = await response.json();
       
       setOverlays(prev => ({
         ...prev,
