@@ -158,8 +158,26 @@ const WeatherOverlays = ({ onOverlayChange }) => {
       return null;
     }
 
-    // Utiliser l'URL de l'API OpenWeatherMap pour les tiles
-    const tileUrl = `https://tile.openweathermap.org/map/${overlay.data.layer}/{z}/{x}/{y}.png?appid=${process.env.REACT_APP_OPENWEATHER_API_KEY}`;
+    // Construire l'URL correcte pour les tiles OpenWeatherMap
+    const baseUrl = 'https://tile.openweathermap.org/map';
+    const apiKey = process.env.REACT_APP_OPENWEATHER_API_KEY;
+    
+    let layerName;
+    switch (type) {
+      case 'clouds':
+        layerName = 'clouds_new';
+        break;
+      case 'precipitation':
+        layerName = 'precipitation_new';
+        break;
+      case 'radar':
+        layerName = 'radar';
+        break;
+      default:
+        return null;
+    }
+    
+    const tileUrl = `${baseUrl}/${layerName}/{z}/{x}/{y}.png?appid=${apiKey}`;
     
     return (
       <TileLayer
