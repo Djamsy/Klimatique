@@ -588,29 +588,34 @@ const MapPage = () => {
         </div>
 
         {/* Bouton de test pluviomètre */}
-        <div className="absolute bottom-6 left-6 z-1000">
+        <div className="absolute bottom-6 left-6 z-[1010]">
           <Button
             onClick={() => {
               setSelectedCommune({ name: 'Pointe-à-Pitre' });
               setShowPluviometer(true);
             }}
-            className="bg-blue-600 hover:bg-blue-700 text-white"
+            className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg"
+            size="lg"
           >
-            <Activity className="w-4 h-4 mr-2" />
+            <Activity className="w-5 h-5 mr-2" />
             Test Pluviomètre
           </Button>
         </div>
 
         {/* Panneau de droite avec pluviomètre */}
         {showPluviometer && selectedCommune && (
-          <div className="absolute top-6 right-6 w-80 z-1000 space-y-4">
-            <div className="bg-white rounded-lg shadow-lg p-4">
+          <div className="absolute top-6 right-6 w-80 z-[1020] space-y-4">
+            <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-xl p-4 border">
               <div className="flex items-center justify-between mb-2">
-                <h4 className="font-semibold text-gray-900">Pluviomètre</h4>
+                <h4 className="font-semibold text-gray-900 flex items-center">
+                  <Activity className="w-5 h-5 mr-2 text-blue-600" />
+                  Pluviomètre
+                </h4>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowPluviometer(false)}
+                  className="text-gray-500 hover:text-gray-700"
                 >
                   <EyeOff className="w-4 h-4" />
                 </Button>
@@ -623,7 +628,7 @@ const MapPage = () => {
 
         {/* Stats flottantes - affichage conditionnel */}
         {!showPluviometer && (
-          <div className="absolute top-6 right-6 bg-white rounded-lg shadow-lg p-4 z-50">
+          <div className="absolute top-6 right-6 bg-white/95 backdrop-blur-sm rounded-lg shadow-xl p-4 z-[1000] border">
             <div className="flex items-center justify-between mb-3">
               <h4 className="font-semibold text-gray-900">Tableau de bord</h4>
               <div className="flex gap-2">
