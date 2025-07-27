@@ -48,6 +48,7 @@ const LandingPage = () => {
   const [isLoadingWeather, setIsLoadingWeather] = useState(true);
   const [communes, setCommunes] = useState([]);
   const [globalRisk, setGlobalRisk] = useState(null);
+  const [vigilanceData, setVigilanceData] = useState(null);
   const [stats, setStats] = useState({
     total: 32,
     precision: 94,
@@ -55,6 +56,7 @@ const LandingPage = () => {
     users: '2.5k'
   });
   const { toast } = useToast();
+  const { theme: vigilanceTheme, loading: themeLoading } = useVigilanceTheme();
 
   // Communes principales pour l'affichage
   const mainCommunes = ['Pointe-à-Pitre', 'Basse-Terre', 'Sainte-Anne', 'Le Moule', 'Saint-François'];
