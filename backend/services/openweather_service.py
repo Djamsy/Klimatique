@@ -239,5 +239,123 @@ class OpenWeatherService:
             precipitation > 20      # > 20 mm/h
         )
 
+    async def get_weather_map_data(self, lat: float, lon: float, layer: str, zoom: int = 8) -> Optional[Dict]:
+        """Récupère les données de carte météo (nuages, précipitations, radar)"""
+        if not self.api_key:
+            logger.error("OpenWeatherMap API key not configured")
+            return None
+        
+        try:
+            # Layers disponibles: clouds_new, precipitation_new, pressure_new, wind_new, temp_new, radar
+            map_url = f"https://tile.openweathermap.org/map/{layer}/{zoom}/{lat}/{lon}.png"
+            
+            async with httpx.AsyncClient() as client:
+                params = {
+                    'appid': self.api_key
+                }
+                
+                response = await client.get(map_url, params=params, timeout=15.0)
+                
+                if response.status_code == 200:
+                    return {
+                        'layer': layer,
+                        'url': map_url,
+                        'data': response.content,
+                        'center': [lat, lon],
+                        'zoom': zoom,
+                        'timestamp': datetime.now().isoformat()
+                    }
+                else:
+                    logger.error(f"Weather map API error {response.status_code}: {response.text}")
+                    return None
+                    
+        except Exception as e:
+            logger.error(f"Error getting weather map data: {e}")
+            return None
+    
+    async def get_precipitation_forecast(self, lat: float, lon: float, hours: int = 12) -> Optional[Dict]:
+        """Récupère les prévisions de précipitations pour les prochaines heures"""
+        if not self.api_key:
+            return None
+        
+        try:
+            async with httpx.AsyncClient() as client:
+                params = {
+                    'lat': lat,
+                    'lon': lon,
+                    'appid': self.api_key,
+                    'cnt': hours  # Nombre d'heures
+                }
+                
+                response = await client.get(
+                    f"{self.base_url}/forecast/hourly",
+                    params=params,
+                    timeout=15.0
+                )
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    
+                    precipitation_data = []
+                    for item in data.get('list', []):
+                        precipitation_data.append({
+                            'time': item.get('dt'),
+                            'time_formatted': datetime.fromtimestamp(item.get('dt')).isoformat(),
+                            'precipitation': item.get('rain', {}).get('1h', 0),
+                            'precipitation_probability': item.get('pop', 0) * 100,
+                            'description': item.get('weather', [{}])[0].get('description', '')
+                        })
+                    
+                    return {
+                        'location': {'lat': lat, 'lon': lon},
+                        'forecast': precipitation_data,
+                        'generated_at': datetime.now().isoformat()
+                    }
+                else:
+                    logger.error(f"Precipitation forecast error {response.status_code}")
+                    return None
+                    
+        except Exception as e:
+            logger.error(f"Error getting precipitation forecast: {e}")
+            return None
+    
+    async def get_cloud_coverage(self, lat: float, lon: float) -> Optional[Dict]:
+        """Récupère la couverture nuageuse détaillée"""
+        if not self.api_key:
+            return None
+        
+        try:
+            async with httpx.AsyncClient() as client:
+                params = {
+                    'lat': lat,
+                    'lon': lon,
+                    'appid': self.api_key,
+                    'units': 'metric'
+                }
+                
+                response = await client.get(
+                    f"{self.base_url}/weather",
+                    params=params,
+                    timeout=15.0
+                )
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    
+                    return {
+                        'cloud_coverage': data.get('clouds', {}).get('all', 0),
+                        'visibility': data.get('visibility', 0),
+                        'weather_condition': data.get('weather', [{}])[0].get('main', ''),
+                        'description': data.get('weather', [{}])[0].get('description', ''),
+                        'timestamp': datetime.now().isoformat()
+                    }
+                else:
+                    logger.error(f"Cloud coverage error {response.status_code}")
+                    return None
+                    
+        except Exception as e:
+            logger.error(f"Error getting cloud coverage: {e}")
+            return None
+
 # Instance globale
 openweather_service = OpenWeatherService()
