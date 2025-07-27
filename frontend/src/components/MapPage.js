@@ -196,6 +196,8 @@ const MapPage = () => {
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [map, setMap] = useState(null);
   const [showLayerControls, setShowLayerControls] = useState(false);
+  const [showPluviometer, setShowPluviometer] = useState(false);
+  const [selectedCommune, setSelectedCommune] = useState(null);
   const [activeOverlays, setActiveOverlays] = useState({
     clouds: false,
     cloudTemp: false,
@@ -203,6 +205,7 @@ const MapPage = () => {
   });
   const [globalRisk, setGlobalRisk] = useState(null);
   const [showGlobalRisk, setShowGlobalRisk] = useState(false);
+  const [cacheStats, setCacheStats] = useState(null);
 
   useEffect(() => {
     loadWeatherForCommunes();
