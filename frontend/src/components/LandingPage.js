@@ -25,15 +25,19 @@ import {
   Globe,
   Calendar,
   Wind,
-  Droplets
+  Droplets,
+  ExternalLink
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Badge } from './ui/badge';
+import { Alert, AlertDescription } from './ui/alert';
 import { CachedWeatherService, SubscriptionService, ConfigService, CycloneAIService } from '../services/weatherService';
 import { useToast } from '../hooks/use-toast';
+import { useVigilanceTheme } from '../hooks/useVigilanceTheme';
+import VigilanceAlert from './VigilanceAlert';
 
 const LandingPage = () => {
   const navigate = useNavigate();
