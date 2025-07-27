@@ -541,23 +541,99 @@ const MapPage = () => {
 
         {/* Stats flottantes */}
         <div className="absolute top-6 right-6 bg-white rounded-lg shadow-lg p-4 z-50">
-          <h4 className="font-semibold text-gray-900 mb-2">Couverture</h4>
-          <div className="grid grid-cols-2 gap-3 text-center">
-            <div>
-              <div className="text-2xl font-bold text-blue-600">{GUADELOUPE_COMMUNES.length}</div>
-              <div className="text-xs text-gray-600">Communes</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-green-600">{Object.keys(weatherByCommune).length}</div>
-              <div className="text-xs text-gray-600">Actives</div>
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="font-semibold text-gray-900">Tableau de bord</h4>
+            <div className="flex gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowGlobalRisk(!showGlobalRisk)}
+                className={showGlobalRisk ? 'text-blue-600' : ''}
+              >
+                <Brain className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowLayerControls(!showLayerControls)}
+                className={showLayerControls ? 'text-blue-600' : ''}
+              >
+                <Layers className="w-4 h-4" />
+              </Button>
             </div>
           </div>
-          {Object.values(activeOverlays).some(Boolean) && (
-            <div className="mt-3 pt-3 border-t border-gray-200">
-              <p className="text-xs text-gray-500 flex items-center gap-1">
-                <Layers className="w-3 h-3" />
-                {Object.entries(activeOverlays).filter(([k, v]) => v).length} couches actives
-              </p>
+          
+          {showGlobalRisk && globalRisk ? (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between pb-2 border-b">
+                <span className="text-sm font-medium">Risque Global</span>
+                <Badge 
+                  className="text-xs px-2 py-1"
+                  style={{ 
+                    backgroundColor: getRiskColor(globalRisk.global_risk_level) + '20',
+                    color: getRiskColor(globalRisk.global_risk_level),
+                    border: `1px solid ${getRiskColor(globalRisk.global_risk_level)}60`
+                  }}
+                >
+                  {globalRisk.global_risk_level}
+                </Badge>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-3 text-center">
+                <div>
+                  <div className="text-xl font-bold text-orange-600">{globalRisk.high_risk_count}</div>
+                  <div className="text-xs text-gray-600">Risque élevé</div>
+                </div>
+                <div>
+                  <div className="text-xl font-bold text-red-600">{globalRisk.critical_risk_count}</div>
+                  <div className="text-xs text-gray-600">Critique</div>
+                </div>
+              </div>
+              
+              {globalRisk.affected_communes.length > 0 && (
+                <div className="mt-3 pt-3 border-t border-gray-200">
+                  <p className="text-xs font-medium text-gray-700 mb-1">Communes à risque:</p>
+                  <div className="flex flex-wrap gap-1">
+                    {globalRisk.affected_communes.slice(0, 3).map((commune, index) => (
+                      <span key={index} className="text-xs bg-orange-100 text-orange-800 px-1 py-0.5 rounded">
+                        {commune}
+                      </span>
+                    ))}
+                    {globalRisk.affected_communes.length > 3 && (
+                      <span className="text-xs text-gray-500">+{globalRisk.affected_communes.length - 3}</span>
+                    )}
+                  </div>
+                </div>
+              )}
+              
+              <div className="mt-3 pt-3 border-t border-gray-200">
+                <p className="text-xs text-gray-500 flex items-center gap-1">
+                  <Brain className="w-3 h-3" />
+                  IA Prédictive • {new Date(globalRisk.last_analysis).toLocaleTimeString('fr-FR')}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-3 text-center">
+                <div>
+                  <div className="text-2xl font-bold text-blue-600">{GUADELOUPE_COMMUNES.length}</div>
+                  <div className="text-xs text-gray-600">Communes</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-green-600">{Object.keys(weatherByCommune).length}</div>
+                  <div className="text-xs text-gray-600">Actives</div>
+                </div>
+              </div>
+              
+              {Object.values(activeOverlays).some(Boolean) && (
+                <div className="mt-3 pt-3 border-t border-gray-200">
+                  <p className="text-xs text-gray-500 flex items-center gap-1">
+                    <Layers className="w-3 h-3" />
+                    {Object.entries(activeOverlays).filter(([k, v]) => v).length} couches actives
+                  </p>
+                </div>
+              )}
             </div>
           )}
         </div>
