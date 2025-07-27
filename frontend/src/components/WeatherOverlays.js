@@ -154,13 +154,17 @@ const WeatherOverlays = ({ onOverlayChange }) => {
   const renderTileOverlay = (type) => {
     const overlay = overlays[type];
     
-    if (!overlay.active || !overlay.data) {
+    if (!overlay.active) {
       return null;
     }
 
     // Construire l'URL correcte pour les tiles OpenWeatherMap
-    const baseUrl = 'https://tile.openweathermap.org/map';
     const apiKey = process.env.REACT_APP_OPENWEATHER_API_KEY;
+    
+    if (!apiKey) {
+      console.error('OpenWeatherMap API key not found');
+      return null;
+    }
     
     let layerName;
     switch (type) {
@@ -177,7 +181,9 @@ const WeatherOverlays = ({ onOverlayChange }) => {
         return null;
     }
     
-    const tileUrl = `${baseUrl}/${layerName}/{z}/{x}/{y}.png?appid=${apiKey}`;
+    const tileUrl = `https://tile.openweathermap.org/map/${layerName}/{z}/{x}/{y}.png?appid=${apiKey}`;
+    
+    console.log(`Rendering overlay ${type} with URL: ${tileUrl}`);
     
     return (
       <TileLayer
@@ -185,6 +191,7 @@ const WeatherOverlays = ({ onOverlayChange }) => {
         url={tileUrl}
         opacity={getOverlayOpacity(type)}
         zIndex={getOverlayZIndex(type)}
+        attribution={`OpenWeatherMap ${type}`}
       />
     );
   };
