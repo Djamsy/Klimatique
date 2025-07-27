@@ -425,6 +425,369 @@ class AIEndpointTester:
         except Exception as e:
             self.log_result("Intégration OpenWeatherMap", False, f"Exception: {str(e)}")
             return False
+
+    async def test_cache_stats(self) -> bool:
+        """Test endpoint GET /api/cache/stats"""
+        try:
+            url = f"{BACKEND_URL}/cache/stats"
+            response = await self.client.get(url)
+            
+            if response.status_code != 200:
+                self.log_result("Cache Stats", False, 
+                              f"Status {response.status_code}: {response.text}")
+                return False
+            
+            data = response.json()
+            
+            # Vérifications structure
+            required_fields = ["cache_stats", "cache_efficiency", "status"]
+            for field in required_fields:
+                if field not in data:
+                    self.log_result("Cache Stats", False, 
+                                  f"Champ manquant: {field}")
+                    return False
+            
+            # Vérifications cache_efficiency
+            efficiency = data["cache_efficiency"]
+            efficiency_fields = ["daily_limit", "today_usage", "efficiency_percent", "remaining_calls"]
+            for field in efficiency_fields:
+                if field not in efficiency:
+                    self.log_result("Cache Stats", False, 
+                                  f"Champ efficiency manquant: {field}")
+                    return False
+            
+            # Vérifications valeurs
+            if not isinstance(efficiency["daily_limit"], int) or efficiency["daily_limit"] <= 0:
+                self.log_result("Cache Stats", False, 
+                              f"Daily limit invalide: {efficiency['daily_limit']}")
+                return False
+            
+            if data["status"] != "active":
+                self.log_result("Cache Stats", False, 
+                              f"Status cache invalide: {data['status']}")
+                return False
+            
+            self.log_result("Cache Stats", True, 
+                          f"Usage: {efficiency['today_usage']}/{efficiency['daily_limit']}, Efficiency: {efficiency['efficiency_percent']}%")
+            return True
+            
+        except Exception as e:
+            self.log_result("Cache Stats", False, f"Exception: {str(e)}")
+            return False
+
+    async def test_cached_weather(self, commune: str) -> bool:
+        """Test endpoint GET /api/weather/cached/{commune}"""
+        try:
+            url = f"{BACKEND_URL}/weather/cached/{commune}"
+            response = await self.client.get(url)
+            
+            # Accepter 404 si pas en cache
+            if response.status_code == 404:
+                self.log_result(f"Cache Météo - {commune}", True, 
+                              "Pas en cache (normal)")
+                return True
+            
+            if response.status_code != 200:
+                self.log_result(f"Cache Météo - {commune}", False, 
+                              f"Status {response.status_code}: {response.text}")
+                return False
+            
+            data = response.json()
+            
+            # Vérifications structure
+            required_fields = ["commune", "data", "source", "cached"]
+            for field in required_fields:
+                if field not in data:
+                    self.log_result(f"Cache Météo - {commune}", False, 
+                                  f"Champ manquant: {field}")
+                    return False
+            
+            # Vérifications valeurs
+            if data["commune"] != commune:
+                self.log_result(f"Cache Météo - {commune}", False, 
+                              f"Commune incorrecte: {data['commune']}")
+                return False
+            
+            if data["source"] != "cache":
+                self.log_result(f"Cache Météo - {commune}", False, 
+                              f"Source incorrecte: {data['source']}")
+                return False
+            
+            if not data["cached"]:
+                self.log_result(f"Cache Météo - {commune}", False, 
+                              "Cached flag incorrect")
+                return False
+            
+            self.log_result(f"Cache Météo - {commune}", True, 
+                          f"Données en cache pour {commune}")
+            return True
+            
+        except Exception as e:
+            self.log_result(f"Cache Météo - {commune}", False, f"Exception: {str(e)}")
+            return False
+
+    async def test_clouds_overlay(self) -> bool:
+        """Test endpoint GET /api/weather/overlay/clouds"""
+        try:
+            url = f"{BACKEND_URL}/weather/overlay/clouds"
+            response = await self.client.get(url)
+            
+            if response.status_code != 200:
+                self.log_result("Overlay Nuages", False, 
+                              f"Status {response.status_code}: {response.text}")
+                return False
+            
+            data = response.json()
+            
+            # Vérifications structure
+            required_fields = ["overlay_type", "data", "source"]
+            for field in required_fields:
+                if field not in data:
+                    self.log_result("Overlay Nuages", False, 
+                                  f"Champ manquant: {field}")
+                    return False
+            
+            # Vérifications valeurs
+            if data["overlay_type"] != "clouds":
+                self.log_result("Overlay Nuages", False, 
+                              f"Type overlay incorrect: {data['overlay_type']}")
+                return False
+            
+            if data["source"] not in ["cache", "api"]:
+                self.log_result("Overlay Nuages", False, 
+                              f"Source invalide: {data['source']}")
+                return False
+            
+            # Vérifier que data n'est pas vide
+            if not data["data"]:
+                self.log_result("Overlay Nuages", False, 
+                              "Données overlay vides")
+                return False
+            
+            self.log_result("Overlay Nuages", True, 
+                          f"Source: {data['source']}")
+            return True
+            
+        except Exception as e:
+            self.log_result("Overlay Nuages", False, f"Exception: {str(e)}")
+            return False
+
+    async def test_precipitation_overlay(self) -> bool:
+        """Test endpoint GET /api/weather/overlay/precipitation"""
+        try:
+            url = f"{BACKEND_URL}/weather/overlay/precipitation"
+            response = await self.client.get(url)
+            
+            if response.status_code != 200:
+                self.log_result("Overlay Précipitations", False, 
+                              f"Status {response.status_code}: {response.text}")
+                return False
+            
+            data = response.json()
+            
+            # Vérifications structure
+            required_fields = ["overlay_type", "data", "source"]
+            for field in required_fields:
+                if field not in data:
+                    self.log_result("Overlay Précipitations", False, 
+                                  f"Champ manquant: {field}")
+                    return False
+            
+            # Vérifications valeurs
+            if data["overlay_type"] != "precipitation":
+                self.log_result("Overlay Précipitations", False, 
+                              f"Type overlay incorrect: {data['overlay_type']}")
+                return False
+            
+            if data["source"] not in ["cache", "api"]:
+                self.log_result("Overlay Précipitations", False, 
+                              f"Source invalide: {data['source']}")
+                return False
+            
+            # Vérifier que data n'est pas vide
+            if not data["data"]:
+                self.log_result("Overlay Précipitations", False, 
+                              "Données overlay vides")
+                return False
+            
+            self.log_result("Overlay Précipitations", True, 
+                          f"Source: {data['source']}")
+            return True
+            
+        except Exception as e:
+            self.log_result("Overlay Précipitations", False, f"Exception: {str(e)}")
+            return False
+
+    async def test_radar_overlay(self) -> bool:
+        """Test endpoint GET /api/weather/overlay/radar"""
+        try:
+            url = f"{BACKEND_URL}/weather/overlay/radar"
+            response = await self.client.get(url)
+            
+            if response.status_code != 200:
+                self.log_result("Overlay Radar", False, 
+                              f"Status {response.status_code}: {response.text}")
+                return False
+            
+            data = response.json()
+            
+            # Vérifications structure
+            required_fields = ["overlay_type", "data", "source"]
+            for field in required_fields:
+                if field not in data:
+                    self.log_result("Overlay Radar", False, 
+                                  f"Champ manquant: {field}")
+                    return False
+            
+            # Vérifications valeurs
+            if data["overlay_type"] != "radar":
+                self.log_result("Overlay Radar", False, 
+                              f"Type overlay incorrect: {data['overlay_type']}")
+                return False
+            
+            if data["source"] not in ["cache", "api"]:
+                self.log_result("Overlay Radar", False, 
+                              f"Source invalide: {data['source']}")
+                return False
+            
+            # Vérifier que data n'est pas vide
+            if not data["data"]:
+                self.log_result("Overlay Radar", False, 
+                              "Données overlay vides")
+                return False
+            
+            self.log_result("Overlay Radar", True, 
+                          f"Source: {data['source']}")
+            return True
+            
+        except Exception as e:
+            self.log_result("Overlay Radar", False, f"Exception: {str(e)}")
+            return False
+
+    async def test_precipitation_forecast(self) -> bool:
+        """Test endpoint GET /api/weather/precipitation/forecast"""
+        try:
+            url = f"{BACKEND_URL}/weather/precipitation/forecast"
+            response = await self.client.get(url)
+            
+            if response.status_code != 200:
+                self.log_result("Prévisions Précipitations", False, 
+                              f"Status {response.status_code}: {response.text}")
+                return False
+            
+            data = response.json()
+            
+            # Vérifications structure
+            required_fields = ["location", "forecast", "type"]
+            for field in required_fields:
+                if field not in data:
+                    self.log_result("Prévisions Précipitations", False, 
+                                  f"Champ manquant: {field}")
+                    return False
+            
+            # Vérifications valeurs
+            if data["location"] != "Guadeloupe":
+                self.log_result("Prévisions Précipitations", False, 
+                              f"Location incorrecte: {data['location']}")
+                return False
+            
+            if data["type"] != "precipitation":
+                self.log_result("Prévisions Précipitations", False, 
+                              f"Type incorrect: {data['type']}")
+                return False
+            
+            # Vérifier que forecast n'est pas vide
+            if not data["forecast"]:
+                self.log_result("Prévisions Précipitations", False, 
+                              "Prévisions vides")
+                return False
+            
+            self.log_result("Prévisions Précipitations", True, 
+                          f"Prévisions pour {data['location']}")
+            return True
+            
+        except Exception as e:
+            self.log_result("Prévisions Précipitations", False, f"Exception: {str(e)}")
+            return False
+
+    async def test_pluviometer_data(self, commune: str) -> bool:
+        """Test endpoint GET /api/weather/pluviometer/{commune}"""
+        try:
+            url = f"{BACKEND_URL}/weather/pluviometer/{commune}"
+            response = await self.client.get(url)
+            
+            if response.status_code != 200:
+                self.log_result(f"Pluviomètre - {commune}", False, 
+                              f"Status {response.status_code}: {response.text}")
+                return False
+            
+            data = response.json()
+            
+            # Vérifications structure
+            required_fields = ["commune", "coordinates", "current", "forecast", "daily_total", "peak_hour", "last_updated"]
+            for field in required_fields:
+                if field not in data:
+                    self.log_result(f"Pluviomètre - {commune}", False, 
+                                  f"Champ manquant: {field}")
+                    return False
+            
+            # Vérifications commune
+            if data["commune"] != commune:
+                self.log_result(f"Pluviomètre - {commune}", False, 
+                              f"Commune incorrecte: {data['commune']}")
+                return False
+            
+            # Vérifications coordinates
+            coords = data["coordinates"]
+            if not isinstance(coords, list) or len(coords) != 2:
+                self.log_result(f"Pluviomètre - {commune}", False, 
+                              f"Coordonnées invalides: {coords}")
+                return False
+            
+            # Vérifications current
+            current = data["current"]
+            current_fields = ["precipitation", "intensity", "description"]
+            for field in current_fields:
+                if field not in current:
+                    self.log_result(f"Pluviomètre - {commune}", False, 
+                                  f"Champ current manquant: {field}")
+                    return False
+            
+            # Vérifications precipitation value
+            precip = current["precipitation"]
+            if not isinstance(precip, (int, float)) or precip < 0:
+                self.log_result(f"Pluviomètre - {commune}", False, 
+                              f"Précipitation invalide: {precip}")
+                return False
+            
+            # Vérifications intensity
+            valid_intensities = ["nulle", "faible", "modérée", "forte", "très forte"]
+            if current["intensity"] not in valid_intensities:
+                self.log_result(f"Pluviomètre - {commune}", False, 
+                              f"Intensité invalide: {current['intensity']}")
+                return False
+            
+            # Vérifications forecast
+            forecast = data["forecast"]
+            if not isinstance(forecast, list):
+                self.log_result(f"Pluviomètre - {commune}", False, 
+                              "Forecast pas une liste")
+                return False
+            
+            # Vérifications daily_total
+            daily_total = data["daily_total"]
+            if not isinstance(daily_total, (int, float)) or daily_total < 0:
+                self.log_result(f"Pluviomètre - {commune}", False, 
+                              f"Daily total invalide: {daily_total}")
+                return False
+            
+            self.log_result(f"Pluviomètre - {commune}", True, 
+                          f"Précip: {precip}mm, Intensité: {current['intensity']}, Total jour: {daily_total}mm")
+            return True
+            
+        except Exception as e:
+            self.log_result(f"Pluviomètre - {commune}", False, f"Exception: {str(e)}")
+            return False
     
     async def run_all_tests(self):
         """Exécute tous les tests IA"""
