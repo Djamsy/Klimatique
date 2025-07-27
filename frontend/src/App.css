@@ -201,3 +201,58 @@ textarea:focus {
 html {
   scroll-behavior: smooth;
 }
+
+/* Styles pour les thèmes de vigilance */
+:root {
+  --vigilance-primary: #059669;
+  --vigilance-level: 'vert';
+  transition: all 0.3s ease;
+}
+
+/* Thème vigilance verte */
+body.vigilance-vert {
+  --vigilance-primary: #059669;
+  --vigilance-secondary: #10B981;
+  --vigilance-accent: #A7F3D0;
+  --vigilance-background: #ECFDF5;
+}
+
+/* Thème vigilance jaune */
+body.vigilance-jaune {
+  --vigilance-primary: #D97706;
+  --vigilance-secondary: #F59E0B;
+  --vigilance-accent: #FDE68A;
+  --vigilance-background: #FFFBEB;
+}
+
+/* Thème vigilance orange */
+body.vigilance-orange {
+  --vigilance-primary: #EA580C;
+  --vigilance-secondary: #F97316;
+  --vigilance-accent: #FED7AA;
+  --vigilance-background: #FFF7ED;
+}
+
+/* Thème vigilance rouge */
+body.vigilance-rouge {
+  --vigilance-primary: #DC2626;
+  --vigilance-secondary: #EF4444;
+  --vigilance-accent: #FCA5A5;
+  --vigilance-background: #FEF2F2;
+}
+
+/* Classes d'aide pour les transitions */
+.vigilance-theme-active {
+  transition: all 0.3s ease;
+}
+
+/* Animation pour changement de vigilance */
+@keyframes vigilance-change {
+  0% { opacity: 0.8; }
+  50% { opacity: 1; transform: scale(1.02); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.vigilance-alert-transition {
+  animation: vigilance-change 0.5s ease-in-out;
+}
