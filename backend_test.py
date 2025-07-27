@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Tests complets pour l'API IA prédictive cyclonique - Météo Sentinelle
-Teste tous les endpoints IA avec différentes communes de Guadeloupe
+Tests complets pour l'API Météo Sentinelle - Endpoints météo et IA prédictive
+Teste les nouveaux endpoints overlay météo, pluviomètre et cache + IA cyclonique
 """
 
 import asyncio
