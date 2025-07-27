@@ -461,16 +461,30 @@ const MapPage = () => {
                           </div>
                         </div>
                         
-                        <Button 
-                          className="w-full mt-3 bg-blue-600 hover:bg-blue-700"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleCommuneClick(commune);
-                          }}
-                        >
-                          <MapPin className="w-4 h-4 mr-2" />
-                          Voir tous les détails
-                        </Button>
+                        <div className="flex space-x-2 mt-3">
+                          <Button 
+                            className="flex-1 bg-blue-600 hover:bg-blue-700"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleCommuneClick(commune);
+                            }}
+                          >
+                            <MapPin className="w-4 h-4 mr-2" />
+                            Détails
+                          </Button>
+                          
+                          <Button 
+                            variant="outline"
+                            className="flex-1"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleCommuneSelect(commune);
+                            }}
+                          >
+                            <Activity className="w-4 h-4 mr-2" />
+                            Pluie
+                          </Button>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
