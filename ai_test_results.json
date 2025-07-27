@@ -1,114 +1,107 @@
 {
   "total_tests": 19,
-  "passed": 9,
-  "failed": 10,
+  "passed": 16,
+  "failed": 3,
   "errors": [
-    "Prédiction IA - Pointe-à-Pitre: Status 500: {\"detail\":\"Données météo sévères non disponibles\"}",
-    "Timeline IA - Pointe-à-Pitre: Status 500: {\"detail\":\"Données météo sévères non disponibles\"}",
-    "Prédiction IA - Basse-Terre: Status 500: {\"detail\":\"Données météo sévères non disponibles\"}",
-    "Timeline IA - Basse-Terre: Status 500: {\"detail\":\"Données météo sévères non disponibles\"}",
-    "Prédiction IA - Sainte-Anne: Status 500: {\"detail\":\"Données météo sévères non disponibles\"}",
-    "Timeline IA - Sainte-Anne: Status 500: {\"detail\":\"Données météo sévères non disponibles\"}",
-    "Prédiction IA - Le Moule: Status 500: {\"detail\":\"Données météo sévères non disponibles\"}",
-    "Timeline IA - Le Moule: Status 500: {\"detail\":\"Données météo sévères non disponibles\"}",
-    "Prédiction IA - Marie-Galante: Status 500: {\"detail\":\"Données météo sévères non disponibles\"}",
-    "Timeline IA - Marie-Galante: Status 500: {\"detail\":\"Données météo sévères non disponibles\"}"
+    "Prédiction IA - Pointe-à-Pitre: Recommendations vides ou invalides",
+    "Prédiction IA - Basse-Terre: Recommendations vides ou invalides",
+    "Prédiction IA - Marie-Galante: Recommendations vides ou invalides"
   ],
   "detailed_results": {
     "Intégration OpenWeatherMap": {
       "success": true,
       "details": "Données météo OK pour Pointe-à-Pitre",
-      "timestamp": "2025-07-27T22:10:32.467370"
+      "timestamp": "2025-07-27T22:11:43.052230"
     },
     "Info Modèle IA": {
       "success": true,
-      "details": "Type: Random Forest Regressor, Entraîné: False",
-      "timestamp": "2025-07-27T22:10:32.478313"
+      "details": "Type: Random Forest Regressor, Entraîné: True",
+      "timestamp": "2025-07-27T22:11:43.102168"
     },
     "Re-entraînement IA": {
       "success": true,
       "details": "Message: Modèle IA re-entraîné avec succès",
-      "timestamp": "2025-07-27T22:10:43.437241"
+      "timestamp": "2025-07-27T22:11:54.109951"
     },
     "Risque Global": {
       "success": true,
       "details": "Risk: faible, Communes affectées: 0",
-      "timestamp": "2025-07-27T22:10:43.515997"
+      "timestamp": "2025-07-27T22:11:55.943956"
     },
     "Prédiction IA - Pointe-à-Pitre": {
       "success": false,
-      "details": "Status 500: {\"detail\":\"Données météo sévères non disponibles\"}",
-      "timestamp": "2025-07-27T22:10:43.531846"
+      "details": "Recommendations vides ou invalides",
+      "timestamp": "2025-07-27T22:11:56.120124"
     },
     "Timeline IA - Pointe-à-Pitre": {
-      "success": false,
-      "details": "Status 500: {\"detail\":\"Données météo sévères non disponibles\"}",
-      "timestamp": "2025-07-27T22:10:43.584908"
+      "success": true,
+      "details": "Timeline avec 4 prédictions",
+      "timestamp": "2025-07-27T22:11:56.494115"
     },
     "Historique - Pointe-à-Pitre": {
       "success": true,
       "details": "3 événements historiques",
-      "timestamp": "2025-07-27T22:10:43.595351"
+      "timestamp": "2025-07-27T22:11:56.544730"
     },
     "Prédiction IA - Basse-Terre": {
       "success": false,
-      "details": "Status 500: {\"detail\":\"Données météo sévères non disponibles\"}",
-      "timestamp": "2025-07-27T22:10:43.607100"
+      "details": "Recommendations vides ou invalides",
+      "timestamp": "2025-07-27T22:11:56.718669"
     },
     "Timeline IA - Basse-Terre": {
-      "success": false,
-      "details": "Status 500: {\"detail\":\"Données météo sévères non disponibles\"}",
-      "timestamp": "2025-07-27T22:10:43.659397"
+      "success": true,
+      "details": "Timeline avec 4 prédictions",
+      "timestamp": "2025-07-27T22:11:56.916516"
     },
     "Historique - Basse-Terre": {
       "success": true,
       "details": "3 événements historiques",
-      "timestamp": "2025-07-27T22:10:43.668311"
+      "timestamp": "2025-07-27T22:11:56.926348"
     },
     "Prédiction IA - Sainte-Anne": {
-      "success": false,
-      "details": "Status 500: {\"detail\":\"Données météo sévères non disponibles\"}",
-      "timestamp": "2025-07-27T22:10:43.720422"
+      "success": true,
+      "details": "Risk: faible, Score: 11.4",
+      "timestamp": "2025-07-27T22:11:57.148212"
     },
     "Timeline IA - Sainte-Anne": {
-      "success": false,
-      "details": "Status 500: {\"detail\":\"Données météo sévères non disponibles\"}",
-      "timestamp": "2025-07-27T22:10:43.732366"
+      "success": true,
+      "details": "Timeline avec 4 prédictions",
+      "timestamp": "2025-07-27T22:11:57.349611"
     },
     "Historique - Sainte-Anne": {
       "success": true,
       "details": "3 événements historiques",
-      "timestamp": "2025-07-27T22:10:43.782803"
+      "timestamp": "2025-07-27T22:11:57.400730"
     },
     "Prédiction IA - Le Moule": {
-      "success": false,
-      "details": "Status 500: {\"detail\":\"Données météo sévères non disponibles\"}",
-      "timestamp": "2025-07-27T22:10:43.795072"
+      "success": true,
+      "details": "Risk: faible, Score: 11.7",
+      "timestamp": "2025-07-27T22:11:57.586785"
     },
     "Timeline IA - Le Moule": {
-      "success": false,
-      "details": "Status 500: {\"detail\":\"Données météo sévères non disponibles\"}",
-      "timestamp": "2025-07-27T22:10:43.806769"
+      "success": true,
+      "details": "Timeline avec 4 prédictions",
+      "timestamp": "2025-07-27T22:11:57.785697"
     },
     "Historique - Le Moule": {
       "success": true,
       "details": "3 événements historiques",
-      "timestamp": "2025-07-27T22:10:43.855697"
+      "timestamp": "2025-07-27T22:11:57.795287"
     },
     "Prédiction IA - Marie-Galante": {
       "success": false,
-      "details": "Status 500: {\"detail\":\"Données météo sévères non disponibles\"}",
-      "timestamp": "2025-07-27T22:10:43.866543"
+      "details": "Recommendations vides ou invalides",
+      "timestamp": "2025-07-27T22:11:57.974199"
     },
     "Timeline IA - Marie-Galante": {
-      "success": false,
-      "details": "Status 500: {\"detail\":\"Données météo sévères non disponibles\"}",
-      "timestamp": "2025-07-27T22:10:43.917704"
+      "success": true,
+      "details": "Timeline avec 4 prédictions",
+      "timestamp": "2025-07-27T22:11:58.173453"
     },
     "Historique - Marie-Galante": {
       "success": true,
       "details": "3 événements historiques",
-      "timestamp": "2025-07-27T22:10:43.926086"
+      "timestamp": "2025-07-27T22:11:58.182350"
     }
   }
 }
