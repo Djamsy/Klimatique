@@ -453,42 +453,157 @@ class CycloneDamagePredictor:
         else:
             return 60  # Confiance réduite hors plage
     
-    def _generate_recommendations(self, damage_infra, damage_agri, damage_pop, commune_info):
-        """Génère des recommandations basées sur les prédictions"""
+    def _calculate_risk_level(self, risk_score):
+        """Calcule le niveau de risque basé sur le score"""
+        if risk_score >= 80:
+            return 'critique'
+        elif risk_score >= 60:
+            return 'élevé'
+        elif risk_score >= 30:
+            return 'modéré'
+        else:
+            return 'faible'
+    
+    def _generate_enhanced_recommendations(self, damage_infra, damage_agri, damage_pop, commune_info, weather_data, risk_factors):
+        """Génère des recommandations améliorées basées sur les conditions météorologiques"""
         recommendations = []
         commune_type = commune_info.get('type', 'urbaine')
         
-        # Recommandations infrastructure
-        if damage_infra > 70:
+        # Données météo
+        wind_speed = weather_data.get('wind_speed', 0)
+        pressure = weather_data.get('pressure', 1013)
+        temperature = weather_data.get('temperature', 25)
+        humidity = weather_data.get('humidity', 75)
+        precipitation = weather_data.get('precipitation', 0)
+        
+        # Recommandations selon l'intensité du vent
+        if wind_speed > 200:
             recommendations.extend([
-                "ÉVACUATION IMMÉDIATE recommandée",
-                "Fermeture des services publics essentiels",
-                "Renforcement d'urgence des structures critiques"
+                "🚨 ÉVACUATION IMMÉDIATE OBLIGATOIRE",
+                "Fermeture totale des services et commerces",
+                "Confinement en abri renforcé uniquement"
             ])
-        elif damage_infra > 40:
+        elif wind_speed > 150:
             recommendations.extend([
-                "Préparation évacuation préventive", 
-                "Sécurisation infrastructures sensibles",
-                "Stock d'urgence eau/nourriture 72h"
+                "⚠️ Évacuation préventive recommandée",
+                "Éviter tout déplacement extérieur",
+                "Sécuriser portes et fenêtres"
+            ])
+        elif wind_speed > 88:
+            recommendations.extend([
+                "Préparer un plan d'évacuation",
+                "Éviter les zones exposées au vent",
+                "Vérifier les amarrages et fixations"
             ])
         
-        # Recommandations agriculture
-        if damage_agri > 60:
+        # Recommandations selon la pression
+        if pressure < 950:
+            recommendations.append("Surveillance météo continue - système très actif")
+        elif pressure < 980:
+            recommendations.append("Conditions météo dégradées - restez vigilants")
+        
+        # Recommandations selon température et humidité
+        if temperature > 29 and humidity > 85:
             recommendations.extend([
-                "Protection urgente du bétail",
-                "Récolte anticipée si possible",
-                "Préparation aide agricole post-cyclone"
+                "Conditions favorables au renforcement cyclonique",
+                "Préparer 72h d'autonomie (eau, nourriture, médicaments)"
+            ])
+        elif temperature > 32:
+            recommendations.extend([
+                "Chaleur extrême - hydratation renforcée",
+                "Éviter efforts physiques aux heures chaudes"
             ])
         
-        # Recommandations spécifiques par type
-        if commune_type == 'insulaire' and damage_pop > 20:
-            recommendations.append("Coordination évacuation inter-îles urgente")
-        elif commune_type == 'côtière':
-            recommendations.append("Surveillance submersion marine")
+        # Recommandations selon les précipitations
+        if precipitation > 50:
+            recommendations.extend([
+                "🌊 RISQUE INONDATION MAJEUR",
+                "Évacuer les zones basses et cours d'eau",
+                "Couper électricité/gaz dans zones inondables"
+            ])
+        elif precipitation > 25:
+            recommendations.extend([
+                "Risque d'inondation - éviter déplacements",
+                "Surveiller montée des eaux",
+                "Préparer kit d'urgence étanche"
+            ])
+        
+        # Recommandations spécifiques par type de commune
+        if commune_type == 'côtière':
+            if wind_speed > 100 or damage_infra > 50:
+                recommendations.extend([
+                    "🌊 Risque submersion marine - évacuer le littoral",
+                    "Surveiller coefficient de marée",
+                    "Éloigner véhicules de la côte"
+                ])
+        elif commune_type == 'insulaire':
+            if damage_pop > 20 or wind_speed > 120:
+                recommendations.extend([
+                    "🚁 Coordination évacuation inter-îles urgente",
+                    "Vérifier liaisons de communication",
+                    "Stocks d'urgence pour isolement prolongé"
+                ])
         elif commune_type == 'montagne':
-            recommendations.append("Vigilance glissements de terrain")
+            if precipitation > 30:
+                recommendations.extend([
+                    "⛰️ Vigilance glissements de terrain",
+                    "Éviter routes de montagne",
+                    "Surveiller stabilité des pentes"
+                ])
+        elif commune_type == 'urbaine':
+            if wind_speed > 80:
+                recommendations.extend([
+                    "🏙️ Attention chutes d'objets urbains",
+                    "Éviter centres-villes et parkings",
+                    "Vérifier réseaux eau/électricité"
+                ])
         
-        return recommendations[:6]  # Max 6 recommandations
+        # Recommandations selon dégâts prévus
+        if damage_infra > 80:
+            recommendations.extend([
+                "🏠 Infrastructure critique - évacuation massive",
+                "Activation cellule de crise préfectorale",
+                "Préparer relogement d'urgence"
+            ])
+        elif damage_infra > 50:
+            recommendations.extend([
+                "Renforcement préventif des structures",
+                "Vérification installations électriques",
+                "Plan de continuité d'activité"
+            ])
+        
+        if damage_agri > 70:
+            recommendations.extend([
+                "🌾 Protection urgente du bétail",
+                "Récolte anticipée si possible",
+                "Sécuriser équipements agricoles"
+            ])
+        
+        if damage_pop > 30:
+            recommendations.extend([
+                "👥 Mise en place cellule psychologique",
+                "Renforcement services de secours",
+                "Communication d'urgence aux familles"
+            ])
+        
+        # Recommandations générales de préparation
+        if len([r for r in risk_factors if 'favorables' in r or 'cyclogenèse' in r]) > 0:
+            recommendations.extend([
+                "📱 Vérifier moyens de communication",
+                "⚡ Charger appareils électroniques",
+                "💊 Préparer trousse de premiers secours"
+            ])
+        
+        # Recommandations selon conditions synergiques
+        if "Conditions synergiques critiques" in risk_factors:
+            recommendations.extend([
+                "🔴 ALERTE MAXIMALE - Conditions exceptionnelles",
+                "Suivre uniquement consignes officielles",
+                "Éviter toute prise de risque"
+            ])
+        
+        # Limiter à 8 recommandations les plus pertinentes
+        return recommendations[:8]
     
     def _generate_fallback_prediction(self, weather_data, commune_info):
         """Génère une prédiction de fallback en cas d'erreur"""
