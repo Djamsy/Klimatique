@@ -251,7 +251,7 @@ const MapPage = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-center">
           <Info className="w-4 h-4 text-blue-600 mr-2" />
           <span className="text-blue-800 font-medium">
-            Cliquez sur une commune pour voir les détails météorologiques et les risques
+            Vue satellite • Cliquez sur une commune pour voir les détails météorologiques et les risques
           </span>
         </div>
       </div>
