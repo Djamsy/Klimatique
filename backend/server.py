@@ -22,6 +22,7 @@ from services.alert_service import AlertService
 from services.subscription_service import SubscriptionService
 from services.openweather_service import openweather_service
 from ai_models.cyclone_damage_predictor import cyclone_predictor
+from data.communes_data import get_commune_info, get_all_communes
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
