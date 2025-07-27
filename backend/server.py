@@ -244,11 +244,7 @@ async def predict_cyclone_damage(commune: str):
             raise HTTPException(status_code=500, detail="Données météo sévères non disponibles")
         
         # Prépare les informations de la commune
-        commune_info = {
-            'type': 'urbaine',  # À améliorer avec une base de données
-            'population': 20000,  # À améliorer avec une base de données
-            'coordinates': coords
-        }
+        commune_info = get_commune_info(commune)
         
         # Prédiction IA
         prediction = cyclone_predictor.predict_damage(
