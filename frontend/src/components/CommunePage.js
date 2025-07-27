@@ -62,6 +62,7 @@ const CommunePage = () => {
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState('weather'); // 'weather', 'ai', 'forecast'
 
   const commune = COMMUNES_DATA[slug];
 
