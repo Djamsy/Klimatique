@@ -166,19 +166,51 @@ useEffect(() => {
 
 ---
 
+## ⚡ STRATÉGIE CACHE INTELLIGENTE - 1000 CALLS OPTIMISÉS
+
+### Architecture Cache Adaptative :
+- **Backend** : 1000 calls OpenWeatherMap/jour répartis intelligemment
+- **Cache MongoDB** : Stockage météo avec timestamps
+- **Users** : Récupération instantanée depuis cache
+- **Cron Jobs** : Fréquence adaptative selon risque météo
+
+### Répartition des calls quotidiens :
+```python
+NORMAL_WEATHER = 60 minutes    # 24 calls/jour × 32 communes = 768 calls
+MODERATE_RISK = 30 minutes     # Surveillance accrue
+HIGH_RISK = 10 minutes         # Veille active  
+CRITICAL = 5 minutes           # Urgence cyclone (232 calls réserve)
+```
+
 ## 🔄 APIs Backend à Développer
 
-### 1. Weather Service (`/backend/services/weather_service.py`)
+### 1. Weather Cache Service (`/backend/services/weather_cache_service.py`)
+```python
+class WeatherCacheService:
+    async def update_weather_data(self):
+        # Call OpenWeatherMap → Cache MongoDB
+        
+    async def get_cached_forecast(self, commune: str):
+        # Récupération instantanée depuis cache
+        
+    async def adaptive_update_frequency(self):
+        # Fréquence adaptative selon niveau risque
+        
+    async def assess_weather_risk(self):
+        # Analyse données → détermine fréquence mise à jour
+```
+
+### 2. Weather Service (`/backend/services/weather_service.py`)
 ```python
 class WeatherService:
     async def get_satellite_view(self, bbox: str, zoom_level: int):
-        # NASA GIBS integration
+        # NASA GIBS integration (illimité gratuit)
         
-    async def get_local_forecast(self, commune: str):
-        # OpenWeatherMap integration
+    async def get_local_forecast_cached(self, commune: str):
+        # Récupération depuis cache optimisé
         
     async def process_weather_alerts(self):
-        # Analyse données → génère alertes automatiques
+        # Analyse données cache → génère alertes automatiques
 ```
 
 ### 2. Alert Service (`/backend/services/alert_service.py`)
