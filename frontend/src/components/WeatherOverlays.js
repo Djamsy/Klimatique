@@ -93,11 +93,7 @@ const WeatherOverlays = ({ onOverlayChange }) => {
   const toggleOverlay = async (type) => {
     const isCurrentlyActive = overlays[type].active;
     
-    if (!isCurrentlyActive) {
-      // Charger l'overlay
-      await loadOverlay(type);
-    }
-    
+    // Activer/désactiver immédiatement
     setOverlays(prev => ({
       ...prev,
       [type]: {
@@ -105,10 +101,15 @@ const WeatherOverlays = ({ onOverlayChange }) => {
         active: !isCurrentlyActive
       }
     }));
-
+    
     // Notifier le parent du changement
     if (onOverlayChange) {
       onOverlayChange(type, !isCurrentlyActive);
+    }
+    
+    // Optionnel : charger les données en arrière-plan
+    if (!isCurrentlyActive) {
+      loadOverlay(type);
     }
   };
 
