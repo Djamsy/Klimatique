@@ -203,7 +203,17 @@ const MapPage = () => {
 
   useEffect(() => {
     loadWeatherForCommunes();
+    loadGlobalRisk();
   }, []);
+
+  const loadGlobalRisk = async () => {
+    try {
+      const riskData = await CycloneAIService.getGlobalCycloneRisk();
+      setGlobalRisk(riskData);
+    } catch (error) {
+      console.error('Error loading global risk:', error);
+    }
+  };
 
   const loadWeatherForCommunes = async () => {
     setLoading(true);
