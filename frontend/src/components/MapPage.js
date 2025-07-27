@@ -413,79 +413,97 @@ const MapPage = () => {
                   click: () => handleCommuneClick(commune)
                 }}
               >
-                <Popup
+                <Popup 
                   className="custom-popup"
-                  closeButton={true}
+                  closeButton={false}
+                  minWidth={250}
                   maxWidth={300}
-                  minWidth={260}
+                  autoPan={true}
+                  keepInView={true}
                 >
                   <Card className="border-0 shadow-none">
-                    <CardContent className="p-4">
-                      <div className="text-center space-y-3">
-                        <div>
-                          <h3 className="font-bold text-lg text-gray-900">{commune.name}</h3>
-                          <p className="text-sm text-gray-600">
-                            <Users className="inline w-3 h-3 mr-1" />
-                            {commune.population} habitants • {commune.type}
-                          </p>
-                        </div>
-                        
-                        {currentTemp && (
-                          <div className="bg-blue-50 rounded-lg p-3">
-                            <div className="text-2xl font-bold text-blue-800">
-                              {currentTemp}°C
-                            </div>
-                            <div className="text-sm text-blue-600">
-                              {weather.current.weather_description}
-                            </div>
-                          </div>
-                        )}
-                        
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-semibold text-lg text-gray-900">
+                          {commune.name}
+                        </h3>
                         <Badge 
-                          className="text-sm px-3 py-1"
+                          className="text-xs px-2 py-1"
                           style={{ 
                             backgroundColor: getRiskColor(riskLevel) + '20',
                             color: getRiskColor(riskLevel),
-                            border: `1px solid ${getRiskColor(riskLevel)}60`
+                            border: `1px solid ${getRiskColor(riskLevel)}40`
                           }}
                         >
-                          <AlertTriangle className="w-3 h-3 mr-1" />
-                          Risque {riskLevel}
+                          {riskLevel}
                         </Badge>
-                        
-                        <div className="text-xs text-gray-500 mt-2">
-                          <div className="grid grid-cols-2 gap-1">
-                            {commune.riskFactors.slice(0, 2).map((risk, i) => (
-                              <div key={i} className="truncate">• {risk}</div>
-                            ))}
+                      </div>
+                    </CardHeader>
+                    
+                    <CardContent className="pt-0">
+                      {weather ? (
+                        <div className="space-y-3">
+                          <div className="grid grid-cols-2 gap-3 text-sm">
+                            <div className="flex items-center justify-between">
+                              <span className="text-gray-600">Température:</span>
+                              <span className="font-medium">
+                                {Math.round(weather.current?.temperature_max || 0)}°C
+                              </span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-gray-600">Vent:</span>
+                              <span className="font-medium">
+                                {Math.round(weather.current?.wind_speed || 0)} km/h
+                              </span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-gray-600">Humidité:</span>
+                              <span className="font-medium">
+                                {Math.round(weather.current?.humidity || 0)}%
+                              </span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-gray-600">Pluie:</span>
+                              <span className="font-medium">
+                                {Math.round(weather.current?.precipitation_probability || 0)}%
+                              </span>
+                            </div>
+                          </div>
+                          
+                          <div className="flex space-x-2 pt-3 border-t">
+                            <Button 
+                              size="sm"
+                              className="flex-1 bg-blue-600 hover:bg-blue-700"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleCommuneClick(commune);
+                              }}
+                            >
+                              <MapPin className="w-4 h-4 mr-2" />
+                              Détails
+                            </Button>
+                            
+                            <Button 
+                              size="sm"
+                              variant="outline"
+                              className="flex-1 border-blue-200 text-blue-600 hover:bg-blue-50"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedCommune(commune);
+                                setShowPluviometer(true);
+                              }}
+                            >
+                              <Activity className="w-4 h-4 mr-2" />
+                              Pluie
+                            </Button>
                           </div>
                         </div>
-                        
-                        <div className="flex space-x-2 mt-3">
-                          <Button 
-                            className="flex-1 bg-blue-600 hover:bg-blue-700"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleCommuneClick(commune);
-                            }}
-                          >
-                            <MapPin className="w-4 h-4 mr-2" />
-                            Détails
-                          </Button>
-                          
-                          <Button 
-                            variant="outline"
-                            className="flex-1"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleCommuneSelect(commune);
-                            }}
-                          >
-                            <Activity className="w-4 h-4 mr-2" />
-                            Pluie
-                          </Button>
+                      ) : (
+                        <div className="text-center py-6">
+                          <Loader2 className="h-5 w-5 animate-spin mx-auto text-blue-600 mb-2" />
+                          <p className="text-sm text-gray-600">Chargement des données...</p>
                         </div>
-                      </div>
+                      )}
                     </CardContent>
                   </Card>
                 </Popup>
