@@ -13,97 +13,15 @@ import {
   Users,
   Calendar,
   Info,
-  Gauge
+  Gauge,
+  Home
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Progress } from './ui/progress';
 import { CachedWeatherService } from '../services/weatherService';
-
-// Communes data (même que MapPage)
-const COMMUNES_DATA = {
-  "pointe-a-pitre": { 
-    name: "Pointe-à-Pitre", 
-    coordinates: [16.2415, -61.5328], 
-    population: "16,000",
-    type: "urbaine",
-    riskFactors: ["Inondation urbaine", "Cyclones"],
-    description: "Principal port et centre économique de la Guadeloupe"
-  },
-  "basse-terre": { 
-    name: "Basse-Terre", 
-    coordinates: [16.0074, -61.7056], 
-    population: "10,800",
-    type: "montagne",
-    riskFactors: ["Glissements terrain", "Fortes pluies", "Cyclones"],
-    description: "Préfecture située au pied de la Soufrière"
-  },
-  "sainte-anne": { 
-    name: "Sainte-Anne", 
-    coordinates: [16.2276, -61.3825], 
-    population: "24,000",
-    type: "côtière",
-    riskFactors: ["Houle cyclonique", "Submersion marine"],
-    description: "Station balnéaire réputée pour ses plages"
-  },
-  "le-moule": { 
-    name: "Le Moule", 
-    coordinates: [16.3336, -61.3503], 
-    population: "22,000",
-    type: "côtière",
-    riskFactors: ["Vents violents", "Houle", "Sécheresse"],
-    description: "Commune côtière exposée aux vents d'est"
-  },
-  "saint-francois": { 
-    name: "Saint-François", 
-    coordinates: [16.2500, -61.2667], 
-    population: "13,500",
-    type: "côtière",
-    riskFactors: ["Cyclones", "Submersion marine"],
-    description: "Port de plaisance et centre touristique"
-  },
-  "gosier": { 
-    name: "Gosier", 
-    coordinates: [16.1833, -61.5167], 
-    population: "28,000",
-    type: "urbaine",
-    riskFactors: ["Inondation", "Cyclones"],
-    description: "Zone urbaine densément peuplée"
-  },
-  "petit-bourg": { 
-    name: "Petit-Bourg", 
-    coordinates: [16.1833, -61.5833], 
-    population: "25,000",
-    type: "rurale",
-    riskFactors: ["Inondation rivières", "Glissements terrain"],
-    description: "Commune rurale traversée par plusieurs rivières"
-  },
-  "lamentin": { 
-    name: "Lamentin", 
-    coordinates: [16.2500, -61.6000], 
-    population: "16,500",
-    type: "urbaine",
-    riskFactors: ["Inondation", "Vents forts"],
-    description: "Zone aéroportuaire et commerciale"
-  },
-  "capesterre-belle-eau": { 
-    name: "Capesterre-Belle-Eau", 
-    coordinates: [16.0450, -61.5675], 
-    population: "19,000",
-    type: "montagne",
-    riskFactors: ["Cyclones", "Pluies torrentielles", "Coulées boue"],
-    description: "Commune montagneuse au relief accidenté"
-  },
-  "bouillante": { 
-    name: "Bouillante", 
-    coordinates: [16.1333, -61.7667], 
-    population: "7,300",
-    type: "côtière",
-    riskFactors: ["Houle cyclonique", "Vents violents"],
-    description: "Côte ouest exposée aux vents"
-  }
-};
+import { COMMUNES_DATA } from '../data/communesData';
 
 const getRiskColor = (riskLevel) => {
   const colors = {
@@ -123,6 +41,17 @@ const getRiskProgress = (riskLevel) => {
     'critique': 100
   };
   return values[riskLevel] || 25;
+};
+
+const getTypeIcon = (type) => {
+  const icons = {
+    'urbaine': '🏙️',
+    'côtière': '🏖️',
+    'montagne': '⛰️',
+    'rurale': '🌾',
+    'insulaire': '🏝️'
+  };
+  return icons[type] || '📍';
 };
 
 const CommunePage = () => {
@@ -170,6 +99,7 @@ const CommunePage = () => {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">Chargement des données météo NASA...</p>
+          <p className="text-sm text-gray-500">Commune: {commune?.name || slug}</p>
         </div>
       </div>
     );
@@ -182,10 +112,16 @@ const CommunePage = () => {
           <AlertTriangle className="w-16 h-16 text-red-500 mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Commune non trouvée</h1>
           <p className="text-gray-600 mb-6">{error}</p>
-          <Button onClick={handleBackToMap}>
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour à la carte
-          </Button>
+          <div className="space-x-4">
+            <Button onClick={handleBackToMap}>
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Retour à la carte
+            </Button>
+            <Button variant="outline" onClick={handleBackToHome}>
+              <Home className="w-4 h-4 mr-2" />
+              Accueil
+            </Button>
+          </div>
         </div>
       </div>
     );
@@ -214,6 +150,7 @@ const CommunePage = () => {
                 onClick={handleBackToHome}
                 className="hover:bg-gray-100 text-sm"
               >
+                <Home className="h-4 w-4 mr-2" />
                 Accueil
               </Button>
             </div>
@@ -230,18 +167,21 @@ const CommunePage = () => {
         <div className="mb-8">
           <div className="flex items-start justify-between mb-4">
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-                {commune.name}
-              </h1>
+              <div className="flex items-center gap-3 mb-2">
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
+                  {commune.name}
+                </h1>
+                <span className="text-2xl">{getTypeIcon(commune.type)}</span>
+              </div>
               <p className="text-lg text-gray-600 mb-3">{commune.description}</p>
-              <div className="flex items-center gap-4 text-sm text-gray-500">
+              <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
                 <div className="flex items-center">
                   <Users className="w-4 h-4 mr-1" />
                   {commune.population} habitants
                 </div>
                 <div className="flex items-center">
                   <MapPin className="w-4 h-4 mr-1" />
-                  {commune.coordinates[0].toFixed(3)}, {commune.coordinates[1].toFixed(3)}
+                  {commune.coordinates[0].toFixed(4)}°, {commune.coordinates[1].toFixed(4)}°
                 </div>
                 <Badge variant="outline" className="capitalize">
                   Zone {commune.type}
@@ -264,7 +204,7 @@ const CommunePage = () => {
               </div>
               <Progress 
                 value={getRiskProgress(currentRisk)} 
-                className="w-24"
+                className="w-32"
                 style={{ 
                   color: getRiskColor(currentRisk)
                 }}
@@ -333,6 +273,13 @@ const CommunePage = () => {
                 ) : (
                   <div className="text-center py-8">
                     <p className="text-gray-500">Données météo non disponibles</p>
+                    <Button 
+                      variant="outline" 
+                      onClick={loadWeatherData}
+                      className="mt-4"
+                    >
+                      Réessayer
+                    </Button>
                   </div>
                 )}
               </CardContent>
@@ -469,7 +416,9 @@ const CommunePage = () => {
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Type de zone:</span>
-                    <span className="font-medium capitalize">{commune.type}</span>
+                    <span className="font-medium capitalize flex items-center gap-1">
+                      {getTypeIcon(commune.type)} {commune.type}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Population:</span>
@@ -483,12 +432,16 @@ const CommunePage = () => {
                     <span className="text-gray-600">Longitude:</span>
                     <span className="font-medium">{commune.coordinates[1].toFixed(4)}°</span>
                   </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Risques principaux:</span>
+                    <span className="font-medium text-right">{commune.riskFactors.length}</span>
+                  </div>
                 </div>
                 
                 <div className="mt-4 pt-4 border-t border-gray-200">
                   <p className="text-xs text-gray-500 flex items-center gap-1">
                     <Shield className="w-3 h-3" />
-                    Données fournies par NASA • Météo Sentinelle
+                    Données NASA • Météo Sentinelle • Temps réel
                   </p>
                 </div>
               </CardContent>
@@ -505,6 +458,10 @@ const CommunePage = () => {
                   <Button variant="outline" className="w-full" onClick={() => window.location.reload()}>
                     <Clock className="w-4 h-4 mr-2" />
                     Actualiser les données
+                  </Button>
+                  <Button variant="outline" className="w-full" onClick={handleBackToHome}>
+                    <Home className="w-4 h-4 mr-2" />
+                    Page d'accueil
                   </Button>
                 </div>
               </CardContent>

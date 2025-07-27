@@ -7,12 +7,14 @@ import {
   ArrowLeft,
   Users,
   AlertTriangle,
-  Info
+  Info,
+  Loader2
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Card, CardContent } from './ui/card';
 import { CachedWeatherService } from '../services/weatherService';
+import { GUADELOUPE_COMMUNES } from '../data/communesData';
 import 'leaflet/dist/leaflet.css';
 
 // Fix for default markers in react-leaflet
@@ -24,106 +26,6 @@ L.Icon.Default.mergeOptions({
   shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
 });
 
-// Communes de Guadeloupe avec coordonnées précises
-const GUADELOUPE_COMMUNES = [
-  { 
-    name: "Pointe-à-Pitre", 
-    coordinates: [16.2415, -61.5328], 
-    population: "16,000",
-    type: "urbaine",
-    riskFactors: ["Inondation urbaine", "Cyclones"],
-    slug: "pointe-a-pitre"
-  },
-  { 
-    name: "Basse-Terre", 
-    coordinates: [16.0074, -61.7056], 
-    population: "10,800",
-    type: "montagne",
-    riskFactors: ["Glissements terrain", "Fortes pluies", "Cyclones"],
-    slug: "basse-terre"
-  },
-  { 
-    name: "Sainte-Anne", 
-    coordinates: [16.2276, -61.3825], 
-    population: "24,000",
-    type: "côtière",
-    riskFactors: ["Houle cyclonique", "Submersion marine"],
-    slug: "sainte-anne"
-  },
-  { 
-    name: "Le Moule", 
-    coordinates: [16.3336, -61.3503], 
-    population: "22,000",
-    type: "côtière",
-    riskFactors: ["Vents violents", "Houle", "Sécheresse"],
-    slug: "le-moule"
-  },
-  { 
-    name: "Saint-François", 
-    coordinates: [16.2500, -61.2667], 
-    population: "13,500",
-    type: "côtière",
-    riskFactors: ["Cyclones", "Submersion marine"],
-    slug: "saint-francois"
-  },
-  { 
-    name: "Gosier", 
-    coordinates: [16.1833, -61.5167], 
-    population: "28,000",
-    type: "urbaine",
-    riskFactors: ["Inondation", "Cyclones"],
-    slug: "gosier"
-  },
-  { 
-    name: "Petit-Bourg", 
-    coordinates: [16.1833, -61.5833], 
-    population: "25,000",
-    type: "rurale",
-    riskFactors: ["Inondation rivières", "Glissements terrain"],
-    slug: "petit-bourg"
-  },
-  { 
-    name: "Lamentin", 
-    coordinates: [16.2500, -61.6000], 
-    population: "16,500",
-    type: "urbaine",
-    riskFactors: ["Inondation", "Vents forts"],
-    slug: "lamentin"
-  },
-  { 
-    name: "Capesterre-Belle-Eau", 
-    coordinates: [16.0450, -61.5675], 
-    population: "19,000",
-    type: "montagne",
-    riskFactors: ["Cyclones", "Pluies torrentielles", "Coulées boue"],
-    slug: "capesterre-belle-eau"
-  },
-  { 
-    name: "Bouillante", 
-    coordinates: [16.1333, -61.7667], 
-    population: "7,300",
-    type: "côtière",
-    riskFactors: ["Houle cyclonique", "Vents violents"],
-    slug: "bouillante"
-  },
-  { 
-    name: "Deshaies", 
-    coordinates: [16.2994, -61.7944], 
-    population: "4,200",
-    type: "côtière",
-    riskFactors: ["Submersion marine", "Cyclones"],
-    slug: "deshaies"
-  },
-  { 
-    name: "Saint-Claude", 
-    coordinates: [16.0333, -61.6833], 
-    population: "10,200",
-    type: "montagne",
-    riskFactors: ["Glissements terrain", "Fortes pluies"],
-    slug: "saint-claude"
-  }
-];
-
 // Composant pour créer des icônes personnalisées selon le risque
 const createCustomIcon = (riskLevel, isLarge = false) => {
   const colors = {
@@ -134,8 +36,8 @@ const createCustomIcon = (riskLevel, isLarge = false) => {
   };
   
   const color = colors[riskLevel] || '#22c55e';
-  const size = isLarge ? 30 : 24;
-  const innerSize = isLarge ? 12 : 10;
+  const size = isLarge ? 28 : 22;
+  const innerSize = isLarge ? 10 : 8;
   
   return L.divIcon({
     html: `
@@ -180,7 +82,7 @@ const MapPage = () => {
   const navigate = useNavigate();
   const [weatherByCommune, setWeatherByCommune] = useState({});
   const [loading, setLoading] = useState(true);
-  const [selectedInfo, setSelectedInfo] = useState(null);
+  const [loadingProgress, setLoadingProgress] = useState(0);
 
   useEffect(() => {
     loadWeatherForCommunes();
@@ -188,14 +90,40 @@ const MapPage = () => {
 
   const loadWeatherForCommunes = async () => {
     setLoading(true);
+    setLoadingProgress(0);
+
     try {
-      const communeNames = GUADELOUPE_COMMUNES.slice(0, 8).map(c => c.name);
-      const weatherData = await CachedWeatherService.getMultipleWeatherWithCache(communeNames);
-      setWeatherByCommune(weatherData);
+      // Charge par lots pour optimiser les performances
+      const batchSize = 6;
+      const communes = GUADELOUPE_COMMUNES.map(c => c.name);
+      const allWeatherData = {};
+      
+      for (let i = 0; i < communes.length; i += batchSize) {
+        const batch = communes.slice(i, i + batchSize);
+        
+        try {
+          const batchData = await CachedWeatherService.getMultipleWeatherWithCache(batch);
+          Object.assign(allWeatherData, batchData);
+          
+          // Met à jour le progrès
+          const progress = Math.min(((i + batchSize) / communes.length) * 100, 100);
+          setLoadingProgress(progress);
+        } catch (error) {
+          console.error(`Error loading batch ${i}-${i + batchSize}:`, error);
+        }
+        
+        // Petit délai entre les lots
+        if (i + batchSize < communes.length) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+      }
+      
+      setWeatherByCommune(allWeatherData);
     } catch (error) {
       console.error('Error loading weather for communes:', error);
     } finally {
       setLoading(false);
+      setLoadingProgress(100);
     }
   };
 
@@ -215,7 +143,7 @@ const MapPage = () => {
     navigate('/');
   };
 
-  // Centre de la Guadeloupe
+  // Centre de la Guadeloupe pour vue d'ensemble
   const guadeloupeCenter = [16.25, -61.55];
 
   return (
@@ -239,7 +167,7 @@ const MapPage = () => {
             <div className="flex items-center space-x-4">
               <Badge variant="outline" className="hidden sm:flex">
                 <AlertTriangle className="w-3 h-3 mr-1" />
-                Données NASA temps réel
+                {GUADELOUPE_COMMUNES.length} communes • Données NASA
               </Badge>
             </div>
           </div>
@@ -286,8 +214,8 @@ const MapPage = () => {
                 <Popup
                   className="custom-popup"
                   closeButton={true}
-                  maxWidth={280}
-                  minWidth={250}
+                  maxWidth={300}
+                  minWidth={260}
                 >
                   <Card className="border-0 shadow-none">
                     <CardContent className="p-4">
@@ -322,6 +250,14 @@ const MapPage = () => {
                           <AlertTriangle className="w-3 h-3 mr-1" />
                           Risque {riskLevel}
                         </Badge>
+                        
+                        <div className="text-xs text-gray-500 mt-2">
+                          <div className="grid grid-cols-2 gap-1">
+                            {commune.riskFactors.slice(0, 2).map((risk, i) => (
+                              <div key={i} className="truncate">• {risk}</div>
+                            ))}
+                          </div>
+                        </div>
                         
                         <Button 
                           className="w-full mt-3 bg-blue-600 hover:bg-blue-700"
@@ -368,17 +304,47 @@ const MapPage = () => {
               <Shield className="inline w-3 h-3 mr-1" />
               Vue satellite • Données NASA • Temps réel
             </p>
+            <p className="text-xs text-gray-500 mt-1">
+              {GUADELOUPE_COMMUNES.length} communes de Guadeloupe
+            </p>
+          </div>
+        </div>
+
+        {/* Stats flottantes */}
+        <div className="absolute top-6 right-6 bg-white rounded-lg shadow-lg p-4 z-50">
+          <h4 className="font-semibold text-gray-900 mb-2">Couverture</h4>
+          <div className="grid grid-cols-2 gap-3 text-center">
+            <div>
+              <div className="text-2xl font-bold text-blue-600">{GUADELOUPE_COMMUNES.length}</div>
+              <div className="text-xs text-gray-600">Communes</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-green-600">{Object.keys(weatherByCommune).length}</div>
+              <div className="text-xs text-gray-600">Actives</div>
+            </div>
           </div>
         </div>
 
         {/* Loading overlay */}
         {loading && (
           <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 shadow-xl">
-              <div className="flex items-center space-x-3">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-                <span className="text-gray-700">Chargement des données météo NASA...</span>
+            <div className="bg-white rounded-lg p-6 shadow-xl min-w-80">
+              <div className="text-center mb-4">
+                <Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-3" />
+                <h3 className="font-semibold text-gray-900">Chargement des données NASA</h3>
+                <p className="text-sm text-gray-600">
+                  Récupération météo pour {GUADELOUPE_COMMUNES.length} communes...
+                </p>
               </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div 
+                  className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                  style={{ width: `${loadingProgress}%` }}
+                ></div>
+              </div>
+              <p className="text-center text-xs text-gray-500 mt-2">
+                {Math.round(loadingProgress)}% complété
+              </p>
             </div>
           </div>
         )}
