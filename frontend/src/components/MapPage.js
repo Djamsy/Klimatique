@@ -8,11 +8,18 @@ import {
   Users,
   AlertTriangle,
   Info,
-  Loader2
+  Loader2,
+  Layers,
+  Cloud,
+  CloudRain,
+  Thermometer,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Card, CardContent } from './ui/card';
+import { Switch } from './ui/switch';
 import { CachedWeatherService } from '../services/weatherService';
 import { GUADELOUPE_COMMUNES } from '../data/communesData';
 import 'leaflet/dist/leaflet.css';
@@ -25,6 +32,105 @@ L.Icon.Default.mergeOptions({
   iconUrl: require('leaflet/dist/images/marker-icon.png'),
   shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
 });
+
+// NASA GIBS Overlay Layers
+const NASA_GIBS_LAYERS = {
+  clouds: {
+    name: "Nuages",
+    url: "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_CorrectedReflectance_TrueColor/default/{time}/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg",
+    icon: Cloud,
+    description: "Couverture nuageuse en temps réel"
+  },
+  cloudTemp: {
+    name: "Température nuages",
+    url: "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_Cloud_Top_Temp_Day/default/{time}/GoogleMapsCompatible_Level6/{z}/{y}/{x}.png",
+    icon: Thermometer,
+    description: "Température au sommet des nuages"
+  },
+  precipitation: {
+    name: "Précipitations",
+    url: "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/GPM_3IMERGHH_06_precipitation/default/{time}/GoogleMapsCompatible_Level8/{z}/{y}/{x}.png",
+    icon: CloudRain,
+    description: "Précipitations satellite"
+  }
+};
+
+// Composant pour gérer les couches NASA GIBS
+const NASAOverlayController = ({ map, activeOverlays, setActiveOverlays }) => {
+  const [overlayLayers, setOverlayLayers] = useState({});
+
+  // Génère la date actuelle pour NASA GIBS (format YYYY-MM-DD)
+  const getCurrentDate = () => {
+    const now = new Date();
+    // NASA GIBS a souvent 1-2 jours de retard
+    now.setDate(now.getDate() - 1);
+    return now.toISOString().split('T')[0];
+  };
+
+  useEffect(() => {
+    if (!map) return;
+
+    const currentDate = getCurrentDate();
+    const layers = {};
+
+    // Crée les couches overlay pour chaque type
+    Object.entries(NASA_GIBS_LAYERS).forEach(([key, config]) => {
+      const url = config.url.replace('{time}', currentDate);
+      
+      const layer = L.tileLayer(url, {
+        attribution: 'NASA GIBS',
+        opacity: 0.7,
+        maxZoom: 9,
+        tileSize: 256
+      });
+      
+      layers[key] = layer;
+    });
+
+    setOverlayLayers(layers);
+
+    return () => {
+      // Nettoie les couches à la destruction
+      Object.values(layers).forEach(layer => {
+        if (map.hasLayer(layer)) {
+          map.removeLayer(layer);
+        }
+      });
+    };
+  }, [map]);
+
+  useEffect(() => {
+    if (!map || !overlayLayers) return;
+
+    // Gère l'affichage/masquage des couches selon l'état
+    Object.entries(overlayLayers).forEach(([key, layer]) => {
+      if (activeOverlays[key]) {
+        if (!map.hasLayer(layer)) {
+          map.addLayer(layer);
+        }
+      } else {
+        if (map.hasLayer(layer)) {
+          map.removeLayer(layer);
+        }
+      }
+    });
+  }, [map, overlayLayers, activeOverlays]);
+
+  return null;
+};
+
+// Hook pour récupérer la référence de la carte
+const MapController = ({ onMapReady }) => {
+  const map = useMap();
+  
+  useEffect(() => {
+    if (map && onMapReady) {
+      onMapReady(map);
+    }
+  }, [map, onMapReady]);
+
+  return null;
+};
 
 // Composant pour créer des icônes personnalisées selon le risque
 const createCustomIcon = (riskLevel, isLarge = false) => {
@@ -83,6 +189,13 @@ const MapPage = () => {
   const [weatherByCommune, setWeatherByCommune] = useState({});
   const [loading, setLoading] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(0);
+  const [map, setMap] = useState(null);
+  const [showLayerControls, setShowLayerControls] = useState(false);
+  const [activeOverlays, setActiveOverlays] = useState({
+    clouds: false,
+    cloudTemp: false,
+    precipitation: false
+  });
 
   useEffect(() => {
     loadWeatherForCommunes();
@@ -143,6 +256,25 @@ const MapPage = () => {
     navigate('/');
   };
 
+  const handleMapReady = (mapInstance) => {
+    setMap(mapInstance);
+  };
+
+  const toggleOverlay = (overlayKey) => {
+    setActiveOverlays(prev => ({
+      ...prev,
+      [overlayKey]: !prev[overlayKey]
+    }));
+  };
+
+  const toggleAllOverlays = (enabled) => {
+    const newState = {};
+    Object.keys(activeOverlays).forEach(key => {
+      newState[key] = enabled;
+    });
+    setActiveOverlays(newState);
+  };
+
   // Centre de la Guadeloupe pour vue d'ensemble
   const guadeloupeCenter = [16.25, -61.55];
 
@@ -165,6 +297,14 @@ const MapPage = () => {
               <span className="text-xl font-bold text-blue-800">Météo Sentinelle - Carte Interactive</span>
             </div>
             <div className="flex items-center space-x-4">
+              <Button
+                variant="outline"
+                onClick={() => setShowLayerControls(!showLayerControls)}
+                className="hidden sm:flex"
+              >
+                <Layers className="w-4 h-4 mr-2" />
+                Couches NASA
+              </Button>
               <Badge variant="outline" className="hidden sm:flex">
                 <AlertTriangle className="w-3 h-3 mr-1" />
                 {GUADELOUPE_COMMUNES.length} communes • Données NASA
@@ -179,7 +319,7 @@ const MapPage = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-center">
           <Info className="w-4 h-4 text-blue-600 mr-2" />
           <span className="text-blue-800 font-medium">
-            Vue satellite • Cliquez sur une commune pour voir les détails météorologiques et les risques
+            Vue satellite avec couches NASA GIBS • Cliquez sur une commune pour voir les détails météorologiques
           </span>
         </div>
       </div>
@@ -192,11 +332,25 @@ const MapPage = () => {
           style={{ height: '100%', width: '100%' }}
           zoomControl={true}
         >
+          {/* Couche de base satellite */}
           <TileLayer
             attribution='Satellite imagery © <a href="https://www.google.com/maps">Google</a> | <a href="https://meteo-sentinelle.gp">Météo Sentinelle</a>'
             url="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
           />
           
+          {/* Contrôleur de carte pour obtenir la référence */}
+          <MapController onMapReady={handleMapReady} />
+          
+          {/* Contrôleur des couches NASA GIBS */}
+          {map && (
+            <NASAOverlayController 
+              map={map} 
+              activeOverlays={activeOverlays}
+              setActiveOverlays={setActiveOverlays}
+            />
+          )}
+          
+          {/* Markers des communes */}
           {GUADELOUPE_COMMUNES.map((commune, index) => {
             const riskLevel = getCommuneRiskLevel(commune.name);
             const weather = weatherByCommune[commune.name];
@@ -278,6 +432,67 @@ const MapPage = () => {
           })}
         </MapContainer>
 
+        {/* Contrôles des couches NASA GIBS */}
+        {showLayerControls && (
+          <div className="absolute top-6 left-6 bg-white rounded-lg shadow-lg p-4 z-50 min-w-80">
+            <div className="flex justify-between items-center mb-4">
+              <h4 className="font-semibold text-gray-900 flex items-center gap-2">
+                <Layers className="w-5 h-5" />
+                Couches NASA GIBS
+              </h4>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowLayerControls(false)}
+              >
+                ×
+              </Button>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="flex justify-between items-center pb-2 border-b">
+                <span className="text-sm font-medium">Contrôles rapides</span>
+                <div className="flex gap-2">
+                  <Button size="sm" variant="outline" onClick={() => toggleAllOverlays(true)}>
+                    <Eye className="w-3 h-3 mr-1" />
+                    Tout
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => toggleAllOverlays(false)}>
+                    <EyeOff className="w-3 h-3 mr-1" />
+                    Aucun
+                  </Button>
+                </div>
+              </div>
+              
+              {Object.entries(NASA_GIBS_LAYERS).map(([key, config]) => {
+                const IconComponent = config.icon;
+                return (
+                  <div key={key} className="flex items-center justify-between py-2">
+                    <div className="flex items-center gap-3">
+                      <IconComponent className="w-4 h-4 text-blue-600" />
+                      <div>
+                        <div className="font-medium text-sm">{config.name}</div>
+                        <div className="text-xs text-gray-500">{config.description}</div>
+                      </div>
+                    </div>
+                    <Switch
+                      checked={activeOverlays[key]}
+                      onCheckedChange={() => toggleOverlay(key)}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+            
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <p className="text-xs text-gray-500">
+                <Shield className="inline w-3 h-3 mr-1" />
+                Données satellite NASA GIBS • Mise à jour quotidienne
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Légende flottante */}
         <div className="absolute bottom-6 left-6 bg-white rounded-lg shadow-lg p-4 z-50 max-w-xs">
           <h4 className="font-semibold text-gray-900 mb-3">Légende des risques</h4>
@@ -302,7 +517,7 @@ const MapPage = () => {
           <div className="mt-3 pt-3 border-t border-gray-200">
             <p className="text-xs text-gray-600">
               <Shield className="inline w-3 h-3 mr-1" />
-              Vue satellite • Données NASA • Temps réel
+              Vue satellite • Couches NASA GIBS • Temps réel
             </p>
             <p className="text-xs text-gray-500 mt-1">
               {GUADELOUPE_COMMUNES.length} communes de Guadeloupe
@@ -323,6 +538,14 @@ const MapPage = () => {
               <div className="text-xs text-gray-600">Actives</div>
             </div>
           </div>
+          {Object.values(activeOverlays).some(Boolean) && (
+            <div className="mt-3 pt-3 border-t border-gray-200">
+              <p className="text-xs text-gray-500 flex items-center gap-1">
+                <Layers className="w-3 h-3" />
+                {Object.entries(activeOverlays).filter(([k, v]) => v).length} couches actives
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Loading overlay */}
