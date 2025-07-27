@@ -445,11 +445,15 @@ const LandingPage = () => {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20">
+      <section id="features" className="py-20 bg-gradient-to-br from-gray-50 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
+            <div className="inline-flex items-center bg-blue-100 rounded-full px-4 py-2 mb-6">
+              <Brain className="w-5 h-5 text-blue-600 mr-2" />
+              <span className="text-blue-800 font-medium">Intelligence Artificielle</span>
+            </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Une technologie au service de votre sécurité
+              Technologie de pointe au service de votre sécurité
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Météo Sentinelle combine données satellitaires NASA, intelligence artificielle et 
@@ -458,24 +462,64 @@ const LandingPage = () => {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature) => {
+            {features.map((feature, index) => {
               const IconComponent = getFeatureIcon(feature.icon);
               return (
-                <Card key={feature.id} className="feature-card p-6 text-center">
-                  <CardHeader className="pb-4">
-                    <div className="feature-icon w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4">
-                      <IconComponent className="w-8 h-8 text-blue-800" />
+                <Card key={feature.id} className="group relative overflow-hidden bg-white hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-0 shadow-lg">
+                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+                  
+                  <CardHeader className="pb-4 text-center">
+                    <div className="relative">
+                      <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+                        <IconComponent className="w-8 h-8 text-white" />
+                      </div>
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <div className="w-2 h-2 bg-white rounded-full"></div>
+                      </div>
                     </div>
-                    <CardTitle className="text-lg font-semibold text-gray-900">
+                    <CardTitle className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-300">
                       {feature.title}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-gray-600">{feature.description}</p>
+                    <p className="text-gray-600 leading-relaxed">{feature.description}</p>
                   </CardContent>
                 </Card>
               );
             })}
+          </div>
+
+          {/* Nouvelle section IA */}
+          <div className="mt-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-8 md:p-12 text-white">
+            <div className="text-center">
+              <div className="inline-flex items-center bg-white/20 rounded-full px-4 py-2 mb-6">
+                <Brain className="w-5 h-5 mr-2" />
+                <span className="font-medium">IA Prédictive</span>
+              </div>
+              <h3 className="text-2xl md:text-3xl font-bold mb-4">
+                Analyse prédictive des dégâts cycloniques
+              </h3>
+              <p className="text-lg text-blue-100 mb-8 max-w-2xl mx-auto">
+                Notre modèle d'IA analyse humidité, température, pression et vents pour prédire avec précision les dégâts potentiels sur les infrastructures, l'agriculture et la population.
+              </p>
+              <div className="grid md:grid-cols-3 gap-6">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-cyan-300 mb-2">🏗️</div>
+                  <div className="font-semibold">Infrastructure</div>
+                  <div className="text-sm text-blue-200">Bâtiments, routes, réseaux</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-green-300 mb-2">🌾</div>
+                  <div className="font-semibold">Agriculture</div>
+                  <div className="text-sm text-blue-200">Cultures, élevage, équipements</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-yellow-300 mb-2">👥</div>
+                  <div className="font-semibold">Population</div>
+                  <div className="text-sm text-blue-200">Sécurité, évacuation, secours</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
