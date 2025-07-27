@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Cloud, 
   Sun, 
@@ -28,9 +29,9 @@ import { Textarea } from './ui/textarea';
 import { Badge } from './ui/badge';
 import { CachedWeatherService, SubscriptionService, ConfigService } from '../services/weatherService';
 import { useToast } from '../hooks/use-toast';
-import InteractiveMap from './InteractiveMap';
 
 const LandingPage = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -194,6 +195,10 @@ const LandingPage = () => {
     }
   };
 
+  const handleNavigateToMap = () => {
+    navigate('/map');
+  };
+
   // Features statiques (ne nécessitent pas d'API)
   const features = [
     {
@@ -265,7 +270,13 @@ const LandingPage = () => {
             <div className="hidden md:flex space-x-8">
               <a href="#features" className="text-gray-700 hover:text-blue-800 transition-colors">Fonctionnalités</a>
               <a href="#previsions" className="text-gray-700 hover:text-blue-800 transition-colors">Prévisions</a>
-              <a href="#carte" className="text-gray-700 hover:text-blue-800 transition-colors">Carte</a>
+              <Button 
+                variant="ghost" 
+                onClick={handleNavigateToMap}
+                className="text-gray-700 hover:text-blue-800 transition-colors"
+              >
+                Carte Interactive
+              </Button>
               <a href="#temoignages" className="text-gray-700 hover:text-blue-800 transition-colors">Témoignages</a>
               <a href="#contact" className="text-gray-700 hover:text-blue-800 transition-colors">Contact</a>
             </div>
@@ -286,8 +297,9 @@ const LandingPage = () => {
               Pensé pour les territoires exposés, conçu pour sauver des vies.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button size="lg" className="btn-primary text-lg px-8 py-4" onClick={() => document.getElementById('contact').scrollIntoView()}>
-                Recevoir les alertes <ChevronRight className="ml-2 w-5 h-5" />
+              <Button size="lg" className="btn-primary text-lg px-8 py-4" onClick={handleNavigateToMap}>
+                <Map className="ml-2 w-5 h-5 mr-2" />
+                Carte Interactive <ChevronRight className="ml-2 w-5 h-5" />
               </Button>
               <Button variant="outline" size="lg" className="btn-secondary text-lg px-8 py-4" onClick={() => document.getElementById('contact').scrollIntoView()}>
                 Demander un accès bêta
@@ -383,7 +395,7 @@ const LandingPage = () => {
               <span className="ml-3 text-lg text-gray-600">Chargement des données météo NASA...</span>
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
               {weatherData && weatherData.map((day) => {
                 const IconComponent = getWeatherIcon(day.icon);
                 return (
@@ -416,27 +428,23 @@ const LandingPage = () => {
               })}
             </div>
           )}
-        </div>
-      </section>
-
-      {/* Interactive Map Section */}
-      <section id="carte" className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Carte interactive des risques
-            </h2>
-            <p className="text-lg text-gray-600">
-              Explorez chaque commune de la Guadeloupe et découvrez les risques météorologiques en temps réel
-            </p>
-          </div>
           
-          <InteractiveMap />
+          <div className="text-center">
+            <Button 
+              size="lg" 
+              onClick={handleNavigateToMap}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4"
+            >
+              <Map className="w-5 h-5 mr-2" />
+              Explorer toutes les communes sur la carte
+              <ChevronRight className="w-5 h-5 ml-2" />
+            </Button>
+          </div>
         </div>
       </section>
 
       {/* Testimonials Section */}
-      <section id="temoignages" className="py-20 bg-gray-50">
+      <section id="temoignages" className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -541,7 +549,7 @@ const LandingPage = () => {
                 <li><a href="#" className="hover:text-white">Prévisions météo</a></li>
                 <li><a href="#" className="hover:text-white">Alertes SMS</a></li>
                 <li><a href="#" className="hover:text-white">API professionnelle</a></li>
-                <li><a href="#" className="hover:text-white">Données satellite</a></li>
+                <li><Button variant="link" className="p-0 h-auto text-sm text-gray-300 hover:text-white" onClick={handleNavigateToMap}>Carte interactive</Button></li>
               </ul>
             </div>
             
