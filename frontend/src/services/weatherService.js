@@ -1,0 +1,284 @@
+import axios from 'axios';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
+
+// Weather API Service
+export class WeatherService {
+  
+  // Récupère la météo d'une commune
+  static async getWeatherByCommune(commune) {
+    try {
+      const response = await axios.get(`${API}/weather/${encodeURIComponent(commune)}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching weather for ${commune}:`, error);
+      throw error;
+    }
+  }
+  
+  // Récupère la météo de plusieurs communes
+  static async getWeatherMultipleCommunes(communes) {
+    try {
+      const communesStr = communes.join(',');
+      const response = await axios.get(`${API}/weather/multiple/${encodeURIComponent(communesStr)}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching weather for multiple communes:', error);
+      throw error;
+    }
+  }
+  
+  // Récupère les statistiques météo globales
+  static async getWeatherStats() {
+    try {
+      const response = await axios.get(`${API}/weather/stats`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching weather stats:', error);
+      throw error;
+    }
+  }
+  
+  // Récupère les alertes actives
+  static async getActiveAlerts() {
+    try {
+      const response = await axios.get(`${API}/alerts`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching alerts:', error);
+      throw error;
+    }
+  }
+  
+  // Récupère les alertes d'une commune
+  static async getAlertsByCommune(commune) {
+    try {
+      const response = await axios.get(`${API}/alerts/${encodeURIComponent(commune)}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching alerts for ${commune}:`, error);
+      throw error;
+    }
+  }
+  
+  // Récupère une image satellite
+  static async getSatelliteImage(request) {
+    try {
+      const response = await axios.post(`${API}/satellite/image`, request);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching satellite image:', error);
+      throw error;
+    }
+  }
+  
+  // Récupère les couches satellite disponibles
+  static async getSatelliteLayers() {
+    try {
+      const response = await axios.get(`${API}/satellite/layers`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching satellite layers:', error);
+      throw error;
+    }
+  }
+}
+
+// Subscription API Service  
+export class SubscriptionService {
+  
+  // Inscription utilisateur
+  static async subscribeUser(subscriptionData) {
+    try {
+      const response = await axios.post(`${API}/subscribe`, subscriptionData);
+      return response.data;
+    } catch (error) {
+      console.error('Error subscribing user:', error);
+      throw error;
+    }
+  }
+  
+  // Demande de contact
+  static async sendContactRequest(contactData) {
+    try {
+      const response = await axios.post(`${API}/contact`, contactData);
+      return response.data;
+    } catch (error) {
+      console.error('Error sending contact request:', error);
+      throw error;
+    }
+  }
+  
+  // Désabonnement
+  static async unsubscribeUser(unsubscribeData) {
+    try {
+      const response = await axios.post(`${API}/unsubscribe`, unsubscribeData);
+      return response.data;
+    } catch (error) {
+      console.error('Error unsubscribing user:', error);
+      throw error;
+    }
+  }
+  
+  // Statistiques abonnements
+  static async getSubscriptionStats() {
+    try {
+      const response = await axios.get(`${API}/subscribers/stats`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching subscription stats:', error);
+      throw error;
+    }
+  }
+}
+
+// Config API Service
+export class ConfigService {
+  
+  // Récupère la liste des communes
+  static async getCommunes() {
+    try {
+      const response = await axios.get(`${API}/config/communes`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching communes:', error);
+      throw error;
+    }
+  }
+  
+  // Récupère les types d'alertes
+  static async getAlertTypes() {
+    try {
+      const response = await axios.get(`${API}/config/alert-types`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching alert types:', error);
+      throw error;
+    }
+  }
+  
+  // Status API
+  static async getApiStatus() {
+    try {
+      const response = await axios.get(`${API}/status`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching API status:', error);
+      throw error;
+    }
+  }
+}
+
+// Utilitaires pour le cache client
+export class CacheUtils {
+  
+  static CACHE_DURATION = 5 * 60 * 1000; // 5 minutes en milliseconds
+  
+  // Sauvegarde en localStorage avec timestamp
+  static setCache(key, data) {
+    const cacheData = {
+      data,
+      timestamp: Date.now()
+    };
+    localStorage.setItem(`meteo_cache_${key}`, JSON.stringify(cacheData));
+  }
+  
+  // Récupère depuis localStorage avec vérification expiration
+  static getCache(key) {
+    try {
+      const cached = localStorage.getItem(`meteo_cache_${key}`);
+      if (!cached) return null;
+      
+      const { data, timestamp } = JSON.parse(cached);
+      
+      // Vérifie si le cache a expiré
+      if (Date.now() - timestamp > this.CACHE_DURATION) {
+        localStorage.removeItem(`meteo_cache_${key}`);
+        return null;
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Cache retrieval error:', error);
+      return null;
+    }
+  }
+  
+  // Nettoie le cache expiré
+  static cleanExpiredCache() {
+    const keys = Object.keys(localStorage);
+    keys.forEach(key => {
+      if (key.startsWith('meteo_cache_')) {
+        try {
+          const cached = JSON.parse(localStorage.getItem(key));
+          if (Date.now() - cached.timestamp > this.CACHE_DURATION) {
+            localStorage.removeItem(key);
+          }
+        } catch (error) {
+          localStorage.removeItem(key); // Supprime les entrées corrompues
+        }
+      }
+    });
+  }
+}
+
+// Service météo avec cache côté client
+export class CachedWeatherService {
+  
+  // Récupère météo avec cache client pour améliorer performance
+  static async getWeatherWithCache(commune) {
+    const cacheKey = `weather_${commune}`;
+    
+    // Essaie d'abord le cache
+    const cached = CacheUtils.getCache(cacheKey);
+    if (cached) {
+      console.log(`Weather served from client cache for ${commune}`);
+      return cached;
+    }
+    
+    // Sinon, appel API
+    try {
+      const data = await WeatherService.getWeatherByCommune(commune);
+      CacheUtils.setCache(cacheKey, data);
+      console.log(`Weather fetched from API and cached for ${commune}`);
+      return data;
+    } catch (error) {
+      console.error(`Failed to fetch weather for ${commune}:`, error);
+      throw error;
+    }
+  }
+  
+  // Récupère prévisions multiples avec cache
+  static async getMultipleWeatherWithCache(communes) {
+    const promises = communes.map(commune => this.getWeatherWithCache(commune));
+    const results = await Promise.allSettled(promises);
+    
+    const successfulResults = {};
+    results.forEach((result, index) => {
+      if (result.status === 'fulfilled') {
+        successfulResults[communes[index]] = result.value;
+      } else {
+        console.error(`Failed to get weather for ${communes[index]}:`, result.reason);
+      }
+    });
+    
+    return successfulResults;
+  }
+  
+  // Force refresh (bypass cache)
+  static async forceRefreshWeather(commune) {
+    const cacheKey = `weather_${commune}`;
+    localStorage.removeItem(`meteo_cache_${cacheKey}`);
+    return await this.getWeatherWithCache(commune);
+  }
+}
+
+// Export par défaut
+export default {
+  WeatherService,
+  SubscriptionService,
+  ConfigService,
+  CachedWeatherService,
+  CacheUtils
+};
