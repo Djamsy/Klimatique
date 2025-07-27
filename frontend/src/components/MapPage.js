@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
-import { Card, CardContent } from './ui/card';
+import { Card, CardContent, CardHeader } from './ui/card';
 import { Switch } from './ui/switch';
 import { CachedWeatherService, CycloneAIService } from '../services/weatherService';
 import { GUADELOUPE_COMMUNES } from '../data/communesData';
