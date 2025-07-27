@@ -274,6 +274,61 @@ export class CachedWeatherService {
   }
 }
 
+// Weather Overlay Service
+export class WeatherOverlayService {
+  
+  // Services Overlays Météo
+  static async getCloudsOverlay() {
+    try {
+      const response = await axios.get(`${API}/weather/overlay/clouds`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching clouds overlay:', error);
+      throw error;
+    }
+  }
+
+  static async getPrecipitationOverlay() {
+    try {
+      const response = await axios.get(`${API}/weather/overlay/precipitation`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching precipitation overlay:', error);
+      throw error;
+    }
+  }
+
+  static async getRadarOverlay() {
+    try {
+      const response = await axios.get(`${API}/weather/overlay/radar`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching radar overlay:', error);
+      throw error;
+    }
+  }
+
+  static async getPluviometerData(commune) {
+    try {
+      const response = await axios.get(`${API}/weather/pluviometer/${encodeURIComponent(commune)}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching pluviometer data:', error);
+      throw error;
+    }
+  }
+
+  static async getCacheStats() {
+    try {
+      const response = await axios.get(`${API}/cache/stats`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching cache stats:', error);
+      throw error;
+    }
+  }
+}
+
 // AI Cyclone Prediction Service
 export class CycloneAIService {
   
