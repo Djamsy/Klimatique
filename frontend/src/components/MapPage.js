@@ -260,13 +260,13 @@ const MapPage = () => {
       <div className="flex-1 relative">
         <MapContainer
           center={guadeloupeCenter}
-          zoom={10}
+          zoom={9}
           style={{ height: '100%', width: '100%' }}
           zoomControl={true}
         >
           <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | <a href="https://meteo-sentinelle.gp">Météo Sentinelle</a>'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='Satellite imagery © <a href="https://www.google.com/maps">Google</a> | <a href="https://meteo-sentinelle.gp">Météo Sentinelle</a>'
+            url="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
           />
           
           {GUADELOUPE_COMMUNES.map((commune, index) => {
