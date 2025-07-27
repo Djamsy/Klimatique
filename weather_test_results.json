@@ -1,0 +1,160 @@
+{
+  "total_tests": 30,
+  "passed": 29,
+  "failed": 1,
+  "errors": [
+    "Prévisions Précipitations: Status 503: {\"detail\":\"Service prévisions indisponible\"}"
+  ],
+  "detailed_results": {
+    "Intégration OpenWeatherMap": {
+      "success": true,
+      "details": "Données météo OK pour Pointe-à-Pitre",
+      "timestamp": "2025-07-27T22:57:13.695878"
+    },
+    "Cache Stats": {
+      "success": true,
+      "details": "Usage: 62/1000, Efficiency: 6.2%",
+      "timestamp": "2025-07-27T22:57:13.712300"
+    },
+    "Overlay Nuages": {
+      "success": true,
+      "details": "Source: cache",
+      "timestamp": "2025-07-27T22:57:13.725222"
+    },
+    "Overlay Précipitations": {
+      "success": true,
+      "details": "Source: cache",
+      "timestamp": "2025-07-27T22:57:13.776268"
+    },
+    "Overlay Radar": {
+      "success": true,
+      "details": "Source: cache",
+      "timestamp": "2025-07-27T22:57:13.786241"
+    },
+    "Prévisions Précipitations": {
+      "success": false,
+      "details": "Status 503: {\"detail\":\"Service prévisions indisponible\"}",
+      "timestamp": "2025-07-27T22:57:14.024275"
+    },
+    "Cache Météo - Pointe-à-Pitre": {
+      "success": true,
+      "details": "Données en cache pour Pointe-à-Pitre",
+      "timestamp": "2025-07-27T22:57:14.034882"
+    },
+    "Cache Météo - Basse-Terre": {
+      "success": true,
+      "details": "Données en cache pour Basse-Terre",
+      "timestamp": "2025-07-27T22:57:14.046434"
+    },
+    "Cache Météo - Sainte-Anne": {
+      "success": true,
+      "details": "Données en cache pour Sainte-Anne",
+      "timestamp": "2025-07-27T22:57:14.098594"
+    },
+    "Pluviomètre - Pointe-à-Pitre": {
+      "success": true,
+      "details": "Précip: 0.18mm, Intensité: faible, Total jour: 0mm",
+      "timestamp": "2025-07-27T22:57:14.448750"
+    },
+    "Pluviomètre - Basse-Terre": {
+      "success": true,
+      "details": "Précip: 0mm, Intensité: nulle, Total jour: 0mm",
+      "timestamp": "2025-07-27T22:57:14.807877"
+    },
+    "Pluviomètre - Sainte-Anne": {
+      "success": true,
+      "details": "Précip: 0.26mm, Intensité: faible, Total jour: 0mm",
+      "timestamp": "2025-07-27T22:57:15.092991"
+    },
+    "Info Modèle IA": {
+      "success": true,
+      "details": "Type: Random Forest Regressor, Entraîné: True",
+      "timestamp": "2025-07-27T22:57:15.143836"
+    },
+    "Re-entraînement IA": {
+      "success": true,
+      "details": "Message: Modèle IA re-entraîné avec succès",
+      "timestamp": "2025-07-27T22:57:26.310625"
+    },
+    "Risque Global": {
+      "success": true,
+      "details": "Risk: faible, Communes affectées: 0",
+      "timestamp": "2025-07-27T22:57:28.167530"
+    },
+    "Prédiction IA - Pointe-à-Pitre": {
+      "success": true,
+      "details": "Risk: faible, Score: 8.8",
+      "timestamp": "2025-07-27T22:57:28.387607"
+    },
+    "Timeline IA - Pointe-à-Pitre": {
+      "success": true,
+      "details": "Timeline avec 4 prédictions",
+      "timestamp": "2025-07-27T22:57:28.584965"
+    },
+    "Historique - Pointe-à-Pitre": {
+      "success": true,
+      "details": "3 événements historiques",
+      "timestamp": "2025-07-27T22:57:28.633793"
+    },
+    "Prédiction IA - Basse-Terre": {
+      "success": true,
+      "details": "Risk: faible, Score: 7.8",
+      "timestamp": "2025-07-27T22:57:28.814498"
+    },
+    "Timeline IA - Basse-Terre": {
+      "success": true,
+      "details": "Timeline avec 4 prédictions",
+      "timestamp": "2025-07-27T22:57:29.010789"
+    },
+    "Historique - Basse-Terre": {
+      "success": true,
+      "details": "3 événements historiques",
+      "timestamp": "2025-07-27T22:57:29.019092"
+    },
+    "Prédiction IA - Sainte-Anne": {
+      "success": true,
+      "details": "Risk: faible, Score: 12.4",
+      "timestamp": "2025-07-27T22:57:29.239950"
+    },
+    "Timeline IA - Sainte-Anne": {
+      "success": true,
+      "details": "Timeline avec 4 prédictions",
+      "timestamp": "2025-07-27T22:57:29.436388"
+    },
+    "Historique - Sainte-Anne": {
+      "success": true,
+      "details": "3 événements historiques",
+      "timestamp": "2025-07-27T22:57:29.444680"
+    },
+    "Prédiction IA - Le Moule": {
+      "success": true,
+      "details": "Risk: faible, Score: 12.4",
+      "timestamp": "2025-07-27T22:57:29.656994"
+    },
+    "Timeline IA - Le Moule": {
+      "success": true,
+      "details": "Timeline avec 4 prédictions",
+      "timestamp": "2025-07-27T22:57:29.852473"
+    },
+    "Historique - Le Moule": {
+      "success": true,
+      "details": "3 événements historiques",
+      "timestamp": "2025-07-27T22:57:29.862656"
+    },
+    "Prédiction IA - Marie-Galante": {
+      "success": true,
+      "details": "Risk: faible, Score: 12.0",
+      "timestamp": "2025-07-27T22:57:30.074385"
+    },
+    "Timeline IA - Marie-Galante": {
+      "success": true,
+      "details": "Timeline avec 4 prédictions",
+      "timestamp": "2025-07-27T22:57:30.275721"
+    },
+    "Historique - Marie-Galante": {
+      "success": true,
+      "details": "3 événements historiques",
+      "timestamp": "2025-07-27T22:57:30.284988"
+    }
+  }
+}
