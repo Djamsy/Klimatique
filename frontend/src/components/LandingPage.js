@@ -62,12 +62,17 @@ const LandingPage = () => {
   const loadInitialData = async () => {
     try {
       // Charge la configuration et la météo en parallèle
-      const [communesData, weatherResults] = await Promise.all([
+      const [communesData, weatherResults, globalRiskData] = await Promise.all([
         ConfigService.getCommunes(),
-        CachedWeatherService.getMultipleWeatherWithCache(mainCommunes)
+        CachedWeatherService.getMultipleWeatherWithCache(mainCommunes),
+        CycloneAIService.getGlobalCycloneRisk().catch(error => {
+          console.error('Error loading global risk:', error);
+          return null;
+        })
       ]);
       
       setCommunes(communesData.communes || []);
+      setGlobalRisk(globalRiskData);
       
       // Transforme les données météo pour l'affichage
       const transformedWeather = Object.entries(weatherResults).map(([commune, data]) => {
