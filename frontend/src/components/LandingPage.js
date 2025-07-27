@@ -71,17 +71,27 @@ const LandingPage = () => {
   const loadInitialData = async () => {
     try {
       // Charge la configuration et la météo en parallèle
-      const [communesData, weatherResults, globalRiskData] = await Promise.all([
+      const [communesData, weatherResults, globalRiskData, vigilanceResponse] = await Promise.all([
         ConfigService.getCommunes(),
         CachedWeatherService.getMultipleWeatherWithCache(mainCommunes),
         CycloneAIService.getGlobalCycloneRisk().catch(error => {
           console.error('Error loading global risk:', error);
+          return null;
+        }),
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/api/vigilance/guadeloupe`).catch(error => {
+          console.error('Error loading vigilance:', error);
           return null;
         })
       ]);
       
       setCommunes(communesData.communes || []);
       setGlobalRisk(globalRiskData);
+      
+      // Traitement des données de vigilance
+      if (vigilanceResponse && vigilanceResponse.ok) {
+        const vigilanceData = await vigilanceResponse.json();
+        setVigilanceData(vigilanceData);
+      }
       
       // Transforme les données météo pour l'affichage
       const transformedWeather = Object.entries(weatherResults).map(([commune, data]) => {
