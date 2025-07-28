@@ -33,6 +33,7 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/map" element={<MapPage />} />
           <Route path="/commune/:slug" element={<CommunePage />} />
+          <Route path="/demo" element={<WeatherAnimationDemo />} />
         </Routes>
         <Toaster />
       </BrowserRouter>
