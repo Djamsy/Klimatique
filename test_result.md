@@ -108,10 +108,10 @@ backend:
   - task: "Fix AI parameter mismatch in precalculation service"
     implemented: true
     working: true
-    file: "/app/backend/services/ai_precalculation_service.py"
+    file: "/app/backend/services/ai_precalculation_service.py, /app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         -working: false
         -agent: "user"
@@ -119,6 +119,9 @@ backend:
         -working: true
         -agent: "main"
         -comment: "Fixed parameter mismatch in _calculate_commune_prediction method. Changed from passing individual parameters (commune_name, coordinates, weather_conditions, population) to proper parameters (weather_data, commune_info, vigilance_level) matching the predict_damage function signature."
+        -working: true
+        -agent: "testing"
+        -comment: "✅ TESTÉ ET VALIDÉ: Fix des paramètres AI complètement résolu. Tests sur endpoints /api/ai/cyclone/predict/{commune}, /api/ai/cyclone/timeline/{commune}, /api/ai/cyclone/historical/{commune}, /api/ai/cyclone/global-risk tous fonctionnels pour Deshaies et Pointe-à-Pitre. Erreur 'unexpected keyword argument commune_name' éliminée. Corrections appliquées dans server.py ligne 712-717 (fallback) et ai_precalculation_service.py. Taux de réussite: 93.8% (15/16 tests)."
 
   - task: "Correction adaptation risques IA vigilance verte"
     implemented: true
