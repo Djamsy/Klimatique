@@ -71,6 +71,7 @@ body {
   .custom-marker {
     cursor: pointer !important;
     touch-action: manipulation !important;
+    -webkit-tap-highlight-color: transparent;
   }
   
   /* Contrôles zoom mobiles */
@@ -82,6 +83,23 @@ body {
   .leaflet-control-attribution {
     font-size: 10px !important;
     opacity: 0.7 !important;
+  }
+
+  /* Panneau de contrôle des calques mobile */
+  .layers-control-panel {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  
+  /* Éviter les conflits entre popups et contrôles */
+  .leaflet-popup-pane {
+    z-index: 700 !important;
+  }
+  
+  /* Améliorer le toucher des switches */
+  .mobile-switch {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 }
 
