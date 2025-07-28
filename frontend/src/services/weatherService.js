@@ -347,40 +347,51 @@ export class CycloneAIService {
   // Services IA Prédictive Cyclonique
   static async getCyclonePrediction(commune) {
     try {
-      const response = await axios.get(`${API}/ai/cyclone/predict/${encodeURIComponent(commune)}`);
+      console.log('🚀 Calling API:', `${API}/ai/cyclone/predict/${encodeURIComponent(commune)}`);
+      const response = await axios.get(`${API}/ai/cyclone/predict/${encodeURIComponent(commune)}`, axiosConfig);
+      console.log('✅ Response received:', response.status);
       return response.data;
     } catch (error) {
-      console.error('Error fetching cyclone prediction:', error);
+      console.error('❌ Error fetching cyclone prediction:', error);
+      console.error('❌ Error details:', {
+        url: `${API}/ai/cyclone/predict/${encodeURIComponent(commune)}`,
+        message: error.message,
+        status: error.response?.status,
+        statusText: error.response?.statusText
+      });
       throw error;
     }
   }
 
   static async getCycloneTimeline(commune) {
     try {
-      const response = await axios.get(`${API}/ai/cyclone/timeline/${encodeURIComponent(commune)}`);
+      console.log('🚀 Calling API:', `${API}/ai/cyclone/timeline/${encodeURIComponent(commune)}`);
+      const response = await axios.get(`${API}/ai/cyclone/timeline/${encodeURIComponent(commune)}`, axiosConfig);
       return response.data;
     } catch (error) {
-      console.error('Error fetching cyclone timeline:', error);
+      console.error('❌ Error fetching cyclone timeline:', error);
       throw error;
     }
   }
 
   static async getHistoricalDamage(commune) {
     try {
-      const response = await axios.get(`${API}/ai/cyclone/historical/${encodeURIComponent(commune)}`);
+      console.log('🚀 Calling API:', `${API}/ai/cyclone/historical/${encodeURIComponent(commune)}`);
+      const response = await axios.get(`${API}/ai/cyclone/historical/${encodeURIComponent(commune)}`, axiosConfig);
       return response.data;
     } catch (error) {
-      console.error('Error fetching historical damage:', error);
+      console.error('❌ Error fetching historical damage:', error);
       throw error;
     }
   }
 
   static async getGlobalCycloneRisk() {
     try {
-      const response = await axios.get(`${API}/ai/cyclone/global-risk`);
+      console.log('🚀 Calling API:', `${API}/ai/cyclone/global-risk`);
+      const response = await axios.get(`${API}/ai/cyclone/global-risk`, axiosConfig);
       return response.data;
     } catch (error) {
-      console.error('Error fetching global cyclone risk:', error);
+      console.error('❌ Error fetching global cyclone risk:', error);
       throw error;
     }
   }
