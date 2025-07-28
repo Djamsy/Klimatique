@@ -207,6 +207,17 @@ const MapPage = () => {
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [map, setMap] = useState(null);
   const [showLayerControls, setShowLayerControls] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  // Détection redimensionnement écran
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const [showPluviometer, setShowPluviometer] = useState(false);
   const [selectedCommune, setSelectedCommune] = useState(null);
   const [activeOverlays, setActiveOverlays] = useState({
