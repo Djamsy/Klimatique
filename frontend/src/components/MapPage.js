@@ -767,86 +767,106 @@ const MapPage = () => {
         )}
 
       {/* Panneau IA Cyclonique - En haut à droite */}
-      {!isMobile && globalRisk && showGlobalRisk && (
+      {!isMobile && (
         <div className="absolute top-6 right-6 bg-white rounded-lg shadow-lg p-4 z-50 min-w-80">
-          <div className="flex items-center justify-between mb-3">
-            <h4 className="font-semibold text-gray-900 flex items-center gap-2">
-              <Brain className="w-5 h-5 text-blue-600" />
-              IA Cyclonique
-            </h4>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowGlobalRisk(false)}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              <EyeOff className="w-4 h-4" />
-            </Button>
-          </div>
-          
-          <div className="space-y-3">
-            <div className="flex items-center justify-between pb-2 border-b">
-              <span className="text-sm font-medium">Risque Global</span>
-              <Badge 
-                className="text-xs px-2 py-1"
-                style={{ 
-                  backgroundColor: getRiskColor(globalRisk.global_risk_level) + '20',
-                  color: getRiskColor(globalRisk.global_risk_level),
-                  border: `1px solid ${getRiskColor(globalRisk.global_risk_level)}60`
-                }}
-              >
-                {globalRisk.global_risk_level}
-              </Badge>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-3 text-center">
-              <div>
-                <div className="text-xl font-bold text-orange-600">{globalRisk.high_risk_count}</div>
-                <div className="text-xs text-gray-600">Risque élevé</div>
+          {globalRisk && showGlobalRisk ? (
+            <>
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="font-semibold text-gray-900 flex items-center gap-2">
+                  <Brain className="w-5 h-5 text-blue-600" />
+                  IA Cyclonique
+                </h4>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowGlobalRisk(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <EyeOff className="w-4 h-4" />
+                </Button>
               </div>
-              <div>
-                <div className="text-xl font-bold text-red-600">{globalRisk.critical_risk_count}</div>
-                <div className="text-xs text-gray-600">Critique</div>
-              </div>
-            </div>
-            
-            {globalRisk.affected_communes?.length > 0 && (
-              <div className="mt-3 pt-3 border-t border-gray-200">
-                <p className="text-xs font-medium text-gray-700 mb-1">Communes à risque:</p>
-                <div className="flex flex-wrap gap-1">
-                  {globalRisk.affected_communes.slice(0, 3).map((commune, index) => (
-                    <span key={index} className="text-xs bg-orange-100 text-orange-800 px-1 py-0.5 rounded">
-                      {commune}
-                    </span>
-                  ))}
-                  {globalRisk.affected_communes.length > 3 && (
-                    <span className="text-xs text-gray-500">+{globalRisk.affected_communes.length - 3}</span>
-                  )}
+              
+              <div className="space-y-3">
+                <div className="flex items-center justify-between pb-2 border-b">
+                  <span className="text-sm font-medium">Risque Global</span>
+                  <Badge 
+                    className="text-xs px-2 py-1"
+                    style={{ 
+                      backgroundColor: getRiskColor(globalRisk.global_risk_level) + '20',
+                      color: getRiskColor(globalRisk.global_risk_level),
+                      border: `1px solid ${getRiskColor(globalRisk.global_risk_level)}60`
+                    }}
+                  >
+                    {globalRisk.global_risk_level}
+                  </Badge>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-3 text-center">
+                  <div>
+                    <div className="text-xl font-bold text-orange-600">{globalRisk.high_risk_count}</div>
+                    <div className="text-xs text-gray-600">Risque élevé</div>
+                  </div>
+                  <div>
+                    <div className="text-xl font-bold text-red-600">{globalRisk.critical_risk_count}</div>
+                    <div className="text-xs text-gray-600">Critique</div>
+                  </div>
+                </div>
+                
+                {globalRisk.affected_communes?.length > 0 && (
+                  <div className="mt-3 pt-3 border-t border-gray-200">
+                    <p className="text-xs font-medium text-gray-700 mb-1">Communes à risque:</p>
+                    <div className="flex flex-wrap gap-1">
+                      {globalRisk.affected_communes.slice(0, 3).map((commune, index) => (
+                        <span key={index} className="text-xs bg-orange-100 text-orange-800 px-1 py-0.5 rounded">
+                          {commune}
+                        </span>
+                      ))}
+                      {globalRisk.affected_communes.length > 3 && (
+                        <span className="text-xs text-gray-500">+{globalRisk.affected_communes.length - 3}</span>
+                      )}
+                    </div>
+                  </div>
+                )}
+                
+                <div className="mt-3 pt-3 border-t border-gray-200">
+                  <p className="text-xs text-gray-500 flex items-center gap-1">
+                    <Brain className="w-3 h-3" />
+                    IA Prédictive • {new Date(globalRisk.last_analysis).toLocaleTimeString('fr-FR')}
+                  </p>
                 </div>
               </div>
-            )}
-            
-            <div className="mt-3 pt-3 border-t border-gray-200">
-              <p className="text-xs text-gray-500 flex items-center gap-1">
-                <Brain className="w-3 h-3" />
-                IA Prédictive • {new Date(globalRisk.last_analysis).toLocaleTimeString('fr-FR')}
-              </p>
+            </>
+          ) : (
+            /* État de chargement IA */
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="font-semibold text-gray-900 flex items-center gap-2">
+                  <Brain className="w-5 h-5 text-blue-600" />
+                  IA Cyclonique
+                </h4>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowGlobalRisk(!showGlobalRisk)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <Eye className="w-4 h-4" />
+                </Button>
+              </div>
+              
+              {!globalRisk ? (
+                <div className="flex items-center justify-center py-6">
+                  <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
+                  <span className="ml-2 text-sm text-gray-600">Chargement IA...</span>
+                </div>
+              ) : (
+                <div className="text-center py-4">
+                  <Brain className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                  <p className="text-sm text-gray-600">Cliquez sur l'œil pour afficher</p>
+                </div>
+              )}
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* Bouton toggle IA quand panneau fermé */}
-      {!isMobile && !showGlobalRisk && (
-        <div className="absolute top-6 right-6 z-50">
-          <Button
-            onClick={() => setShowGlobalRisk(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg"
-            size="sm"
-          >
-            <Brain className="w-4 h-4 mr-2" />
-            IA
-          </Button>
+          )}
         </div>
       )}
       </div>
