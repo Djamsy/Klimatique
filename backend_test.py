@@ -868,7 +868,16 @@ class BackendTester:
         for commune in TEST_COMMUNES:
             await self.test_weather_service_backup_integration(commune)
         
-        # 4. Tests robustesse générale
+        # 4. Tests consistance données météo multi-communes (NOUVEAU - FOCUS PRINCIPAL)
+        print("\n🌤️ Tests consistance données météo multi-communes...")
+        for commune in TEST_COMMUNES:
+            await self.test_weather_data_variation_single_commune(commune)
+        
+        await self.test_weather_data_diversity_across_communes()
+        await self.test_nasa_api_fixes_working()
+        await self.test_realistic_weather_values_all_communes()
+        
+        # 5. Tests robustesse générale
         print("\n🔧 Tests robustesse générale...")
         await self.test_api_status()
         await self.test_service_initialization()
