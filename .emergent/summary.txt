@@ -1,71 +1,75 @@
 <analysis>
-The previous AI engineer brought Météo Sentinelle to a more refined state, expanding on core weather functionalities and AI predictions. Initial work established the React/FastAPI/MongoDB stack with various weather API integrations. Recent efforts primarily focused on addressing user-reported bugs and feature enhancements. This included resolving a persistent cloud overlay bug on the map by modifying frontend rendering logic. Following this, the engineer undertook a site-wide renaming from Météo Sentinelle to Klimaclique and corrected map alignment issues. Subsequent tasks involved adding general UI animations to the homepage and implementing dynamic weather animations (sun, rain, lightning, hurricane) based on AI analysis. A preview page for orange vigilance was also created. A significant portion of the recent work revolved around debugging data inconsistencies: addressing destructive winds and 20% damage alerts, which were traced to incorrect mock data generation and a faulty NASA API response that led to uniform, unrealistic forecasts. The engineer fixed these by adjusting mock data generation, ensuring proper fallback mechanisms, and clearing the cache, leading to varied and realistic weather forecasts.
+The previous AI engineer successfully brought Météo Sentinelle (now Klimaclique) from an MVP to a more stable state. Initial work focused on fixing core bugs like the cloud overlay and map alignment, then implementing UI enhancements such as site-wide renaming, homepage animations, and dynamic weather animations. A significant achievement was resolving inconsistent weather forecasts by correcting mock data generation and improving NASA API fallback mechanisms. The current trajectory shows the engineer primarily addressing user requests for active user count, dynamic testimonials, and extensive mobile responsiveness for both the homepage and the interactive map. The most recent and challenging task has been refactoring the AI prediction system to precompute data hourly due to performance issues on the deployed environment. This refactor introduced new bugs, primarily incorrect function parameters for the AI model and a recurring white page error, which is the immediate focus.
 </analysis>
 
 <product_requirements>
-Météo Sentinelle (now Klimaclique) is a Guadeloupe-focused weather tool for natural risk anticipation. It provides 5-day forecasts, SMS/email alerts for extreme events, interactive maps with wind, rain, and temperature data, and local data integration. The application aims for a serious, modern aesthetic with deep blue, white, and orange. Initially an MVP with React, FastAPI, and MongoDB, it integrated NASA and OpenWeatherMap. Features added include: a cyclonic damage prediction AI (global/commune-specific) with dynamic risk adaptation based on Météo France vigilance levels, an enhanced landing page with advertisement sections, intelligent caching, and pluviometer views. Recent work addressed cloud overlay display issues, AI prediction consistency (especially for green vigilance), API quota management, Facebook/Twitter integration, robust weather data backup, and the addition/refinement of ad sections. The user explicitly requested site renaming to Klimaclique, homepage animations, dynamic weather animations based on AI, and a preview for orange vigilance. Ongoing issues with unrealistic wind data and identical 5-day forecasts were reported and addressed.
+Klimaclique (formerly Météo Sentinelle) is a Guadeloupe-focused natural risk anticipation application providing 5-day weather forecasts, alerts (SMS/email), and interactive maps with wind, rain, and temperature data. It emphasizes a serious, modern design with deep blue, white, and orange. Built on React, FastAPI, and MongoDB, it integrates NASA and OpenWeatherMap APIs. Key features include an AI-driven cyclonic damage prediction (global and commune-specific), an enhanced landing page with ad sections, intelligent caching, and pluviometer views. User requests have driven recent development, including renaming the app, adding homepage animations, dynamic weather animations based on AI vigilance, and a preview for orange vigilance. Post-handover, the user explicitly requested implementing an active user counter, dynamic and anonymous testimonials with submission capability, and comprehensive mobile interface adjustments for both the homepage (including the new features) and the interactive map. The latest critical request involves precomputing AI predictions offline hourly to improve performance, as current live predictions cause timeouts.
 </product_requirements>
 
 <key_technical_concepts>
-- **Full-Stack Architecture**: React, FastAPI, MongoDB.
-- **API Integration**: NASA GIBS, OpenWeatherMap, Météo France, Twitter API v2, Facebook Graph API.
-- **Data Management**: Intelligent caching, multi-level fallback system, API quota management, data backup.
-- **AI/ML**: RandomForestRegressor for cyclonic damage prediction, dynamic risk adaptation.
-- **Interactive Mapping**: Leaflet.js, custom tile overlays.
-- **Dynamic UI/UX**: Adaptive theming (based on vigilance), dynamic weather animations, modern UI components (Shadcn UI), ad slot integration.
-- **Task Scheduling**: APScheduler for automated posts and data updates.
+-   **Full-Stack Architecture**: React (frontend), FastAPI (backend), MongoDB (database).
+-   **API Integration**: NASA GIBS, OpenWeatherMap, Météo France.
+-   **Data Management**: Caching, multi-level fallback, API quota, data backup.
+-   **AI/ML**: RandomForestRegressor for cyclone damage, dynamic risk adaptation, precalculation.
+-   **Interactive Mapping**: Leaflet.js, custom tile overlays, mobile adaptations.
+-   **Dynamic UI/UX**: Adaptive theming, animations, responsive design.
+-   **Task Scheduling**: APScheduler for automated AI precalculation.
 </key_technical_concepts>
 
 <code_architecture>
-The application follows a standard MERN-like stack (MongoDB, Express/FastAPI, React, Node.js implicitly for frontend tooling).
+The application follows a standard MERN-like stack structure:
 
 
 
--   ****: Main React entry point.
-    -   **Changes**: Routes for  and  were added.
--   ****: Renders the homepage with various sections, including ads.
-    -   **Changes**: Extensive modifications to replace Météo Sentinelle with Klimaclique. New CSS classes and components added to implement homepage animations (e.g., fade-in, slide-in) and integrate dynamic weather animations based on vigilance levels.
+-   ****: Defines Pydantic models for MongoDB.
+    -   **Changes**: Added  and  models to support user activity tracking and user-submitted testimonials.
+-   ****: Main FastAPI application, defines API routes.
+    -   **Changes**: New  and  (GET/POST) endpoints added. Imports for , , and  were added. AI prediction endpoints (, , ) were modified to serve precalculated data from  instead of real-time model inference.
+-   ** (NEW)**: Manages active user counts and testimonial storage/retrieval.
+    -   **Summary**: New file created to handle the logic for user activity logging and testimonial management.
+-   ** (NEW)**: Handles the precalculation and caching of AI prediction data.
+    -   **Summary**: New file created to offload real-time AI calculations into a scheduled precomputation process.
+-   ** (NEW)**: Schedules the  to run periodically (hourly).
+    -   **Summary**: New file created to automate the AI data precomputation.
+-   ****: AI model for cyclone damage prediction.
+    -   **Changes**: The  function signature was re-examined due to parameter mismatches in calls, but the actual function definition remains, now called by the precalculation service.
+-   ****: Contains Guadeloupe commune data.
+    -   **Changes**: Modified to explicitly create  (a list) from the existing  (a dictionary) to resolve import and usage errors in backend services.
+-   ****: Renders the homepage.
+    -   **Changes**: Old static testimonial data removed. New logic and UI components integrated for dynamic active user count display and dynamic testimonials with a submission form. Extensive mobile responsiveness adjustments made for these new elements.
 -   ****: Displays the interactive map.
-    -   **Changes**: Adjusted alignment of the interactive map elements. Renamed Météo Sentinelle references to Klimaclique.
--   ****: Manages map overlays.
-    -   **Changes**: Cloud overlay limit removed, and the overlay name was updated from clouds_new to Klimaclique. 's  prop and  logic were refined to ensure proper re-rendering and data loading.
--   ****: Client-side weather data fetching.
-    -   **Changes**: Minor cleanup (console.log removal).
+    -   **Changes**: Initial mobile optimizations (zoom, controls, marker popups, larger markers). Attempted conditional rendering for a mobile list view instead of the map, but this led to syntax errors and was reverted to a working state with only map-based mobile optimizations. Debugging additions for  display. Layer panel adjusted (repositioned, resized, close button) to prevent interference with map interactions. Fix for incorrect  usage in .
+-   ****: Core Leaflet map component used within .
+    -   **Changes**: Popups optimized (smaller, less intrusive) for the vigilance map.  configured to auto-close popups.  function modified for larger, more tactile markers on mobile vigilance map.
+-   ****: Frontend service for API calls.
+    -   **Changes**: Updated  configuration to use  for better robustness in production and added longer timeouts and CORS handling for AI prediction calls.
 -   ****: Global CSS styles.
-    -   **Changes**: New styles for advertisement sections and animations were added to support  updates. Styles for weather animations (sun, rain, lightning, hurricane) were added and later accentuated.
--   ****: FastAPI application routes.
-    -   **Changes**: New  endpoint was added to provide an alternative vigilance service when Météo France API fails.
--   ****: AI model for cyclonic damage.
-    -   **Changes**: Reviewed for 20% damage issue, no direct modifications observed related to that specific value, but overall thresholds were adjusted to be more realistic.
--   ****: Handles OpenWeatherMap API.
-    -   **Changes**: Reviewed for mock data generation, specifically wind speed.
--   ****: NASA API interactions.
-    -   **Changes**: Critical fixes for wind data. The default  value in  was changed from  (resulting in 72 km/h) to a more realistic value. Mock data generation in  was also corrected to produce varied and realistic wind speeds. Error handling for NASA API calls was improved to ensure correct fallback to mock data when the real API returns .
--   ****: Météo France API interactions.
-    -   **Changes**: No functional changes, but its failure due to missing credentials prompted the development of an alternative service.
--   ** (NEW)**: Provides an alternative source for vigilance data.
-    -   **Changes**: New file created to offer an independent fallback for vigilance information, lessening reliance on Météo France API credentials.
--   ** (NEW)**: A dedicated page to showcase dynamic weather animations for different vigilance levels.
--   ** (NEW)**: A dedicated page to simulate and preview the orange vigilance theme and animations.
+    -   **Changes**: Added specific media queries and styles for mobile optimization of the homepage (testimonials, active user count) and map components.
+
 </code_architecture>
 
 <pending_tasks>
-- Configure Social Media API Keys: Facebook and Twitter API keys need to be provided by the user in  for social media posting to be fully functional.
-- Complete Ad Slots Frontend Integration: Ensure all requested ad slot placements on  are correctly implemented with final styling and responsiveness.
-- Reconnect Météo France API: The primary Météo France API requires credentials to function, which were not provided, leading to a fallback.
+-   Configure Social Media API Keys: Facebook and Twitter API keys need to be provided by the user in .
+-   Complete Ad Slots Frontend Integration: Ensure all requested ad slot placements on  are correctly implemented.
+-   Reconnect Météo France API: The primary Météo France API requires credentials.
+-   Resolve AI Per-Commune Prediction Errors: Backend is currently expecting incorrect parameters for  after precalculation refactor.
+-   Implement Mobile Commune List for Map: User requested a clickable list on mobile instead of the map to improve usability.
 </pending_tasks>
 
 <current_work>
-Immediately before this summary, the AI engineer was working on a critical data consistency issue: weather forecasts for communes like Pointe-à-Pitre were showing identical values (temperature, wind, humidity) across all 5 days. This was diagnosed as a multi-faceted problem.
-Firstly, the NASA API was found to be returning  for key weather parameters, leading the  to use hardcoded default values during parsing.
-Secondly, even the internal mock data generation for  was initially producing unrealistic wind speeds (e.g., 72 km/h, leading to vents destructeurs warnings) and lacked proper day-to-day variation.
-The engineer performed the following actions to address this:
-1.  **Corrected Wind Data Generation**: Modified  in  to produce varied and realistic wind speeds, and adjusted the default  value in  to prevent the erroneous 72 km/h.
-2.  **Fixed Data Consistency**: Temporarily forced  to *always* use the internally generated mock data (which now correctly varied per day) to confirm that the parsing logic itself could handle varied data. This confirmed the NASA API's  responses were the root cause of the identical forecasts.
-3.  **Improved NASA API Error Handling**: Enhanced  to gracefully handle the  responses from the actual NASA API, ensuring it reliably falls back to using the correctly varied mock data when the live API fails.
-The result is that weather data for communes now shows realistic, varying forecasts over 5 days, and the destructive winds and 20% damage alerts triggered by unrealistic fallback data have been resolved. The system is now more robust against external API failures regarding core weather data.
+Immediately prior to this summary, the AI engineer was deep into a critical debugging cycle related to the AI prediction functionality, specifically for per-commune analysis when the application is deployed. Despite backend API calls for AI predictions (e.g., ) returning successful 200 OK responses when tested manually, the frontend was consistently displaying Erreur lors du chargement des prédictions IA (Error loading AI predictions), and crucially, the user reported a white page error for the entire preview.
+
+The engineer's recent efforts focused on:
+1.  **AI Precalculation Implementation**: To resolve perceived frontend timeouts and improve performance, a major architectural change was initiated to precompute AI predictions hourly. This involved creating new services:
+    -   : For the actual data precomputation and caching.
+    -   : To schedule the precomputation.
+    -   Modifying  to serve these cached predictions.
+2.  **Debugging Backend IA (Post-Refactor)**: After implementing precalculation, the backend started throwing  for  (fixed in ) and a  for  (fixed by creating the list from  in  and updating  imports). The latest error observed in backend logs for AI prediction calls is: . This indicates that the  or its calling logic is passing an incorrect parameter () to the  function in , which expects  (a dictionary).
+3.  **Frontend Critical Error**: The recurring white page error, reported by the user, indicates a critical frontend crash preventing the application from rendering at all. This likely stems from recent, possibly incomplete or erroneous, frontend modifications made during the mobile map list implementation attempt or earlier AI panel debugging. The trajectory shows the MapPage.js has been in a volatile state due to syntax errors.
+
+The current state is that the backend AI endpoints are failing due to a parameter mismatch in the  function call, and the frontend is entirely broken, presenting a white page.
 </current_work>
 
 <optional_next_step>
-Test the weather data consistency for other communes to ensure the fix is applied universally.
+Diagnose and fix the white page frontend error, then correct the  function call parameters in the backend's AI prediction logic.
 </optional_next_step>
