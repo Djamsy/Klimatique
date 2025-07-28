@@ -34,9 +34,9 @@ class OpenWeatherService:
         
         # Ajustements selon localisation (côte vs intérieur)
         if lat < 16.15:  # Basse-Terre (plus montagneux)
-            precipitation += random.uniform(0, 1)
+            precipitation += random.uniform(0, 0.5)
             humidity += 5
-            wind_speed -= 2
+            wind_speed -= 1
         
         current_time = datetime.now()
         
