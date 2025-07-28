@@ -772,22 +772,22 @@ const LandingPage = () => {
       {/* Weather Forecast Section */}
       <section id="previsions" className="py-20 bg-gradient-to-br from-blue-50 via-white to-purple-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center bg-blue-100 rounded-full px-4 py-2 mb-6">
+          <div className="text-center mb-16 animate-fade-in-up">
+            <div className="inline-flex items-center bg-blue-100 rounded-full px-4 py-2 mb-6 animate-pulse">
               <Cloud className="w-5 h-5 text-blue-600 mr-2" />
               <span className="text-blue-800 font-medium">Données NASA + IA</span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 animate-fade-in-up animate-delay-200">
               Prévisions Intelligentes pour la Guadeloupe
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto animate-fade-in-up animate-delay-300">
               Météo détaillée avec prédictions de risques cycloniques alimentée par l'IA et les données satellitaires NASA
             </p>
           </div>
           
           {isLoadingWeather ? (
             <div className="text-center py-16">
-              <div className="inline-flex items-center bg-white rounded-2xl px-6 py-4 shadow-lg">
+              <div className="inline-flex items-center bg-white rounded-2xl px-6 py-4 shadow-lg animate-pulse">
                 <Loader2 className="w-6 h-6 animate-spin text-blue-600 mr-3" />
                 <span className="text-gray-700 font-medium">Analyse IA en cours des conditions météorologiques...</span>
               </div>
@@ -795,7 +795,7 @@ const LandingPage = () => {
           ) : weatherData && weatherData.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
               {weatherData.map((weather, index) => (
-                <Card key={weather.id} className="group relative overflow-hidden bg-white hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 border-0 shadow-lg">
+                <Card key={weather.id} className={`group relative overflow-hidden bg-white hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 border-0 shadow-lg animate-fade-in-up animate-delay-${(index + 1) * 100} shimmer-effect`}>
                   {/* Gradient de risque en header */}
                   <div className={`absolute top-0 left-0 w-full h-2 ${
                     weather.riskLevel === 'critique' ? 'bg-gradient-to-r from-red-500 to-red-600' :
