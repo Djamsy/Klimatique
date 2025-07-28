@@ -113,7 +113,7 @@ class NASAWeatherService:
                 temperature_max=today_data.get("T2M_MAX", 29),
                 temperature_current=today_data.get("T2M", 26),
                 humidity=int(today_data.get("RH2M", 75)),
-                wind_speed=today_data.get("WS10M", 20) * 3.6,  # m/s vers km/h
+                wind_speed=today_data.get("WS10M", 6) * 3.6,  # 6 m/s = 22 km/h (vent normal)
                 precipitation=today_data.get("PRECTOTCORR", 0),
                 precipitation_probability=self._calculate_rain_probability(today_data.get("PRECTOTCORR", 0)),
                 pressure=today_data.get("PS", 101.3),
