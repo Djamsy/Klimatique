@@ -320,17 +320,7 @@ async def get_cached_weather(commune: str):
 async def get_clouds_overlay():
     """Récupère l'overlay des nuages pour la carte"""
     try:
-        # Vérifier le cache d'abord
-        cached_data = await weather_cache_optimizer.get_cached_data('satellite_guadeloupe')
-        
-        if cached_data and 'clouds' in cached_data:
-            return {
-                "overlay_type": "clouds",
-                "data": cached_data['clouds'],
-                "source": "cache"
-            }
-        
-        # Si pas en cache, récupérer depuis l'API
+        # Récupérer directement depuis l'API avec nouvelle méthode
         center_lat, center_lon = 16.25, -61.55
         clouds_data = await openweather_service.get_weather_map_data(center_lat, center_lon, 'clouds_new', 8)
         
@@ -340,7 +330,7 @@ async def get_clouds_overlay():
         return {
             "overlay_type": "clouds",
             "data": clouds_data,
-            "source": "api"
+            "source": "api_direct"
         }
         
     except HTTPException:
