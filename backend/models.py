@@ -48,6 +48,49 @@ class WeatherForecastDay(BaseModel):
 
 class WeatherCache(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+
+# Modèles pour les réseaux sociaux
+class SocialPlatform(str, Enum):
+    TWITTER = "twitter"
+    FACEBOOK = "facebook"
+
+class SocialCredentialsRequest(BaseModel):
+    platform: SocialPlatform
+    credentials: Dict[str, str]
+
+class SocialPostRequest(BaseModel):
+    content: str
+    platforms: Optional[List[SocialPlatform]] = None
+    commune: Optional[str] = None
+    include_ai_prediction: Optional[bool] = True
+
+class ScheduledPostRequest(BaseModel):
+    content: str
+    schedule_time: datetime
+    platforms: Optional[List[SocialPlatform]] = None
+    commune: Optional[str] = None
+
+class SocialPostResponse(BaseModel):
+    success: bool
+    results: Dict[str, Dict[str, Any]]
+    timestamp: datetime = Field(default_factory=datetime.now)
+
+class SocialCredentialsResponse(BaseModel):
+    success: bool
+    platform: SocialPlatform
+    message: str
+
+class ScheduledPostResponse(BaseModel):
+    success: bool
+    job_id: str
+    scheduled_time: datetime
+    platforms: List[SocialPlatform]
+
+class SocialStatsResponse(BaseModel):
+    total_posts: int
+    platform_breakdown: Dict[str, int]
+    period_days: int
+    last_updated: str
     commune: str
     coordinates: List[float]  # [lat, lon]
     current_weather: WeatherData
