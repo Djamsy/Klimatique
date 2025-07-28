@@ -238,15 +238,10 @@ class CycloneDamagePredictor:
             self.train_model()
         
         try:
-            # Calcul du score de risque amélioré
-            enhanced_risk_score, risk_factors = self._calculate_enhanced_risk_score(weather_data, commune_info)
-            
-            # NOUVEAU: Adapter le score selon la vigilance dès le calcul
-            if vigilance_level == 'vert':
-                # En vigilance verte, réduire significativement le score
-                enhanced_risk_score = min(enhanced_risk_score, 15)  # Max 15 en vigilance verte
-                if enhanced_risk_score > 10:
-                    enhanced_risk_score = enhanced_risk_score * 0.7  # Réduction supplémentaire
+            # Calcul du score de risque amélioré AVEC vigilance intégrée
+            enhanced_risk_score, risk_factors = self._calculate_enhanced_risk_score(
+                weather_data, commune_info, vigilance_level or 'vert'
+            )
             
             # Préparation features pour le modèle ML
             features = self._prepare_features(weather_data, commune_info)
@@ -259,6 +254,13 @@ class CycloneDamagePredictor:
             base_damage_infrastructure = max(0, min(100, predictions[0]))
             base_damage_agriculture = max(0, min(100, predictions[1])) 
             base_damage_population = max(0, min(50, predictions[2]))
+            
+            # EN VIGILANCE VERTE = DÉGÂTS TRÈS LIMITÉS
+            if vigilance_level == 'vert':
+                # Forcer des dégâts très faibles en vigilance verte
+                base_damage_infrastructure = min(20, base_damage_infrastructure * 0.3)
+                base_damage_agriculture = min(25, base_damage_agriculture * 0.4)
+                base_damage_population = min(10, base_damage_population * 0.2)
             
             # Ajustement avec le score de risque météorologique
             weather_factor = enhanced_risk_score / 100
@@ -275,7 +277,7 @@ class CycloneDamagePredictor:
             
             risk_level = self._calculate_risk_level(final_risk_score)
             
-            # Adaptation finale à la vigilance
+            # Adaptation finale à la vigilance (sécurité supplémentaire)
             if vigilance_level:
                 risk_level = self.adapt_risk_to_vigilance(risk_level, vigilance_level)
             
