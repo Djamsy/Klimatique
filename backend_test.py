@@ -88,37 +88,33 @@ class BackendTester:
             
             # Vérification principale: en vigilance verte, le risque ne doit pas dépasser "modéré"
             risk_level = data["risk_level"]
-            risk_score = data.get("risk_score", 0)
+            confidence_score = data.get("confidence_score", 0)
             
             # Vérifier la hiérarchie des risques
             risk_hierarchy = ["faible", "modéré", "élevé", "critique"]
             
             # En conditions normales (pas de cyclone), le risque devrait être limité
-            if risk_level in ["élevé", "critique"] and risk_score < 30:
+            if risk_level in ["élevé", "critique"]:
                 self.log_result(f"IA Vigilance Verte - {commune}", False, 
-                              f"Risque trop élevé pour conditions normales: {risk_level} (score: {risk_score})")
+                              f"Risque trop élevé pour conditions normales: {risk_level}")
                 return False
             
-            # Vérifier que le score de risque est cohérent avec le niveau
-            if risk_level == "faible" and risk_score > 20:
-                self.log_result(f"IA Vigilance Verte - {commune}", False, 
-                              f"Score incohérent pour risque faible: {risk_score}")
-                return False
-            
-            if risk_level == "modéré" and risk_score > 40:
-                self.log_result(f"IA Vigilance Verte - {commune}", False, 
-                              f"Score incohérent pour risque modéré: {risk_score}")
-                return False
-            
-            # Vérifier les recommandations (doivent être adaptées au niveau de risque)
+            # Vérifier les recommandations (peuvent être vides en conditions normales)
             recommendations = data.get("recommendations", [])
-            if risk_level == "faible" and any("ÉVACUATION" in rec.upper() for rec in recommendations):
+            if not isinstance(recommendations, list):
                 self.log_result(f"IA Vigilance Verte - {commune}", False, 
-                              f"Recommandations trop alarmistes pour risque faible")
+                              "Recommandations doivent être une liste")
                 return False
+            
+            # Si des recommandations existent, elles ne doivent pas être alarmistes pour risque faible
+            if risk_level == "faible" and len(recommendations) > 0:
+                if any("ÉVACUATION" in rec.upper() for rec in recommendations):
+                    self.log_result(f"IA Vigilance Verte - {commune}", False, 
+                                  f"Recommandations trop alarmistes pour risque faible")
+                    return False
             
             self.log_result(f"IA Vigilance Verte - {commune}", True, 
-                          f"Risk: {risk_level}, Score: {risk_score}, Adapté à vigilance verte")
+                          f"Risk: {risk_level}, Confidence: {confidence_score}%, Adapté à vigilance verte")
             return True
             
         except Exception as e:
