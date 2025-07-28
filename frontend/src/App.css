@@ -518,6 +518,11 @@ body {
 .weather-clouds .clouds-animation { display: block; }
 .weather-wind .wind-animation { display: block; }
 
+/* Contrôle pause des animations */
+.animation-paused * {
+  animation-play-state: paused !important;
+}
+
 /* Masquer par défaut */
 .rain-animation, .lightning-animation, .hurricane-animation, 
 .sun-animation, .clouds-animation, .wind-animation {
