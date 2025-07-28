@@ -1,96 +1,90 @@
 {
   "total_tests": 16,
-  "passed": 9,
-  "failed": 7,
+  "passed": 15,
+  "failed": 1,
   "errors": [
-    "AI Prediction - Deshaies: Recommandations manquantes ou invalides",
-    "AI Prediction - Pointe-à-Pitre: Recommandations manquantes ou invalides",
-    "IA Vigilance Verte - Pointe-à-Pitre: Champ manquant: risk_score",
-    "IA Vigilance Verte - Basse-Terre: Champ manquant: risk_score",
-    "IA Vigilance Verte - Sainte-Anne: Champ manquant: risk_score",
-    "IA Vigilance Verte - Le Gosier: Status 500: {\"detail\":\"Erreur lors de la prédiction: 404: Commune non trouvée\"}",
-    "IA Vigilance Verte - Saint-François: Champ manquant: risk_score"
+    "IA Vigilance Verte - Le Gosier: Status 500: {\"detail\":\"Erreur lors de la prédiction: 404: Commune non trouvée\"}"
   ],
   "detailed_results": {
     "AI Parameter Fix Validation": {
       "success": true,
       "details": "Fix paramètres validé sur 2 communes",
-      "timestamp": "2025-07-28T17:17:29.279333"
+      "timestamp": "2025-07-28T17:18:59.487193"
     },
     "AI Service Initialization": {
       "success": true,
       "details": "Services AI initialisés: /ai/scheduler/status: OK, /ai/model/info: OK",
-      "timestamp": "2025-07-28T17:17:29.339343"
+      "timestamp": "2025-07-28T17:18:59.551318"
     },
     "AI Prediction - Deshaies": {
-      "success": false,
-      "details": "Recommandations manquantes ou invalides",
-      "timestamp": "2025-07-28T17:17:29.397982"
+      "success": true,
+      "details": "Risk: faible, Confidence: 60%, Recs: 0",
+      "timestamp": "2025-07-28T17:18:59.611764"
     },
     "AI Timeline - Deshaies": {
       "success": true,
       "details": "Timeline OK avec 5 points temporels",
-      "timestamp": "2025-07-28T17:17:29.409240"
+      "timestamp": "2025-07-28T17:18:59.666602"
     },
     "AI Historical - Deshaies": {
       "success": true,
       "details": "Historique OK avec 5 événements, 0 facteurs",
-      "timestamp": "2025-07-28T17:17:29.422813"
+      "timestamp": "2025-07-28T17:18:59.677393"
     },
     "AI Prediction - Pointe-à-Pitre": {
-      "success": false,
-      "details": "Recommandations manquantes ou invalides",
-      "timestamp": "2025-07-28T17:17:29.481627"
+      "success": true,
+      "details": "Risk: faible, Confidence: 60%, Recs: 0",
+      "timestamp": "2025-07-28T17:18:59.700761"
     },
     "AI Timeline - Pointe-à-Pitre": {
       "success": true,
       "details": "Timeline OK avec 5 points temporels",
-      "timestamp": "2025-07-28T17:17:29.533242"
+      "timestamp": "2025-07-28T17:18:59.752433"
     },
     "AI Historical - Pointe-à-Pitre": {
       "success": true,
       "details": "Historique OK avec 5 événements, 0 facteurs",
-      "timestamp": "2025-07-28T17:17:29.585535"
+      "timestamp": "2025-07-28T17:18:59.763028"
     },
     "AI Global Risk": {
       "success": true,
       "details": "Risque global: faible, Communes affectées: 0, Risque élevé: 0, Critique: 0",
-      "timestamp": "2025-07-28T17:17:29.595667"
+      "timestamp": "2025-07-28T17:18:59.813204"
     },
     "IA Vigilance Verte - Pointe-à-Pitre": {
-      "success": false,
-      "details": "Champ manquant: risk_score",
-      "timestamp": "2025-07-28T17:17:29.613969"
+      "success": true,
+      "details": "Risk: faible, Confidence: 60%, Adapté à vigilance verte",
+      "timestamp": "2025-07-28T17:18:59.833398"
     },
     "IA Vigilance Verte - Basse-Terre": {
-      "success": false,
-      "details": "Champ manquant: risk_score",
-      "timestamp": "2025-07-28T17:17:29.675967"
+      "success": true,
+      "details": "Risk: faible, Confidence: 60%, Adapté à vigilance verte",
+      "timestamp": "2025-07-28T17:18:59.895252"
     },
     "IA Vigilance Verte - Sainte-Anne": {
-      "success": false,
-      "details": "Champ manquant: risk_score",
-      "timestamp": "2025-07-28T17:17:29.694420"
+      "success": true,
+      "details": "Risk: faible, Confidence: 60%, Adapté à vigilance verte",
+      "timestamp": "2025-07-28T17:18:59.914116"
     },
     "IA Vigilance Verte - Le Gosier": {
       "success": false,
       "details": "Status 500: {\"detail\":\"Erreur lors de la prédiction: 404: Commune non trouvée\"}",
-      "timestamp": "2025-07-28T17:17:29.746322"
+      "timestamp": "2025-07-28T17:18:59.966600"
     },
     "IA Vigilance Verte - Saint-François": {
-      "success": false,
-      "details": "Champ manquant: risk_score",
-      "timestamp": "2025-07-28T17:17:29.805275"
+      "success": true,
+      "details": "Risk: faible, Confidence: 60%, Adapté à vigilance verte",
+      "timestamp": "2025-07-28T17:18:59.986715"
     },
     "API Status": {
       "success": true,
       "details": "API opérationnelle, 0 appels aujourd'hui",
-      "timestamp": "2025-07-28T17:17:29.818456"
+      "timestamp": "2025-07-28T17:18:59.997431"
     },
     "Initialisation Services": {
       "success": true,
       "details": "Tous les services initialisés: /status: OK, /config/communes: OK, /weather/backup/status: OK",
-      "timestamp": "2025-07-28T17:17:29.929907"
+      "timestamp": "2025-07-28T17:19:00.073768"
     }
   }
 }
