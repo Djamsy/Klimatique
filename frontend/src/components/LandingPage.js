@@ -112,6 +112,124 @@ const LandingPage = () => {
     return 'weather-sun'; // Par défaut
   };
 
+  // Fonction pour tracker l'activité utilisateur
+  const trackUserActivity = async () => {
+    try {
+      const sessionId = localStorage.getItem('klimaclique_session') || generateSessionId();
+      localStorage.setItem('klimaclique_session', sessionId);
+
+      const backendUrl = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
+      await fetch(`${backendUrl}/users/activity`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          session_id: sessionId,
+          ip_address: null,
+          user_agent: navigator.userAgent
+        })
+      });
+    } catch (error) {
+      console.log('Erreur tracking utilisateur:', error);
+    }
+  };
+
+  // Fonction pour charger le nombre d'utilisateurs actifs
+  const loadActiveUsers = async () => {
+    try {
+      const backendUrl = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
+      const response = await fetch(`${backendUrl}/users/active-count`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        setActiveUsers(data.active_count);
+      }
+    } catch (error) {
+      console.log('Erreur chargement utilisateurs actifs:', error);
+    }
+  };
+
+  // Fonction pour charger les témoignages
+  const loadTestimonials = async () => {
+    try {
+      setIsLoadingTestimonials(true);
+      const backendUrl = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
+      const response = await fetch(`${backendUrl}/testimonials?limit=6`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        setTestimonials(data.testimonials || []);
+      }
+    } catch (error) {
+      console.log('Erreur chargement témoignages:', error);
+    } finally {
+      setIsLoadingTestimonials(false);
+    }
+  };
+
+  // Fonction pour soumettre un témoignage
+  const submitTestimonial = async () => {
+    if (!newTestimonial.content.trim()) {
+      toast?.({
+        title: "Erreur",
+        description: "Le contenu du témoignage est obligatoire",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      setIsSubmittingTestimonial(true);
+      const backendUrl = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
+      
+      const response = await fetch(`${backendUrl}/testimonials`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: newTestimonial.name.trim() || null,
+          role: newTestimonial.role.trim() || null,
+          commune: newTestimonial.commune.trim() || null,
+          content: newTestimonial.content.trim(),
+          rating: newTestimonial.rating
+        })
+      });
+
+      if (response.ok) {
+        toast?.({
+          title: "Merci !",
+          description: "Votre témoignage a été soumis avec succès",
+          variant: "default"
+        });
+        
+        // Réinitialiser le formulaire
+        setNewTestimonial({
+          name: '',
+          role: '',
+          commune: '',
+          content: '',
+          rating: 5
+        });
+        setShowTestimonialForm(false);
+        
+        // Recharger les témoignages
+        loadTestimonials();
+      } else {
+        throw new Error('Erreur lors de la soumission');
+      }
+    } catch (error) {
+      toast?.({
+        title: "Erreur",
+        description: "Impossible de soumettre votre témoignage. Réessayez plus tard.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmittingTestimonial(false);
+    }
+  };
+
   // Communes principales pour l'affichage
   const mainCommunes = ['Pointe-à-Pitre', 'Basse-Terre', 'Sainte-Anne', 'Le Moule', 'Saint-François'];
 
