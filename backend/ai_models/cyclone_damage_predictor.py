@@ -446,8 +446,8 @@ class CycloneDamagePredictor:
                 risk_score += 3
                 risk_factors.append(f"Température élevée: {temperature:.1f}°C")
             
-            # Score de base pour conditions normales
-            risk_score += 8  # Score minimal pour éviter toujours "faible"
+            # Score de base minimal pour conditions normales  
+            risk_score += 3  # Réduit de 8 à 3 pour permettre "faible"
         
         # 5. Analyse humidité
         if humidity > 90:
