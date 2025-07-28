@@ -15,7 +15,10 @@ from models import (
     WeatherResponse, WeatherConfig, SubscriptionRequest, ContactRequest,
     UnsubscribeRequest, SatelliteImageRequest, AlertResponse, APIUsageStats,
     RiskLevel, AlertType, CycloneAIResponse, CycloneTimelinePrediction,
-    CommuneHistoricalResponse, GlobalCycloneRisk, CycloneDamagePrediction
+    CommuneHistoricalResponse, GlobalCycloneRisk, CycloneDamagePrediction,
+    SocialPlatform, SocialCredentialsRequest, SocialCredentialsResponse,
+    SocialPostRequest, SocialPostResponse, ScheduledPostRequest,
+    ScheduledPostResponse, SocialStatsResponse
 )
 from services.weather_cache_service import WeatherCacheService
 from services.weather_service import WeatherService
