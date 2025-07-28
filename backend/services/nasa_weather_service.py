@@ -92,7 +92,7 @@ class NASAWeatherService:
                 "T2M_MIN": base_temp_min + temp_variation,
                 "T2M": base_temp_max - 2 + temp_variation,
                 "PRECTOTCORR": rain_probability * 10,  # mm/jour
-                "WS10M": 15 + (i * 2),  # km/h, augmente progressivement  
+                "WS10M": 4 + (i * 0.5),  # m/s, progression douce de 4 à 6 m/s (14-22 km/h)
                 "RH2M": 70 + (i * 3),   # Humidité 70-82%
                 "PS": 101.3             # Pression standard
             }
