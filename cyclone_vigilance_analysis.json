@@ -1,0 +1,112 @@
+{
+  "vigilance_data": {
+    "departement": "GUA",
+    "color_level": "vert",
+    "color_info": {
+      "level": 1,
+      "color": "#00FF00",
+      "name": "Vert"
+    },
+    "risks": [],
+    "global_risk_score": 10,
+    "recommendations": [
+      "✅ Pas de vigilance particulière",
+      "Conditions météorologiques normales",
+      "Profitez des activités extérieures en toute sécurité"
+    ],
+    "valid_from": "2025-07-28T00:45:59.741263",
+    "valid_until": "2025-07-29T00:45:59.741268",
+    "last_updated": "2025-07-28T00:45:59.741274",
+    "is_fallback": true
+  },
+  "commune_analyses": {
+    "Pointe-à-Pitre": {
+      "weather_data": {
+        "wind_speed": 11.285314052870355,
+        "wind_gust": 14.670908268731461,
+        "pressure": 1011.8121335646115,
+        "temperature": 24.792625698901414,
+        "humidity": 69.89898580327805,
+        "precipitation": 0.861042012366513,
+        "visibility": 10,
+        "uv_index": 6,
+        "weather_id": 803,
+        "timestamp": "2025-07-28T00:45:59",
+        "source": "fallback"
+      },
+      "risk_score": 8.4,
+      "risk_level": "faible",
+      "confidence": 40.0,
+      "damage_predictions": {
+        "infrastructure": 14.5,
+        "agriculture": 5.6,
+        "population_impact": 3.0
+      },
+      "recommendations_count": 1,
+      "success": true
+    },
+    "Basse-Terre": {
+      "weather_data": {
+        "wind_speed": 24.191002830051318,
+        "wind_gust": 31.448303679066715,
+        "pressure": 1005.2751054886005,
+        "temperature": 25.639562967770487,
+        "humidity": 72.62685234002859,
+        "precipitation": 2.427564172066045,
+        "visibility": 10,
+        "uv_index": 6,
+        "weather_id": 803,
+        "timestamp": "2025-07-28T00:45:59",
+        "source": "fallback"
+      },
+      "risk_score": 13.0,
+      "risk_level": "faible",
+      "confidence": 40.0,
+      "damage_predictions": {
+        "infrastructure": 10.8,
+        "agriculture": 7.2,
+        "population_impact": 2.6
+      },
+      "recommendations_count": 1,
+      "success": true
+    },
+    "Sainte-Anne": {
+      "weather_data": {
+        "wind_speed": 16.89378740425244,
+        "wind_gust": 21.961923625528172,
+        "pressure": 1011.1894845930151,
+        "temperature": 25.264304244809974,
+        "humidity": 66.5266448950172,
+        "precipitation": 1.3900173121322652,
+        "visibility": 10,
+        "uv_index": 6,
+        "weather_id": 803,
+        "timestamp": "2025-07-28T00:45:59",
+        "source": "fallback"
+      },
+      "risk_score": 12.9,
+      "risk_level": "faible",
+      "confidence": 40.0,
+      "damage_predictions": {
+        "infrastructure": 22.8,
+        "agriculture": 7.9,
+        "population_impact": 4.6
+      },
+      "recommendations_count": 1,
+      "success": true
+    }
+  },
+  "summary": {
+    "success_rate": "3/3",
+    "vigilance_level": "vert",
+    "vigilance_score": 10,
+    "is_fallback": true,
+    "risk_distribution": {
+      "faible": 3
+    },
+    "adaptations_count": 0,
+    "total_communes": 3,
+    "green_vigilance_allows_low_risk": true
+  },
+  "timestamp": "2025-07-28T00:45:59.674814"
+}
