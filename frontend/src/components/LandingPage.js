@@ -1065,7 +1065,7 @@ const LandingPage = () => {
             <div>
               <div className="flex items-center mb-4">
                 <Shield className="h-8 w-8 text-blue-400 mr-3" />
-                <span className="text-xl font-bold">Météo Sentinelle</span>
+                <span className="text-xl font-bold">Klimaclique</span>
               </div>
               <p className="text-gray-300 text-sm">
                 Protection météorologique avancée pour la Guadeloupe alimentée par les données NASA.
