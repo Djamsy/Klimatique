@@ -320,8 +320,14 @@ const MapPage = () => {
     setActiveOverlays(newState);
   };
 
-  // Centre de la Guadeloupe pour vue d'ensemble
+  // Centre et limites de la Guadeloupe pour vue d'ensemble
   const guadeloupeCenter = [16.25, -61.55];
+  
+  // Limites géographiques de l'archipel de Guadeloupe (optimisation données)
+  const guadeloupeBounds = [
+    [15.8, -61.9],  // Sud-Ouest (Basse-Terre sud)
+    [16.6, -61.0]   // Nord-Est (Grande-Terre nord)
+  ];
 
   return (
     <div className="h-screen flex flex-col bg-gray-900">
