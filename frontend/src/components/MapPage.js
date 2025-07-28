@@ -377,7 +377,7 @@ const MapPage = () => {
               </div>
             </div>
             <div className="flex items-center space-x-2 sm:space-x-4">
-              {/* Mobile controls */}
+              {/* Bouton mobile pour les couches - repositionné */}
               <Button
                 variant="outline"
                 onClick={() => setShowLayerControls(!showLayerControls)}
@@ -386,14 +386,15 @@ const MapPage = () => {
               >
                 <Layers className="w-4 h-4" />
               </Button>
-              {/* Desktop controls */}
+              {/* Desktop controls - avec icône plus claire */}
               <Button
                 variant="outline"
                 onClick={() => setShowLayerControls(!showLayerControls)}
-                className="hidden sm:flex"
+                className="hidden sm:flex items-center"
+                size="sm"
               >
                 <Layers className="w-4 h-4 mr-2" />
-                Couches NASA
+                <span className="text-xs">Calques</span>
               </Button>
               <Badge variant="outline" className="hidden lg:flex text-xs">
                 <AlertTriangle className="w-3 h-3 mr-1" />
