@@ -808,8 +808,67 @@ async def get_ai_model_info():
         logger.error(f"Error getting AI model info: {e}")
         raise HTTPException(status_code=500, detail="Erreur informations modèle IA")
 
-@api_router.get("/ai/model/retrain")
-async def retrain_ai_model():
+@api_router.get("/admin/quota/status")
+async def get_quota_status():
+    """Statistiques du système de quotas API"""
+    try:
+        from services.api_quota_manager import quota_manager
+        from services.weather_scheduler import weather_scheduler
+        
+        quota_stats = quota_manager.get_quota_stats()
+        scheduler_status = weather_scheduler.get_scheduler_status()
+        
+        return {
+            "quota": quota_stats,
+            "scheduler": scheduler_status,
+            "message": "Système de quotas opérationnel"
+        }
+    except Exception as e:
+        logger.error(f"Error getting quota status: {e}")
+        raise HTTPException(status_code=500, detail="Erreur système de quotas")
+
+@api_router.post("/admin/quota/force-update/{commune}")
+async def force_update_commune(commune: str):
+    """Force la mise à jour météo d'une commune"""
+    try:
+        from services.weather_scheduler import weather_scheduler
+        
+        result = await weather_scheduler.force_update_commune(commune)
+        
+        if result['success']:
+            return result
+        else:
+            raise HTTPException(status_code=429, detail=result['message'])
+    
+    except Exception as e:
+        logger.error(f"Error forcing update for {commune}: {e}")
+        raise HTTPException(status_code=500, detail=f"Erreur mise à jour {commune}")
+
+@api_router.post("/admin/scheduler/start")
+async def start_scheduler():
+    """Démarre le scheduler météo"""
+    try:
+        from services.weather_scheduler import weather_scheduler
+        
+        await weather_scheduler.start_scheduler()
+        return {"message": "Scheduler démarré avec succès"}
+    
+    except Exception as e:
+        logger.error(f"Error starting scheduler: {e}")
+        raise HTTPException(status_code=500, detail="Erreur démarrage scheduler")
+
+@api_router.post("/admin/scheduler/stop")
+async def stop_scheduler():
+    """Arrête le scheduler météo"""
+    try:
+        from services.weather_scheduler import weather_scheduler
+        
+        await weather_scheduler.stop_scheduler()
+        return {"message": "Scheduler arrêté avec succès"}
+    
+    except Exception as e:
+        logger.error(f"Error stopping scheduler: {e}")
+        raise HTTPException(status_code=500, detail="Erreur arrêt scheduler")
     """Re-entraîne le modèle IA (admin uniquement)"""
     try:
         training_result = cyclone_predictor.train_model(retrain=True)
