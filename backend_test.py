@@ -13,7 +13,7 @@ from datetime import datetime, timedelta
 from typing import Dict, List
 
 # Configuration
-BACKEND_URL = "https://d77d7f0e-effd-4bb4-a235-509e3ee58622.preview.emergentagent.com/api"
+BACKEND_URL = "https://1f04a111-afac-4122-bfc5-7ccc3042901e.preview.emergentagent.com/api"
 TIMEOUT = 30.0
 
 # Communes à tester (selon la demande spécifique)
