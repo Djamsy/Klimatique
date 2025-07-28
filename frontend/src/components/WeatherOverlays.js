@@ -295,7 +295,6 @@ const WeatherOverlays = ({ onOverlayChange }) => {
         attribution={`OpenWeatherMap ${type} • Zone Guadeloupe${overlay.data?.status === 'rate_limited' ? ' (Rate Limited)' : ''}`}
         bounds={guadeloupeBounds}
         maxZoom={12}
-        minZoom={8}
         onLoad={() => {
           console.log(`✅ TileLayer ${type} loaded successfully`);
           console.log(`🔍 Tile URL for ${type}: ${tileUrl}`);
