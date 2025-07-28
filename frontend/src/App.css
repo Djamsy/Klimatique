@@ -202,43 +202,158 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Styles pour les thèmes de vigilance */
+/* Variables CSS globales adaptatives à la vigilance */
 :root {
-  --vigilance-primary: #059669;
-  --vigilance-level: 'vert';
-  transition: all 0.3s ease;
+  --primary-blue: #1E3A8A;
+  --primary-blue-dark: #1E40AF;
+  --primary-blue-light: #3B82F6;
+  --accent-cyan: #06B6D4;
+  
+  /* Variables de vigilance dynamiques */
+  --current-vigilance-primary: #059669;
+  --current-vigilance-level: 'vert';
+  
+  /* Variables adaptatives qui changent selon la vigilance */
+  --adaptive-primary: var(--current-vigilance-primary, #1E3A8A);
+  --adaptive-secondary: var(--current-vigilance-primary, #1E40AF);
+  --adaptive-accent: var(--accent-cyan);
 }
 
-/* Thème vigilance verte */
+/* Application du thème adaptatif */
 body.vigilance-vert {
-  --vigilance-primary: #059669;
-  --vigilance-secondary: #10B981;
-  --vigilance-accent: #A7F3D0;
-  --vigilance-background: #ECFDF5;
+  --adaptive-primary: #059669;
+  --adaptive-secondary: #10B981;
+  --adaptive-accent: #06B6D4;
 }
 
-/* Thème vigilance jaune */
 body.vigilance-jaune {
-  --vigilance-primary: #D97706;
-  --vigilance-secondary: #F59E0B;
-  --vigilance-accent: #FDE68A;
-  --vigilance-background: #FFFBEB;
+  --adaptive-primary: #D97706;
+  --adaptive-secondary: #F59E0B;
+  --adaptive-accent: #F59E0B;
 }
 
-/* Thème vigilance orange */
 body.vigilance-orange {
-  --vigilance-primary: #EA580C;
-  --vigilance-secondary: #F97316;
-  --vigilance-accent: #FED7AA;
-  --vigilance-background: #FFF7ED;
+  --adaptive-primary: #EA580C;
+  --adaptive-secondary: #F97316;
+  --adaptive-accent: #FB923C;
 }
 
-/* Thème vigilance rouge */
 body.vigilance-rouge {
-  --vigilance-primary: #DC2626;
-  --vigilance-secondary: #EF4444;
-  --vigilance-accent: #FCA5A5;
-  --vigilance-background: #FEF2F2;
+  --adaptive-primary: #DC2626;
+  --adaptive-secondary: #EF4444;
+  --adaptive-accent: #F87171;
+}
+
+/* Styles de base avec couleurs adaptatives */
+.bg-blue-600 {
+  background-color: var(--adaptive-primary) !important;
+}
+
+.bg-blue-700 {
+  background-color: var(--adaptive-secondary) !important;
+}
+
+.bg-blue-800 {
+  background-color: var(--adaptive-primary) !important;
+}
+
+.text-blue-600 {
+  color: var(--adaptive-primary) !important;
+}
+
+.text-blue-800 {
+  color: var(--adaptive-primary) !important;
+}
+
+.border-blue-200 {
+  border-color: var(--adaptive-accent) !important;
+}
+
+.hover\:bg-blue-700:hover {
+  background-color: var(--adaptive-secondary) !important;
+}
+
+.hover\:bg-blue-50:hover {
+  background-color: color-mix(in srgb, var(--adaptive-primary) 10%, white) !important;
+}
+
+/* Transitions fluides pour les changements de thème */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Headers adaptatifs */
+header {
+  background: linear-gradient(135deg, var(--adaptive-primary), var(--adaptive-secondary)) !important;
+}
+
+/* Boutons adaptatifs */
+button.bg-blue-600, .bg-blue-600 {
+  background: var(--adaptive-primary) !important;
+}
+
+button.bg-blue-600:hover, .bg-blue-600:hover {
+  background: var(--adaptive-secondary) !important;
+}
+
+/* Cards et panneaux */
+.border-blue-500 {
+  border-color: var(--adaptive-primary) !important;
+}
+
+.bg-blue-50 {
+  background-color: color-mix(in srgb, var(--adaptive-primary) 5%, white) !important;
+}
+
+/* Badges */
+.badge-primary {
+  background-color: var(--adaptive-primary) !important;
+  color: white !important;
+}
+
+/* Gradients adaptatifs */
+.bg-gradient-to-r {
+  background: linear-gradient(to right, var(--adaptive-primary), var(--adaptive-secondary)) !important;
+}
+
+.bg-gradient-to-br {
+  background: linear-gradient(to bottom right, var(--adaptive-primary), var(--adaptive-secondary)) !important;
+}
+
+/* Navigation adaptative */
+nav a.text-blue-600 {
+  color: var(--adaptive-primary) !important;
+}
+
+/* Vigilance Alert Animation */
+@keyframes vigilance-pulse {
+  0%, 100% { 
+    box-shadow: 0 0 0 0 rgba(var(--adaptive-primary), 0.7); 
+  }
+  50% { 
+    box-shadow: 0 0 0 10px rgba(var(--adaptive-primary), 0); 
+  }
+}
+
+.vigilance-alert {
+  animation: vigilance-pulse 2s infinite;
+}
+
+/* Styles pour les niveaux de vigilance spécifiques */
+.vigilance-rouge .hero-section {
+  background: linear-gradient(135deg, #DC2626, #991B1B) !important;
+}
+
+.vigilance-orange .hero-section {
+  background: linear-gradient(135deg, #EA580C, #C2410C) !important;
+}
+
+.vigilance-jaune .hero-section {
+  background: linear-gradient(135deg, #D97706, #A16207) !important;
+}
+
+.vigilance-vert .hero-section {
+  background: linear-gradient(135deg, #059669, #047857) !important;
 }
 
 /* Classes d'aide pour les transitions */
