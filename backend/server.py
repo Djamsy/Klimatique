@@ -1482,6 +1482,88 @@ async def background_weather_update():
             await asyncio.sleep(600)
 
 # =============================================================================
+# ENDPOINTS ACTIVITÉ UTILISATEUR ET TÉMOIGNAGES  
+# =============================================================================
+
+@api_router.post("/users/activity")
+async def track_user_activity(request: dict):
+    """Enregistre l'activité d'un utilisateur"""
+    try:
+        session_id = request.get('session_id')
+        ip_address = request.get('ip_address')
+        user_agent = request.get('user_agent')
+        
+        if not session_id:
+            raise HTTPException(status_code=400, detail="session_id requis")
+        
+        if not user_activity_service:
+            raise HTTPException(status_code=503, detail="Service activité utilisateur non disponible")
+        
+        success = await user_activity_service.track_user_activity(
+            session_id=session_id,
+            ip_address=ip_address,
+            user_agent=user_agent
+        )
+        
+        if success:
+            return {"success": True, "message": "Activité enregistrée"}
+        else:
+            raise HTTPException(status_code=500, detail="Erreur enregistrement activité")
+            
+    except Exception as e:
+        logger.error(f"Error tracking user activity: {e}")
+        raise HTTPException(status_code=500, detail="Erreur serveur")
+
+@api_router.get("/users/active-count", response_model=ActiveUsersResponse)
+async def get_active_users_count():
+    """Récupère le nombre d'utilisateurs actifs"""
+    try:
+        if not user_activity_service:
+            raise HTTPException(status_code=503, detail="Service activité utilisateur non disponible")
+        
+        result = await user_activity_service.get_active_users_count()
+        return result
+        
+    except Exception as e:
+        logger.error(f"Error getting active users count: {e}")
+        raise HTTPException(status_code=500, detail="Erreur serveur")
+
+@api_router.post("/testimonials")
+async def submit_testimonial(testimonial_request: TestimonialRequest):
+    """Soumet un nouveau témoignage"""
+    try:
+        if not user_activity_service:
+            raise HTTPException(status_code=503, detail="Service activité utilisateur non disponible")
+        
+        result = await user_activity_service.submit_testimonial(testimonial_request)
+        
+        if result["success"]:
+            return result
+        else:
+            raise HTTPException(status_code=400, detail=result["message"])
+            
+    except Exception as e:
+        logger.error(f"Error submitting testimonial: {e}")
+        raise HTTPException(status_code=500, detail="Erreur serveur")
+
+@api_router.get("/testimonials", response_model=TestimonialResponse)
+async def get_testimonials(limit: int = 6):
+    """Récupère les témoignages approuvés"""
+    try:
+        if not user_activity_service:
+            raise HTTPException(status_code=503, detail="Service activité utilisateur non disponible")
+        
+        if limit > 20:  # Limite max
+            limit = 20
+        
+        result = await user_activity_service.get_testimonials(limit=limit)
+        return result
+        
+    except Exception as e:
+        logger.error(f"Error getting testimonials: {e}")
+        raise HTTPException(status_code=500, detail="Erreur serveur")
+
+# =============================================================================
 # APPLICATION SETUP
 # =============================================================================
 
