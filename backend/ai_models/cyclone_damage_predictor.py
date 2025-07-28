@@ -501,7 +501,7 @@ class CycloneDamagePredictor:
             'rouge': {'min_risk': 'critique', 'boost': 15},
             'orange': {'min_risk': 'élevé', 'boost': 10}, 
             'jaune': {'min_risk': 'modéré', 'boost': 5},
-            'vert': {'min_risk': None, 'boost': 0}
+            'vert': {'min_risk': None, 'boost': 0, 'max_risk': 'modéré'}  # Nouveau: limite max en vigilance verte
         }
         
         # Hiérarchie des risques
@@ -510,12 +510,20 @@ class CycloneDamagePredictor:
         adjustment = vigilance_adjustments.get(vigilance_level, {'min_risk': None, 'boost': 0})
         
         # Si vigilance impose un niveau minimum
-        if adjustment['min_risk']:
+        if adjustment.get('min_risk'):
             current_index = risk_hierarchy.index(ai_risk_level) if ai_risk_level in risk_hierarchy else 0
             min_index = risk_hierarchy.index(adjustment['min_risk'])
             
             if current_index < min_index:
                 return adjustment['min_risk']
+        
+        # NOUVEAU: Si vigilance verte, forcer le risque à ne pas dépasser "modéré"
+        if vigilance_level == 'vert' and adjustment.get('max_risk'):
+            current_index = risk_hierarchy.index(ai_risk_level) if ai_risk_level in risk_hierarchy else 0
+            max_index = risk_hierarchy.index(adjustment['max_risk'])
+            
+            if current_index > max_index:
+                return adjustment['max_risk']
         
         return ai_risk_level
     
