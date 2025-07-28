@@ -926,6 +926,15 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* Encart Publicitaire - Entre Sections */}
+      <div className="py-8 bg-gradient-to-r from-gray-50 to-blue-50">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AdBanner position="between-sections">
+            {AdContent.betweenSections}
+          </AdBanner>
+        </div>
+      </div>
+
       {/* Testimonials Section */}
       <section id="temoignages" className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
