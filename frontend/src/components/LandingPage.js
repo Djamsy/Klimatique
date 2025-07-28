@@ -384,12 +384,6 @@ const LandingPage = () => {
                   'Anticipez les risques,'
                 }
               </span>
-              <span className="block bg-gradient-to-r from-cyan-400 to-blue-300 bg-clip-text text-transparent">
-                {vigilanceData && vigilanceData.color_level !== 'vert' ? 
-                  'restez en sécurité' : 
-                  'protégez les vôtres'
-                }
-              </span>
             </h1>
             
             {/* Sous-titre adaptatif */}
