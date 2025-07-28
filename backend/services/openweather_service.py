@@ -176,19 +176,30 @@ class OpenWeatherService:
             for i, hour_data in enumerate(hourly[:24]):  # Prochaines 24h
                 if i % 6 == 0:  # Tous les 6h
                     time_key = f"H+{i}"
-                    timeline_predictions[time_key] = {
-                        'wind_speed': hour_data.get('wind_speed', 0) * 3.6,
-                        'pressure': hour_data.get('pressure', 1013),
-                        'temperature': hour_data.get('temp', 25),
-                        'humidity': hour_data.get('humidity', 75),
-                        'precipitation': self._get_precipitation_rate(hour_data)
-                    }
+                    
+                    if is_fallback:
+                        timeline_predictions[time_key] = {
+                            'wind_speed': hour_data.get('wind_speed', 15),
+                            'pressure': hour_data.get('pressure', 1013),
+                            'temperature': hour_data.get('temp', 26),
+                            'humidity': hour_data.get('humidity', 75),
+                            'precipitation': hour_data.get('rain', {}).get('1h', 0)
+                        }
+                    else:
+                        timeline_predictions[time_key] = {
+                            'wind_speed': hour_data.get('wind_speed', 0) * 3.6,
+                            'pressure': hour_data.get('pressure', 1013),
+                            'temperature': hour_data.get('temp', 25),
+                            'humidity': hour_data.get('humidity', 75),
+                            'precipitation': self._get_precipitation_rate(hour_data)
+                        }
             
             return {
                 'current': current_severe,
                 'timeline': timeline_predictions,
-                'source': 'openweathermap',
-                'last_update': datetime.now()
+                'source': 'fallback' if is_fallback else 'openweathermap',
+                'last_update': datetime.now(),
+                'fallback_mode': is_fallback
             }
             
         except Exception as e:
