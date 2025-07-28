@@ -185,9 +185,9 @@ class OpenWeatherService:
                 await quota_manager.record_api_request(False, commune)
             return self.generate_fallback_weather_data(lat, lon)
     
-    async def get_severe_weather_data(self, lat: float, lon: float) -> Optional[Dict]:
+    async def get_severe_weather_data(self, lat: float, lon: float, commune: str = None) -> Optional[Dict]:
         """Récupère données météo extrême pour IA cyclonique avec fallback"""
-        data = await self.get_current_and_forecast(lat, lon)
+        data = await self.get_current_and_forecast(lat, lon, commune)
         
         # Si l'API échoue, utiliser les données de fallback
         if not data:
