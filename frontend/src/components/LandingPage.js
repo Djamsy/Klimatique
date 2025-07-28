@@ -1167,31 +1167,166 @@ const LandingPage = () => {
           </div>
           
           <div className="grid lg:grid-cols-4 gap-8">
-            {/* Témoignages */}
+            {/* Témoignages dynamiques */}
             <div className="lg:col-span-3">
-              <div className="grid md:grid-cols-3 gap-8">
-                {testimonials.map((testimonial, index) => (
-                  <Card key={testimonial.id} className={`testimonial-card p-6 animate-fade-in-up animate-delay-${(index + 1) * 100} section-hover`}>
-                    <CardContent>
-                      <div className="flex mb-4">
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
-                        ))}
-                      </div>
-                      <p className="text-gray-700 mb-6 italic">"{testimonial.content}"</p>
-                      <div className="flex items-center">
-                        <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                          <span className="text-blue-800 font-semibold">{testimonial.avatar}</span>
+              {/* Bouton pour ajouter un témoignage */}
+              <div className="mb-8 text-center">
+                <Button 
+                  onClick={() => setShowTestimonialForm(!showTestimonialForm)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg"
+                >
+                  {showTestimonialForm ? 'Annuler' : 'Laisser un témoignage'}
+                </Button>
+              </div>
+
+              {/* Formulaire de témoignage */}
+              {showTestimonialForm && (
+                <Card className="mb-8 p-6">
+                  <CardHeader>
+                    <CardTitle>Votre témoignage</CardTitle>
+                    <p className="text-sm text-gray-600">Partagez votre expérience avec Klimaclique (tous les champs sont optionnels sauf le témoignage)</p>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Nom (optionnel)
+                          </label>
+                          <Input
+                            value={newTestimonial.name}
+                            onChange={(e) => setNewTestimonial({...newTestimonial, name: e.target.value})}
+                            placeholder="Votre nom (laissez vide pour anonyme)"
+                            className="w-full"
+                          />
                         </div>
                         <div>
-                          <div className="font-semibold text-gray-900">{testimonial.name}</div>
-                          <div className="text-sm text-gray-600">{testimonial.role}</div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Profession/Rôle (optionnel)
+                          </label>
+                          <Input
+                            value={newTestimonial.role}
+                            onChange={(e) => setNewTestimonial({...newTestimonial, role: e.target.value})}
+                            placeholder="Ex: Agriculteur, Maire, Particulier..."
+                            className="w-full"
+                          />
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Commune (optionnel)
+                        </label>
+                        <Input
+                          value={newTestimonial.commune}
+                          onChange={(e) => setNewTestimonial({...newTestimonial, commune: e.target.value})}
+                          placeholder="Votre commune en Guadeloupe"
+                          className="w-full"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Témoignage *
+                        </label>
+                        <Textarea
+                          value={newTestimonial.content}
+                          onChange={(e) => setNewTestimonial({...newTestimonial, content: e.target.value})}
+                          placeholder="Partagez votre expérience avec Klimaclique..."
+                          className="w-full min-h-[100px]"
+                          maxLength={500}
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          {newTestimonial.content.length}/500 caractères
+                        </p>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Note
+                        </label>
+                        <div className="flex items-center space-x-1">
+                          {[1, 2, 3, 4, 5].map((rating) => (
+                            <button
+                              key={rating}
+                              type="button"
+                              onClick={() => setNewTestimonial({...newTestimonial, rating})}
+                              className="focus:outline-none"
+                            >
+                              <Star 
+                                className={`w-6 h-6 ${rating <= newTestimonial.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
+                              />
+                            </button>
+                          ))}
+                          <span className="ml-2 text-sm text-gray-600">({newTestimonial.rating}/5)</span>
+                        </div>
+                      </div>
+                      <div className="flex space-x-4">
+                        <Button 
+                          onClick={submitTestimonial}
+                          disabled={isSubmittingTestimonial || !newTestimonial.content.trim()}
+                          className="bg-green-600 hover:bg-green-700 text-white"
+                        >
+                          {isSubmittingTestimonial ? (
+                            <>
+                              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                              Envoi...
+                            </>
+                          ) : (
+                            'Publier le témoignage'
+                          )}
+                        </Button>
+                        <Button 
+                          variant="outline"
+                          onClick={() => setShowTestimonialForm(false)}
+                        >
+                          Annuler
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Liste des témoignages */}
+              {isLoadingTestimonials ? (
+                <div className="text-center py-8">
+                  <Loader2 className="w-8 h-8 animate-spin mx-auto text-blue-600" />
+                  <p className="text-gray-600 mt-2">Chargement des témoignages...</p>
+                </div>
+              ) : testimonials.length > 0 ? (
+                <div className="grid md:grid-cols-3 gap-8">
+                  {testimonials.map((testimonial, index) => (
+                    <Card key={testimonial.id} className={`testimonial-card p-6 animate-fade-in-up animate-delay-${(index + 1) * 100} section-hover`}>
+                      <CardContent>
+                        <div className="flex mb-4">
+                          {[...Array(5)].map((_, i) => (
+                            <Star key={i} className={`w-4 h-4 ${i < testimonial.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} />
+                          ))}
+                        </div>
+                        <p className="text-gray-700 mb-6 italic">"{testimonial.content}"</p>
+                        <div className="flex items-center">
+                          <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                            <span className="text-blue-800 font-semibold">
+                              {testimonial.name.split(' ').map(n => n[0]).join('').substr(0, 2).toUpperCase()}
+                            </span>
+                          </div>
+                          <div>
+                            <div className="font-semibold text-gray-900">{testimonial.name}</div>
+                            <div className="text-sm text-gray-600">
+                              {testimonial.role}
+                              {testimonial.commune && ` • ${testimonial.commune}`}
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 bg-gray-50 rounded-lg">
+                  <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-600 mb-4">Aucun témoignage pour le moment.</p>
+                  <p className="text-sm text-gray-500">Soyez le premier à partager votre expérience !</p>
+                </div>
+              )}
             </div>
             
             {/* Encart Publicitaire Sidebar */}
