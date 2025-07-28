@@ -402,6 +402,12 @@ class CycloneDamagePredictor:
         elif wind_speed > 62:  # Vents forts
             risk_score += 10
             risk_factors.append(f"Vents forts: {wind_speed:.0f} km/h")
+        elif wind_speed > 40:  # Vents modérés - NOUVEAU
+            risk_score += 5
+            risk_factors.append(f"Vents modérés: {wind_speed:.0f} km/h")
+        elif wind_speed > 20:  # Brise modérée - NOUVEAU
+            risk_score += 2
+            risk_factors.append(f"Brise modérée: {wind_speed:.0f} km/h")
         
         # 2. Analyse pression atmosphérique
         if pressure < 950:  # Dépression très intense
