@@ -547,7 +547,13 @@ async def predict_cyclone_damage(commune: str):
         severe_weather = await openweather_service.get_severe_weather_data(coords[0], coords[1])
         
         if not severe_weather:
+            logger.warning(f"No weather data available for IA prediction: {commune}")
             raise HTTPException(status_code=500, detail="Données météo sévères non disponibles")
+        
+        # Vérifier si on est en mode fallback
+        is_fallback = severe_weather.get('fallback_mode', False)
+        if is_fallback:
+            logger.info(f"IA prediction using fallback data for {commune}")
         
         # Prépare les informations de la commune
         commune_info = get_commune_info(commune)
@@ -557,6 +563,12 @@ async def predict_cyclone_damage(commune: str):
             weather_data=severe_weather['current'],
             commune_info=commune_info
         )
+        
+        # Ajuster les recommandations si en mode fallback
+        if is_fallback:
+            prediction['recommendations'].insert(0, 
+                "⚠️ Prédiction basée sur données simulées (API météo temporairement indisponible)")
+            prediction['confidence'] = max(40, prediction['confidence'] - 20)  # Réduire confiance
         
         # Récupérer la vigilance officielle pour adaptation
         try:
