@@ -56,6 +56,7 @@ social_media_service = None
 social_post_scheduler = None
 weather_backup_service = None
 user_activity_service = None
+ai_precalculation_service = None
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
