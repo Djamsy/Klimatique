@@ -409,27 +409,45 @@ class OpenWeatherService:
             return None
         
         try:
-            # Layers disponibles: clouds_new, precipitation_new, pressure_new, wind_new, temp_new, radar
-            map_url = f"https://tile.openweathermap.org/map/{layer}/{zoom}/{lat}/{lon}.png"
+            # Les overlays OpenWeatherMap sont des tile layers, pas des données ponctuelles
+            # Retourner la configuration pour le frontend
+            tile_url = f"https://tile.openweathermap.org/map/{layer}/{{z}}/{{x}}/{{y}}.png?appid={self.api_key}"
+            
+            # Vérifier que la couche est disponible avec une requête test
+            import math
+            
+            # Convertir lat/lon en tile coordinates pour zoom 8
+            n = 2.0 ** zoom
+            x = int((lon + 180.0) / 360.0 * n)
+            y = int((1.0 - math.asinh(math.tan(lat * math.pi / 180.0)) / math.pi) / 2.0 * n)
+            
+            test_url = f"https://tile.openweathermap.org/map/{layer}/{zoom}/{x}/{y}.png?appid={self.api_key}"
             
             async with httpx.AsyncClient() as client:
-                params = {
-                    'appid': self.api_key
-                }
-                
-                response = await client.get(map_url, params=params, timeout=15.0)
+                response = await client.head(test_url, timeout=10.0)
                 
                 if response.status_code == 200:
                     return {
                         'layer': layer,
-                        'url': map_url,
-                        'data': response.content,
+                        'tile_url_template': tile_url,
+                        'test_url': test_url,
                         'center': [lat, lon],
                         'zoom': zoom,
+                        'status': 'available',
+                        'timestamp': datetime.now().isoformat()
+                    }
+                elif response.status_code == 429:
+                    logger.warning(f"Rate limit hit for weather map layer {layer}")
+                    return {
+                        'layer': layer,
+                        'tile_url_template': tile_url,
+                        'center': [lat, lon],
+                        'zoom': zoom,
+                        'status': 'rate_limited',
                         'timestamp': datetime.now().isoformat()
                     }
                 else:
-                    logger.error(f"Weather map API error {response.status_code}: {response.text}")
+                    logger.error(f"Weather map layer {layer} not available: {response.status_code}")
                     return None
                     
         except Exception as e:
