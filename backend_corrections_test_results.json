@@ -1,10 +1,8 @@
 {
   "total_tests": 13,
-  "passed": 8,
-  "failed": 5,
+  "passed": 10,
+  "failed": 3,
   "errors": [
-    "Système Backup Complet: Backup échoué pour Pointe-à-Pitre: No valid data returned",
-    "Statut Système Backup: Champ manquant: status",
     "Backup Météo - Pointe-à-Pitre: Champ météo manquant: temperature",
     "Backup Météo - Basse-Terre: Champ météo manquant: temperature",
     "Backup Météo - Sainte-Anne: Champ météo manquant: temperature"
@@ -12,68 +10,68 @@
   "detailed_results": {
     "IA Vigilance Verte - Pointe-à-Pitre": {
       "success": true,
-      "details": "Risk: modéré, Score: 17.0, Adapté à vigilance verte",
-      "timestamp": "2025-07-28T01:20:02.175565"
+      "details": "Risk: modéré, Score: 22.0, Adapté à vigilance verte",
+      "timestamp": "2025-07-28T01:22:48.740611"
     },
     "IA Vigilance Verte - Basse-Terre": {
       "success": true,
-      "details": "Risk: modéré, Score: 20.0, Adapté à vigilance verte",
-      "timestamp": "2025-07-28T01:20:02.205019"
+      "details": "Risk: modéré, Score: 17.0, Adapté à vigilance verte",
+      "timestamp": "2025-07-28T01:22:48.771086"
     },
     "IA Vigilance Verte - Sainte-Anne": {
       "success": true,
-      "details": "Risk: modéré, Score: 17.0, Adapté à vigilance verte",
-      "timestamp": "2025-07-28T01:20:02.235060"
+      "details": "Risk: modéré, Score: 25.0, Adapté à vigilance verte",
+      "timestamp": "2025-07-28T01:22:48.798876"
     },
     "Système Backup Complet": {
-      "success": false,
-      "details": "Backup échoué pour Pointe-à-Pitre: No valid data returned",
-      "timestamp": "2025-07-28T01:20:02.250241"
+      "success": true,
+      "details": "Taux de succès: 100.0%, Sources: {'backup_recent'}",
+      "timestamp": "2025-07-28T01:22:48.854915"
     },
     "Statut Système Backup": {
-      "success": false,
-      "details": "Champ manquant: status",
-      "timestamp": "2025-07-28T01:20:02.300828"
+      "success": true,
+      "details": "Système actif, 6 communes supportées",
+      "timestamp": "2025-07-28T01:22:48.868058"
     },
     "Backup Météo - Pointe-à-Pitre": {
       "success": false,
       "details": "Champ météo manquant: temperature",
-      "timestamp": "2025-07-28T01:20:02.311484"
+      "timestamp": "2025-07-28T01:22:48.880368"
     },
     "Backup Météo - Basse-Terre": {
       "success": false,
       "details": "Champ météo manquant: temperature",
-      "timestamp": "2025-07-28T01:20:02.321815"
+      "timestamp": "2025-07-28T01:22:48.890515"
     },
     "Backup Météo - Sainte-Anne": {
       "success": false,
       "details": "Champ météo manquant: temperature",
-      "timestamp": "2025-07-28T01:20:02.332469"
+      "timestamp": "2025-07-28T01:22:48.900401"
     },
     "Intégration Backup - Pointe-à-Pitre": {
       "success": true,
       "details": "Source: nasa, Cached: True, Temp: 24.0-29.0°C",
-      "timestamp": "2025-07-28T01:20:02.346390"
+      "timestamp": "2025-07-28T01:22:48.915188"
     },
     "Intégration Backup - Basse-Terre": {
       "success": true,
       "details": "Source: nasa, Cached: True, Temp: 24.0-29.0°C",
-      "timestamp": "2025-07-28T01:20:02.360338"
+      "timestamp": "2025-07-28T01:22:48.930215"
     },
     "Intégration Backup - Sainte-Anne": {
       "success": true,
       "details": "Source: nasa, Cached: True, Temp: 24.0-29.0°C",
-      "timestamp": "2025-07-28T01:20:02.374018"
+      "timestamp": "2025-07-28T01:22:48.944634"
     },
     "API Status": {
       "success": true,
       "details": "API opérationnelle, 0 appels aujourd'hui",
-      "timestamp": "2025-07-28T01:20:02.383895"
+      "timestamp": "2025-07-28T01:22:48.994976"
     },
     "Initialisation Services": {
       "success": true,
       "details": "Tous les services initialisés: /status: OK, /config/communes: OK, /weather/backup/status: OK",
-      "timestamp": "2025-07-28T01:20:02.451762"
+      "timestamp": "2025-07-28T01:22:49.067525"
     }
   }
 }
