@@ -213,6 +213,7 @@ const MapPage = () => {
   const [map, setMap] = useState(null);
   const [showLayerControls, setShowLayerControls] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Détection redimensionnement écran
   useEffect(() => {
