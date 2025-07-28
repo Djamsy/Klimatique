@@ -267,10 +267,12 @@ const MapPage = () => {
 
   const loadGlobalRisk = async () => {
     try {
+      console.log('🔄 Chargement du risque global IA...');
       const riskData = await CycloneAIService.getGlobalCycloneRisk();
+      console.log('✅ Risque global reçu:', riskData);
       setGlobalRisk(riskData);
     } catch (error) {
-      console.error('Error loading global risk:', error);
+      console.error('❌ Erreur chargement risque global:', error);
     }
   };
 
