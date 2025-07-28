@@ -453,25 +453,35 @@ const InteractiveMap = () => {
                   click: () => handleCommuneClick(commune)
                 }}
               >
-                <Popup>
-                  <div className="text-center">
-                    <h4 className="font-semibold">{commune.name}</h4>
-                    <p className="text-sm text-gray-600">{commune.population} habitants</p>
+                <Popup
+                  closeButton={true}
+                  minWidth={window.innerWidth < 768 ? 120 : 150}
+                  maxWidth={window.innerWidth < 768 ? 180 : 200}
+                  autoPan={true}
+                  keepInView={true}
+                  closeOnEscapeKey={true}
+                  autoClose={true}
+                  closeOnClick={true}
+                >
+                  <div className="text-center p-1">
+                    <h4 className="font-semibold text-xs sm:text-sm">{commune.name}</h4>
+                    <p className="text-xs text-gray-600 mb-1">{commune.population} hab.</p>
                     <Badge 
-                      className="mt-1"
+                      className="mb-2 text-xs px-1 py-0"
                       style={{ 
                         backgroundColor: getRiskColor(riskLevel) + '20',
                         color: getRiskColor(riskLevel)
                       }}
                     >
-                      Risque {riskLevel}
+                      {riskLevel}
                     </Badge>
+                    <br/>
                     <Button 
                       size="sm" 
-                      className="mt-2 w-full"
+                      className="text-xs py-1 px-2 h-6"
                       onClick={() => handleCommuneClick(commune)}
                     >
-                      Voir détails
+                      Détails
                     </Button>
                   </div>
                 </Popup>
