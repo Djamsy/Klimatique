@@ -35,6 +35,7 @@ function App() {
           <Route path="/map" element={<MapPage />} />
           <Route path="/commune/:slug" element={<CommunePage />} />
           <Route path="/demo" element={<WeatherAnimationDemo />} />
+          <Route path="/vigilance" element={<VigilancePreview />} />
         </Routes>
         <Toaster />
       </BrowserRouter>
