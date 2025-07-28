@@ -343,17 +343,19 @@ const MapPage = () => {
       <header className="bg-white shadow-sm border-b z-50 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <div className="flex items-center">
+            <div className="flex items-center space-x-4">
               <Button
                 variant="ghost"
                 onClick={handleBackToHome}
-                className="mr-4 hover:bg-gray-100"
+                className="hover:bg-gray-100"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Accueil
               </Button>
-              <Shield className="h-8 w-8 text-blue-800 mr-3" />
-              <span className="text-xl font-bold text-blue-800">Klimaclique - Carte Interactive</span>
+              <div className="flex items-center">
+                <Shield className="h-8 w-8 text-blue-800 mr-3" />
+                <span className="text-xl font-bold text-blue-800">Klimaclique - Carte Interactive</span>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
               <Button
