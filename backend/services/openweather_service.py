@@ -175,10 +175,15 @@ class OpenWeatherService:
                     
         except httpx.TimeoutException:
             logger.error("OpenWeatherMap API timeout")
-            return None
+            if commune:
+                await quota_manager.record_api_request(False, commune)
+            return self.generate_fallback_weather_data(lat, lon)
+            
         except Exception as e:
             logger.error(f"Error fetching OpenWeatherMap data: {e}")
-            return None
+            if commune:
+                await quota_manager.record_api_request(False, commune)
+            return self.generate_fallback_weather_data(lat, lon)
     
     async def get_severe_weather_data(self, lat: float, lon: float) -> Optional[Dict]:
         """Récupère données météo extrême pour IA cyclonique avec fallback"""
