@@ -268,7 +268,7 @@ const LandingPage = () => {
       id: 1,
       name: "Marie Dubois",
       role: "Maire de Sainte-Anne",
-      content: "Grâce à Météo Sentinelle, nous anticipons mieux les risques d'inondation. Un outil indispensable pour protéger nos citoyens.",
+      content: "Grâce à Klimaclique, nous anticipons mieux les risques d'inondation. Un outil indispensable pour protéger nos citoyens.",
       avatar: "MD"
     },
     {
