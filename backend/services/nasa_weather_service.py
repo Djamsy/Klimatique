@@ -300,6 +300,35 @@ class NASAWeatherService:
         french_days = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
         return french_days[target_date.weekday()]
     
+    def _is_valid_nasa_response(self, data: Dict) -> bool:
+        """Vérifie si la réponse NASA est valide et utilisable"""
+        try:
+            if not data or not isinstance(data, dict):
+                return False
+            
+            # Vérifier la structure de base
+            if "properties" not in data or "parameter" not in data["properties"]:
+                return False
+            
+            parameters = data["properties"]["parameter"]
+            
+            # Vérifier qu'il y a des données organisées par date
+            if not parameters or not isinstance(parameters, dict):
+                return False
+            
+            # Vérifier qu'au moins une date a des données météo valides
+            for date_key, date_data in parameters.items():
+                if isinstance(date_data, dict) and any(
+                    key in date_data for key in ["T2M", "T2M_MAX", "T2M_MIN", "WS10M", "PRECTOTCORR"]
+                ):
+                    return True
+            
+            return False
+            
+        except Exception as e:
+            logger.error(f"Error validating NASA response: {e}")
+            return False
+
     def _get_commune_coordinates(self, commune: str) -> List[float]:
         """Retourne les coordonnées d'une commune"""
         coordinates_map = {
