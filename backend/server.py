@@ -47,6 +47,10 @@ weather_service = WeatherService(db, weather_cache_service, config)
 alert_service = AlertService(db)
 subscription_service = SubscriptionService(db)
 
+# Initialisation des services sociaux (sera fait au démarrage)
+social_media_service = None
+social_post_scheduler = None
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Gestion du cycle de vie de l'application"""
