@@ -608,6 +608,28 @@ async def get_vigilance_recommendations():
         logger.error(f"Error getting vigilance recommendations: {e}")
         raise HTTPException(status_code=500, detail="Erreur recommandations vigilance")
 
+@api_router.get("/vigilance/{departement}")
+async def get_vigilance_data(departement: str):
+    """Récupère les données de vigilance météorologique avec sources alternatives"""
+    try:
+        # Essayer d'abord le service alternatif (OpenWeatherMap + fallback intelligent)
+        vigilance_data = await vigilance_alternative_service.get_enhanced_vigilance_data(departement)
+        
+        if vigilance_data:
+            logger.info(f"Vigilance data retrieved from alternative service for {departement}")
+            return vigilance_data
+        
+        # Fallback vers le service Météo France officiel
+        logger.info("Trying official Météo France service")
+        vigilance_data = await meteo_france_service.get_vigilance_data(departement)
+        
+        return vigilance_data
+        
+    except Exception as e:
+        logger.error(f"Error getting vigilance data for {departement}: {e}")
+        # Dernier recours : données de fallback
+        return await vigilance_alternative_service._generate_enhanced_fallback_data()
+
 # =============================================================================
 # ENDPOINTS IA PRÉDICTIVE CYCLONIQUE
 # =============================================================================
