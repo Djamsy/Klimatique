@@ -397,7 +397,7 @@ const MapPage = () => {
         >
           {/* Couche de base satellite */}
           <TileLayer
-            attribution='Satellite imagery © <a href="https://www.google.com/maps">Google</a> | <a href="https://meteo-sentinelle.gp">Météo Sentinelle</a>'
+            attribution='Satellite imagery © <a href="https://www.google.com/maps">Google</a> | <a href="https://klimaclique.gp">Klimaclique</a>'
             url="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
           />
           
