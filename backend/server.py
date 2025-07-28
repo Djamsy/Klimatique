@@ -1308,47 +1308,6 @@ async def test_weather_backup_system():
         logger.error(f"Error testing weather backup system: {e}")
         raise HTTPException(status_code=500, detail="Erreur test système backup")
 
-@api_router.get("/weather/backup/{commune}")
-async def get_backup_weather(commune: str):
-    """Récupère les données météo de backup pour une commune"""
-    try:
-        from services.weather_backup_service import weather_backup_service
-        
-        if not weather_backup_service:
-            raise HTTPException(status_code=500, detail="Service de backup non initialisé")
-        
-        backup_data = await weather_backup_service.get_backup_weather_with_fallback(commune)
-        return {
-            "commune": commune,
-            "backup_data": backup_data,
-            "source": backup_data.get('source', 'unknown'),
-            "is_backup": backup_data.get('is_backup', True),
-            "timestamp": backup_data.get('timestamp')
-        }
-        
-    except Exception as e:
-        logger.error(f"Error getting backup weather for {commune}: {e}")
-        raise HTTPException(status_code=500, detail="Erreur récupération backup météo")
-
-@api_router.post("/weather/backup/cleanup")
-async def cleanup_old_weather_backups():
-    """Nettoie les anciennes sauvegardes météo"""
-    try:
-        from services.weather_backup_service import weather_backup_service
-        
-        if not weather_backup_service:
-            raise HTTPException(status_code=500, detail="Service de backup non initialisé")
-        
-        deleted_count = await weather_backup_service.cleanup_old_backups()
-        return {
-            "message": f"Nettoyage terminé - {deleted_count} sauvegardes supprimées",
-            "deleted_count": deleted_count
-        }
-        
-    except Exception as e:
-        logger.error(f"Error cleaning up weather backups: {e}")
-        raise HTTPException(status_code=500, detail="Erreur nettoyage backups")
-
 @api_router.get("/weather/backup/status")
 async def get_backup_system_status():
     """Statut général du système de backup météo"""
@@ -1399,6 +1358,47 @@ async def get_backup_system_status():
     except Exception as e:
         logger.error(f"Error getting backup system status: {e}")
         raise HTTPException(status_code=500, detail="Erreur statut système backup")
+
+@api_router.get("/weather/backup/{commune}")
+async def get_backup_weather(commune: str):
+    """Récupère les données météo de backup pour une commune"""
+    try:
+        from services.weather_backup_service import weather_backup_service
+        
+        if not weather_backup_service:
+            raise HTTPException(status_code=500, detail="Service de backup non initialisé")
+        
+        backup_data = await weather_backup_service.get_backup_weather_with_fallback(commune)
+        return {
+            "commune": commune,
+            "backup_data": backup_data,
+            "source": backup_data.get('source', 'unknown'),
+            "is_backup": backup_data.get('is_backup', True),
+            "timestamp": backup_data.get('timestamp')
+        }
+        
+    except Exception as e:
+        logger.error(f"Error getting backup weather for {commune}: {e}")
+        raise HTTPException(status_code=500, detail="Erreur récupération backup météo")
+
+@api_router.post("/weather/backup/cleanup")
+async def cleanup_old_weather_backups():
+    """Nettoie les anciennes sauvegardes météo"""
+    try:
+        from services.weather_backup_service import weather_backup_service
+        
+        if not weather_backup_service:
+            raise HTTPException(status_code=500, detail="Service de backup non initialisé")
+        
+        deleted_count = await weather_backup_service.cleanup_old_backups()
+        return {
+            "message": f"Nettoyage terminé - {deleted_count} sauvegardes supprimées",
+            "deleted_count": deleted_count
+        }
+        
+    except Exception as e:
+        logger.error(f"Error cleaning up weather backups: {e}")
+        raise HTTPException(status_code=500, detail="Erreur nettoyage backups")
 
 # =============================================================================
 # ENDPOINTS LEGACY (compatibilité avec le frontend existant)
