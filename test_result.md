@@ -102,118 +102,98 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Problème avec gestion des risques IA bloquée à 'modéré' en vigilance verte + ajout intégration Facebook/Twitter pour posts automatiques évolution météo"
+user_problem_statement: "Corrections: Risques IA non-responsive à vigilance verte + backup données météo pour éviter erreurs chargement + encarts pub page d'accueil"
 
 backend:
-  - task: "Résolution problème risques IA bloqués à 'modéré'"
+  - task: "Correction adaptation risques IA vigilance verte"
     implemented: true
     working: true
     file: "/app/backend/ai_models/cyclone_damage_predictor.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         -working: true
         -agent: "main"
-        -comment: "Analyse détaillée effectuée - système fonctionne correctement. Risques peuvent bien être 'faible' en vigilance verte. Tests confirmés sur 3 communes."
-        -working: true
-        -agent: "testing"
-        -comment: "Tests réussis sur Pointe-à-Pitre, Basse-Terre, Sainte-Anne. Système peut retourner tous niveaux de risque (faible, modéré, élevé, critique). Architecture solide."
+        -comment: "Modification adapt_risk_to_vigilance avec max_risk pour vigilance verte. Réduction scores conditions normales. Intégration vigilance directe dans predict_damage."
 
-  - task: "Service réseaux sociaux Facebook/Twitter"
+  - task: "Service backup météo complet"
     implemented: true
     working: true
-    file: "/app/backend/services/social_media_service.py"
+    file: "/app/backend/services/weather_backup_service.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         -working: true
         -agent: "main"
-        -comment: "Service complet créé avec support Twitter API v2 et Facebook Graph API. Formatage posts météo, stockage identifiants, statistiques."
-        -working: true
-        -agent: "testing"
-        -comment: "Service initialisé correctement. Test connexions OK, formatage posts météo fonctionnel, stockage credentials opérationnel. Gestion erreurs sans credentials appropriée."
+        -comment: "Service complet avec 3 niveaux fallback: backup récent, données réalistes générées, fallback urgence. Support 6 communes principales."
 
-  - task: "Planificateur posts automatiques"  
+  - task: "Intégration backup dans service météo"
     implemented: true
     working: true
-    file: "/app/backend/services/social_post_scheduler.py"
+    file: "/app/backend/services/weather_service.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         -working: true
         -agent: "main"
-        -comment: "Scheduler avec APScheduler créé. Posts matinaux/soir, alertes vigilance, posts critiques. Tâches CRON configurées."
-        -working: true
-        -agent: "testing"
-        -comment: "Scheduler opérationnel. Status endpoint fonctionnel, programmation/annulation posts OK. Jobs actifs détectés. Prêt pour activation."
+        -comment: "Modification get_weather_for_commune avec fallback automatique vers backup. Sauvegarde auto des données fraîches. Conversion backup vers WeatherResponse."
 
-  - task: "Endpoints API réseaux sociaux"
-    implemented: true  
+  - task: "Endpoints API système backup"
+    implemented: true
     working: true
     file: "/app/backend/server.py"
     stuck_count: 0
-    priority: "high"
-    needs_retesting: false
+    priority: "medium"
+    needs_retesting: true
     status_history:
         -working: true
         -agent: "main"
-        -comment: "9 endpoints ajoutés: credentials, post, schedule, stats, scheduler control, test connections. Intégration avec données météo/IA."
-        -working: true
-        -agent: "testing"
-        -comment: "Tous endpoints testés avec succès: /social/test-connections, /social/scheduler/status, /social/stats, /social/post, /social/schedule, /social/credentials. Intégration météo fonctionnelle."
+        -comment: "4 endpoints ajoutés: test backup, récupération backup commune, nettoyage, statut système. Intégration avec initialisation services."
 
-  - task: "Modèles Pydantic réseaux sociaux"
+  - task: "Initialisation service backup serveur"
     implemented: true
     working: true
-    file: "/app/backend/models.py"
+    file: "/app/backend/server.py"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         -working: true
         -agent: "main"
-        -comment: "Modèles SocialPlatform, SocialCredentialsRequest, SocialPostRequest, ScheduledPostRequest et réponses ajoutés."
-        -working: true
-        -agent: "testing"
-        -comment: "Modèles Pydantic validés et fonctionnels. SocialStatsResponse corrigé (suppression champs incorrects). Validation données OK."
-
-  - task: "Dépendances réseaux sociaux"
-    implemented: true
-    working: true
-    file: "/app/backend/requirements.txt"
-    stuck_count: 0
-    priority: "medium"
-    needs_retesting: false
-    status_history:
-        -working: true
-        -agent: "main"
-        -comment: "Ajout apscheduler, tweepy, facebook-sdk dans requirements.txt et installation réussie."
-        -working: true
-        -agent: "testing"
-        -comment: "Dépendances installées et fonctionnelles. Services s'initialisent correctement avec avertissements appropriés pour credentials manquants."
+        -comment: "Initialisation weather_backup_service dans lifespan avec mise à jour modules globaux. Service disponible pour weather_service."
 
 frontend:
+  - task: "Encarts publicitaires page d'accueil"
+    implemented: false
+    working: false
+    file: "/app/frontend/src/components/LandingPage.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        -working: false
+        -agent: "main"
+        -comment: "Non implémenté - attente tests backend avant modifications frontend."
 
 metadata:
   created_by: "main_agent"
-  version: "2.0"
-  test_sequence: 3
+  version: "2.1"
+  test_sequence: 4
   run_ui: false
 
 test_plan:
   current_focus:
-    - "Service réseaux sociaux Facebook/Twitter"
-    - "Planificateur posts automatiques"
-    - "Endpoints API réseaux sociaux"
+    - "Correction adaptation risques IA vigilance verte"
+    - "Service backup météo complet"
+    - "Intégration backup dans service météo"
+    - "Endpoints API système backup"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
 agent_communication:
     -agent: "main"
-    -message: "Intégration Facebook/Twitter complète implémentée. Service de posts automatiques avec scheduler, 9 endpoints API, formatage posts météo avec données IA/vigilance. Problème risques IA analysé - système fonctionne correctement. Prêt pour tests backend."
-    -agent: "testing"
-    -message: "Tests backend réseaux sociaux terminés avec succès (12/12 tests passés). Tous endpoints fonctionnels, modèles Pydantic corrigés, services initialisés. Architecture solide et prête pour vraies clés API. Problème SocialStatsResponse résolu, WeatherCache modèle corrigé."
+    -message: "Corrections majeures implémentées: IA responsive à vigilance verte avec limitation max_risk, système backup météo 3 niveaux, intégration automatique dans service météo, 4 endpoints backup. Prêt pour tests backend avant frontend."
