@@ -18,7 +18,8 @@ from models import (
     CommuneHistoricalResponse, GlobalCycloneRisk, CycloneDamagePrediction,
     SocialPlatform, SocialCredentialsRequest, SocialCredentialsResponse,
     SocialPostRequest, SocialPostResponse, ScheduledPostRequest,
-    ScheduledPostResponse, SocialStatsResponse
+    ScheduledPostResponse, SocialStatsResponse, TestimonialRequest,
+    TestimonialResponse, ActiveUsersResponse
 )
 from services.weather_cache_service import WeatherCacheService
 from services.weather_service import WeatherService
