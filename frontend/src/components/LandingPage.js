@@ -1045,6 +1045,19 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* Encart Publicitaire Sponsorisé - Avant Footer */}
+      <div className="py-12 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8">
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">Nos partenaires technologiques</h3>
+            <p className="text-gray-600">Solutions professionnelles pour la météorologie tropicale</p>
+          </div>
+          <AdBanner position="footer-sponsored">
+            {AdContent.footerSponsored}
+          </AdBanner>
+        </div>
+      </div>
+
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
