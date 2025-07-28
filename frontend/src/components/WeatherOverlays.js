@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Switch } from './ui/switch';
 import { WeatherOverlayService } from '../services/weatherService';
+import { overlayBackupService } from '../services/overlayBackupService';
 import { 
   Cloud, 
   CloudRain, 
@@ -14,7 +15,8 @@ import {
   EyeOff,
   RefreshCw,
   Loader2,
-  AlertTriangle
+  AlertTriangle,
+  Shield
 } from 'lucide-react';
 
 const WeatherOverlays = ({ onOverlayChange }) => {
