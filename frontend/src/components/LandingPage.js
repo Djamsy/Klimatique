@@ -569,15 +569,15 @@ const LandingPage = () => {
       {/* Features Section */}
       <section id="features" className="py-20 bg-gradient-to-br from-gray-50 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center bg-blue-100 rounded-full px-4 py-2 mb-6">
+          <div className="text-center mb-16 animate-fade-in-up">
+            <div className="inline-flex items-center bg-blue-100 rounded-full px-4 py-2 mb-6 animate-bounce">
               <Brain className="w-5 h-5 text-blue-600 mr-2" />
               <span className="text-blue-800 font-medium">Intelligence Artificielle</span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 animate-fade-in-up animate-delay-200">
               Technologie de pointe au service de votre sécurité
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto animate-fade-in-up animate-delay-300">
               Klimaclique combine données satellitaires NASA, intelligence artificielle et 
               connaissance du terrain pour vous offrir des prédictions d'une précision inégalée.
             </p>
@@ -587,7 +587,7 @@ const LandingPage = () => {
             {features.map((feature, index) => {
               const IconComponent = getFeatureIcon(feature.icon);
               return (
-                <Card key={feature.id} className="group relative overflow-hidden bg-white hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-0 shadow-lg">
+                <Card key={feature.id} className={`group relative overflow-hidden bg-white hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-0 shadow-lg animate-fade-in-up animate-delay-${(index + 1) * 100} shimmer-effect`}>
                   <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
                   
                   <CardHeader className="pb-4 text-center">
