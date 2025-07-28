@@ -1,0 +1,97 @@
+{
+  "total_tests": 16,
+  "passed": 8,
+  "failed": 8,
+  "errors": [
+    "AI Parameter Fix Validation: Problèmes détectés: Deshaies: ERREUR PARAMÈTRES NON CORRIGÉE - {\"detail\":\"Erreur lors de la prédiction: CycloneDamagePredictor.predict_damage() got an unexpected keyword argument 'commune_name'\"}; Pointe-à-Pitre: ERREUR PARAMÈTRES NON CORRIGÉE - {\"detail\":\"Erreur lors de la prédiction: CycloneDamagePredictor.predict_damage() got an unexpected keyword argument 'commune_name'\"}",
+    "AI Prediction - Deshaies: Status 500: {\"detail\":\"Erreur lors de la prédiction: CycloneDamagePredictor.predict_damage() got an unexpected keyword argument 'commune_name'\"}",
+    "AI Prediction - Pointe-à-Pitre: Status 500: {\"detail\":\"Erreur lors de la prédiction: CycloneDamagePredictor.predict_damage() got an unexpected keyword argument 'commune_name'\"}",
+    "IA Vigilance Verte - Pointe-à-Pitre: Status 500: {\"detail\":\"Erreur lors de la prédiction: CycloneDamagePredictor.predict_damage() got an unexpected keyword argument 'commune_name'\"}",
+    "IA Vigilance Verte - Basse-Terre: Status 500: {\"detail\":\"Erreur lors de la prédiction: CycloneDamagePredictor.predict_damage() got an unexpected keyword argument 'commune_name'\"}",
+    "IA Vigilance Verte - Sainte-Anne: Status 500: {\"detail\":\"Erreur lors de la prédiction: CycloneDamagePredictor.predict_damage() got an unexpected keyword argument 'commune_name'\"}",
+    "IA Vigilance Verte - Le Gosier: Status 500: {\"detail\":\"Erreur lors de la prédiction: 404: Commune non trouvée\"}",
+    "IA Vigilance Verte - Saint-François: Status 500: {\"detail\":\"Erreur lors de la prédiction: CycloneDamagePredictor.predict_damage() got an unexpected keyword argument 'commune_name'\"}"
+  ],
+  "detailed_results": {
+    "AI Parameter Fix Validation": {
+      "success": false,
+      "details": "Problèmes détectés: Deshaies: ERREUR PARAMÈTRES NON CORRIGÉE - {\"detail\":\"Erreur lors de la prédiction: CycloneDamagePredictor.predict_damage() got an unexpected keyword argument 'commune_name'\"}; Pointe-à-Pitre: ERREUR PARAMÈTRES NON CORRIGÉE - {\"detail\":\"Erreur lors de la prédiction: CycloneDamagePredictor.predict_damage() got an unexpected keyword argument 'commune_name'\"}",
+      "timestamp": "2025-07-28T17:16:01.064115"
+    },
+    "AI Service Initialization": {
+      "success": true,
+      "details": "Services AI initialisés: /ai/scheduler/status: OK, /ai/model/info: OK",
+      "timestamp": "2025-07-28T17:16:01.085898"
+    },
+    "AI Prediction - Deshaies": {
+      "success": false,
+      "details": "Status 500: {\"detail\":\"Erreur lors de la prédiction: CycloneDamagePredictor.predict_damage() got an unexpected keyword argument 'commune_name'\"}",
+      "timestamp": "2025-07-28T17:16:01.136743"
+    },
+    "AI Timeline - Deshaies": {
+      "success": true,
+      "details": "Timeline OK avec 5 points temporels",
+      "timestamp": "2025-07-28T17:16:01.147703"
+    },
+    "AI Historical - Deshaies": {
+      "success": true,
+      "details": "Historique OK avec 5 événements, 0 facteurs",
+      "timestamp": "2025-07-28T17:16:01.165371"
+    },
+    "AI Prediction - Pointe-à-Pitre": {
+      "success": false,
+      "details": "Status 500: {\"detail\":\"Erreur lors de la prédiction: CycloneDamagePredictor.predict_damage() got an unexpected keyword argument 'commune_name'\"}",
+      "timestamp": "2025-07-28T17:16:01.215753"
+    },
+    "AI Timeline - Pointe-à-Pitre": {
+      "success": true,
+      "details": "Timeline OK avec 5 points temporels",
+      "timestamp": "2025-07-28T17:16:01.225597"
+    },
+    "AI Historical - Pointe-à-Pitre": {
+      "success": true,
+      "details": "Historique OK avec 5 événements, 0 facteurs",
+      "timestamp": "2025-07-28T17:16:01.238743"
+    },
+    "AI Global Risk": {
+      "success": true,
+      "details": "Risque global: faible, Communes affectées: 0, Risque élevé: 0, Critique: 0",
+      "timestamp": "2025-07-28T17:16:01.289605"
+    },
+    "IA Vigilance Verte - Pointe-à-Pitre": {
+      "success": false,
+      "details": "Status 500: {\"detail\":\"Erreur lors de la prédiction: CycloneDamagePredictor.predict_damage() got an unexpected keyword argument 'commune_name'\"}",
+      "timestamp": "2025-07-28T17:16:01.340404"
+    },
+    "IA Vigilance Verte - Basse-Terre": {
+      "success": false,
+      "details": "Status 500: {\"detail\":\"Erreur lors de la prédiction: CycloneDamagePredictor.predict_damage() got an unexpected keyword argument 'commune_name'\"}",
+      "timestamp": "2025-07-28T17:16:01.350088"
+    },
+    "IA Vigilance Verte - Sainte-Anne": {
+      "success": false,
+      "details": "Status 500: {\"detail\":\"Erreur lors de la prédiction: CycloneDamagePredictor.predict_damage() got an unexpected keyword argument 'commune_name'\"}",
+      "timestamp": "2025-07-28T17:16:01.359147"
+    },
+    "IA Vigilance Verte - Le Gosier": {
+      "success": false,
+      "details": "Status 500: {\"detail\":\"Erreur lors de la prédiction: 404: Commune non trouvée\"}",
+      "timestamp": "2025-07-28T17:16:01.408392"
+    },
+    "IA Vigilance Verte - Saint-François": {
+      "success": false,
+      "details": "Status 500: {\"detail\":\"Erreur lors de la prédiction: CycloneDamagePredictor.predict_damage() got an unexpected keyword argument 'commune_name'\"}",
+      "timestamp": "2025-07-28T17:16:01.418460"
+    },
+    "API Status": {
+      "success": true,
+      "details": "API opérationnelle, 0 appels aujourd'hui",
+      "timestamp": "2025-07-28T17:16:01.471785"
+    },
+    "Initialisation Services": {
+      "success": true,
+      "details": "Tous les services initialisés: /status: OK, /config/communes: OK, /weather/backup/status: OK",
+      "timestamp": "2025-07-28T17:16:01.547166"
+    }
+  }
+}
