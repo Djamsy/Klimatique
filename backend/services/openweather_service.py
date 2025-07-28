@@ -29,8 +29,8 @@ class OpenWeatherService:
         base_temp = 26 + random.uniform(-2, 4)  # 24-30°C
         humidity = 75 + random.uniform(-10, 15)  # 65-90%
         pressure = 1013 + random.uniform(-8, 8)  # 1005-1021 hPa
-        wind_speed = 15 + random.uniform(-5, 15)  # 10-30 km/h
-        precipitation = random.uniform(0, 2)  # 0-2 mm/h normal
+        wind_speed = 12 + random.uniform(-5, 8)  # 7-20 km/h (vents normaux)
+        precipitation = random.uniform(0, 1)  # 0-1 mm/h normal
         
         # Ajustements selon localisation (côte vs intérieur)
         if lat < 16.15:  # Basse-Terre (plus montagneux)
