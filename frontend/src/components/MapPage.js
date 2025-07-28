@@ -363,6 +363,135 @@ const MapPage = () => {
     [16.6, -61.0]   // Nord-Est (Grande-Terre nord)
   ];
 
+  // Composant Liste Mobile des Communes
+  const CommuneListMobile = () => {
+    const [searchTerm, setSearchTerm] = useState('');
+    
+    const filteredCommunes = GUADELOUPE_COMMUNES.filter(commune =>
+      commune.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    return (
+      <div className="p-4 bg-white">
+        {/* Barre de recherche */}
+        <div className="mb-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input
+              placeholder="Rechercher une commune..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 pr-4 py-2 w-full text-sm"
+            />
+          </div>
+          <p className="text-xs text-gray-500 mt-1">
+            {filteredCommunes.length} commune{filteredCommunes.length > 1 ? 's' : ''} trouvée{filteredCommunes.length > 1 ? 's' : ''}
+          </p>
+        </div>
+
+        {/* Liste des communes */}
+        <div className="space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto">
+          {filteredCommunes.map((commune, index) => {
+            const riskLevel = getRiskLevel(commune.name);
+            const weather = weatherByCommune[commune.name];
+            
+            return (
+              <Card 
+                key={index} 
+                className="p-3 cursor-pointer hover:shadow-md transition-shadow border-l-4"
+                style={{borderLeftColor: getRiskColor(riskLevel)}}
+                onClick={() => handleCommuneClick(commune)}
+              >
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="font-semibold text-sm text-gray-900">{commune.name}</h3>
+                      <Badge 
+                        className="text-xs px-2 py-0"
+                        style={{ 
+                          backgroundColor: getRiskColor(riskLevel) + '20',
+                          color: getRiskColor(riskLevel)
+                        }}
+                      >
+                        {riskLevel}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center text-xs text-gray-600 mb-2">
+                      <Users className="w-3 h-3 mr-1" />
+                      <span>{commune.population} hab.</span>
+                      <span className="mx-2">•</span>
+                      <span>{commune.type}</span>
+                    </div>
+                    
+                    {/* Données météo si disponibles */}
+                    {weather ? (
+                      <div className="flex items-center gap-4 text-xs">
+                        <div className="flex items-center">
+                          <Thermometer className="w-3 h-3 mr-1 text-red-500" />
+                          <span>{Math.round(weather.current?.temperature_max || 0)}°C</span>
+                        </div>
+                        <div className="flex items-center">
+                          <Wind className="w-3 h-3 mr-1 text-blue-500" />
+                          <span>{Math.round(weather.current?.wind_speed || 0)} km/h</span>
+                        </div>
+                        <div className="flex items-center">
+                          <Droplets className="w-3 h-3 mr-1 text-blue-400" />
+                          <span>{Math.round(weather.current?.precipitation_probability || 0)}%</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-center text-xs text-gray-400">
+                        <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                        <span>Chargement...</span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Bouton d'action */}
+                  <div className="flex flex-col items-end gap-1">
+                    <ChevronRight className="w-4 h-4 text-gray-400" />
+                    {weather && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="text-xs py-1 px-2 h-6"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedCommune(commune);
+                          setShowPluviometer(true);
+                        }}
+                      >
+                        Pluie
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+
+        {/* Statistiques en bas */}
+        <div className="mt-4 pt-4 border-t">
+          <div className="grid grid-cols-2 gap-4 text-center">
+            <div className="bg-green-50 rounded-lg p-2">
+              <div className="text-lg font-bold text-green-700">
+                {filteredCommunes.filter(c => getRiskLevel(c.name) === 'faible').length}
+              </div>
+              <div className="text-xs text-green-600">Risque faible</div>
+            </div>
+            <div className="bg-orange-50 rounded-lg p-2">
+              <div className="text-lg font-bold text-orange-700">
+                {filteredCommunes.filter(c => ['modéré', 'élevé', 'critique'].includes(getRiskLevel(c.name))).length}
+              </div>
+              <div className="text-xs text-orange-600">Vigilance requise</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="h-screen flex flex-col bg-gray-900">
       {/* Header - Mobile optimized */}
