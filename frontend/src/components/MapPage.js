@@ -400,17 +400,21 @@ const MapPage = () => {
         </div>
       </div>
 
-      {/* Map Container */}
+      {/* Map Container - Mobile optimized */}
       <div className="flex-1 relative">
         <MapContainer
           center={guadeloupeCenter}
-          zoom={9}
+          zoom={window.innerWidth < 768 ? 8 : 9} // Zoom réduit sur mobile
           minZoom={8}
           maxZoom={12}
           maxBounds={guadeloupeBounds}
           maxBoundsViscosity={1.0}
           style={{ height: '100%', width: '100%' }}
-          zoomControl={true}
+          zoomControl={window.innerWidth >= 768} // Masquer les contrôles zoom sur mobile
+          touchZoom={true} // Activer le zoom tactile
+          doubleClickZoom={true}
+          scrollWheelZoom={false} // Désactiver le zoom avec scroll pour éviter les conflits
+          dragging={true}
         >
           {/* Couche de base satellite */}
           <TileLayer
