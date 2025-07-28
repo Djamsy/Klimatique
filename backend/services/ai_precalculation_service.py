@@ -15,7 +15,12 @@ import logging
 sys.path.append('/app/backend')
 
 from ai_models.cyclone_damage_predictor import CycloneDamagePredictor
-from data.communes_data import GUADELOUPE_COMMUNES
+from data.communes_data import COMMUNES_GUADELOUPE
+
+# Convertir le dictionnaire en liste pour compatibilité
+GUADELOUPE_COMMUNES = [
+    {"name": name, **data} for name, data in COMMUNES_GUADELOUPE.items()
+]
 
 logger = logging.getLogger(__name__)
 
