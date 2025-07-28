@@ -494,6 +494,31 @@ class CycloneDamagePredictor:
         
         return risk_score, risk_factors
     
+    def adapt_risk_to_vigilance(self, ai_risk_level, vigilance_level):
+        """Adapte le niveau de risque IA selon la vigilance Météo France officielle"""
+        # Correspondance vigilance -> ajustement IA
+        vigilance_adjustments = {
+            'rouge': {'min_risk': 'critique', 'boost': 15},
+            'orange': {'min_risk': 'élevé', 'boost': 10}, 
+            'jaune': {'min_risk': 'modéré', 'boost': 5},
+            'vert': {'min_risk': None, 'boost': 0}
+        }
+        
+        # Hiérarchie des risques
+        risk_hierarchy = ['faible', 'modéré', 'élevé', 'critique']
+        
+        adjustment = vigilance_adjustments.get(vigilance_level, {'min_risk': None, 'boost': 0})
+        
+        # Si vigilance impose un niveau minimum
+        if adjustment['min_risk']:
+            current_index = risk_hierarchy.index(ai_risk_level) if ai_risk_level in risk_hierarchy else 0
+            min_index = risk_hierarchy.index(adjustment['min_risk'])
+            
+            if current_index < min_index:
+                return adjustment['min_risk']
+        
+        return ai_risk_level
+    
     def _calculate_confidence(self, features, weather_data):
         """Calcule le niveau de confiance de la prédiction"""
         # Confiance basée sur la proximité aux données d'entraînement
