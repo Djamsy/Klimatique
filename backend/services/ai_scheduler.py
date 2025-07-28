@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 
-from ai_precalculation_service import get_ai_precalculation_service
+from services.ai_precalculation_service import get_ai_precalculation_service
 
 logger = logging.getLogger(__name__)
 
