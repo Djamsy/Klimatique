@@ -231,8 +231,8 @@ class CycloneDamagePredictor:
             'feature_importance': dict(zip(feature_columns, self.model.feature_importances_))
         }
     
-    def predict_damage(self, weather_data, commune_info):
-        """Prédit les dégâts cycloniques pour une commune"""
+    def predict_damage(self, weather_data, commune_info, vigilance_level=None):
+        """Prédit les dégâts cycloniques pour une commune avec intégration vigilance"""
         if not self.is_trained:
             logger.warning("Model not trained, training now...")
             self.train_model()
@@ -240,6 +240,13 @@ class CycloneDamagePredictor:
         try:
             # Calcul du score de risque amélioré
             enhanced_risk_score, risk_factors = self._calculate_enhanced_risk_score(weather_data, commune_info)
+            
+            # NOUVEAU: Adapter le score selon la vigilance dès le calcul
+            if vigilance_level == 'vert':
+                # En vigilance verte, réduire significativement le score
+                enhanced_risk_score = min(enhanced_risk_score, 15)  # Max 15 en vigilance verte
+                if enhanced_risk_score > 10:
+                    enhanced_risk_score = enhanced_risk_score * 0.7  # Réduction supplémentaire
             
             # Préparation features pour le modèle ML
             features = self._prepare_features(weather_data, commune_info)
@@ -268,6 +275,10 @@ class CycloneDamagePredictor:
             
             risk_level = self._calculate_risk_level(final_risk_score)
             
+            # Adaptation finale à la vigilance
+            if vigilance_level:
+                risk_level = self.adapt_risk_to_vigilance(risk_level, vigilance_level)
+            
             # Génération recommandations améliorées
             recommendations = self._generate_enhanced_recommendations(
                 damage_infrastructure, damage_agriculture, damage_population, 
@@ -292,7 +303,8 @@ class CycloneDamagePredictor:
                         'agriculture': round(base_damage_agriculture, 1),
                         'population': round(base_damage_population, 1)
                     },
-                    'weather_adjustment': round(weather_factor * 100, 1)
+                    'weather_adjustment': round(weather_factor * 100, 1),
+                    'vigilance_applied': vigilance_level
                 }
             }
             
