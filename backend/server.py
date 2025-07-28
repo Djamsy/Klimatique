@@ -26,6 +26,7 @@ from services.alert_service import AlertService
 from services.subscription_service import SubscriptionService
 from services.openweather_service import openweather_service
 from services.meteo_france_service import meteo_france_service
+from services.vigilance_alternative_service import vigilance_alternative_service
 from services.weather_cache_optimizer import weather_cache_optimizer
 from ai_models.cyclone_damage_predictor import cyclone_predictor
 from data.communes_data import get_commune_info, get_all_communes
