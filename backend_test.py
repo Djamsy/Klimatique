@@ -76,8 +76,8 @@ class BackendTester:
             # Vérifications structure réponse
             required_fields = [
                 "commune", "coordinates", "damage_predictions", 
-                "risk_level", "risk_score", "confidence", 
-                "recommendations", "weather_context"
+                "risk_level", "confidence_score", 
+                "recommendations", "weather_conditions"
             ]
             
             for field in required_fields:
