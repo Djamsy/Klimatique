@@ -1174,11 +1174,11 @@ const LandingPage = () => {
           <div className="grid lg:grid-cols-4 gap-8">
             {/* Témoignages dynamiques */}
             <div className="lg:col-span-3">
-              {/* Bouton pour ajouter un témoignage */}
-              <div className="mb-8 text-center">
+              {/* Bouton pour ajouter un témoignage - Mobile optimisé */}
+              <div className="mb-6 md:mb-8 text-center">
                 <Button 
                   onClick={() => setShowTestimonialForm(!showTestimonialForm)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 md:px-6 md:py-2 rounded-lg text-sm md:text-base w-full sm:w-auto"
                 >
                   {showTestimonialForm ? 'Annuler' : 'Laisser un témoignage'}
                 </Button>
