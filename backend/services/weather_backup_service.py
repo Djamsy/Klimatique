@@ -264,7 +264,7 @@ class WeatherBackupService:
                     results['commune_results'][commune] = {
                         'status': 'success',
                         'source': backup_data.get('source', 'unknown'),
-                        'temperature': backup_data.get('temperature'),
+                        'temperature': temp_value,
                         'timestamp': backup_data.get('timestamp')
                     }
                 else:
