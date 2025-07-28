@@ -592,13 +592,13 @@ async def get_vigilance_theme():
 async def get_vigilance_recommendations():
     """Récupère les recommandations officielles basées sur la vigilance"""
     try:
-        vigilance_data = await meteo_france_service.get_vigilance_data('guadeloupe')
+        vigilance_data = await vigilance_alternative_service.get_enhanced_vigilance_data('guadeloupe')
         
         return {
             'vigilance_level': vigilance_data['color_level'],
             'recommendations': vigilance_data['recommendations'],
             'risks': vigilance_data['risks'],
-            'official_source': 'Météo France',
+            'official_source': vigilance_data.get('source', 'Enhanced Service'),
             'valid_from': vigilance_data['valid_from'],
             'valid_until': vigilance_data['valid_until'],
             'last_updated': vigilance_data['last_updated'],
