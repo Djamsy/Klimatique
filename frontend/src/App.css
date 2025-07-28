@@ -47,6 +47,69 @@ body {
   border-color: #3b82f6;
 }
 
+/* Encarts Publicitaires */
+.ad-banner {
+  margin: 0 auto;
+  transition: all 0.3s ease;
+}
+
+.ad-banner:hover {
+  transform: translateY(-2px);
+}
+
+.ad-top {
+  max-width: 1200px;
+}
+
+.ad-between-sections {
+  max-width: 900px;
+}
+
+.ad-sidebar {
+  width: 100%;
+}
+
+.ad-footer-sponsored {
+  max-width: 1200px;
+}
+
+.ad-content {
+  position: relative;
+  overflow: hidden;
+}
+
+.ad-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #3b82f6, #1d4ed8, #3b82f6);
+  opacity: 0.6;
+}
+
+.ad-content:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.1);
+}
+
+/* Responsive pour les encarts */
+@media (max-width: 768px) {
+  .ad-banner {
+    margin: 10px 0;
+  }
+  
+  .ad-content {
+    padding: 12px !important;
+  }
+  
+  .ad-footer-sponsored .grid {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+}
+
 .risk-indicator {
   padding: 4px 12px;
   border-radius: 20px;
