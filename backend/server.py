@@ -675,11 +675,27 @@ async def get_cyclone_prediction(commune: str):
         
         # Trouver les données de la commune
         commune_data = None
-        from data.communes_data import GUADELOUPE_COMMUNES
-        for c in GUADELOUPE_COMMUNES:
-            if c['name'].lower() == commune.lower():
-                commune_data = c
-                break
+        from data.communes_data import COMMUNES_GUADELOUPE
+        
+        # Chercher dans le dictionnaire des communes
+        if commune in COMMUNES_GUADELOUPE:
+            commune_data = {
+                "name": commune,
+                "coordinates": COMMUNES_GUADELOUPE[commune]["coordinates"],
+                "population": COMMUNES_GUADELOUPE[commune].get("population", 10000),
+                "type": COMMUNES_GUADELOUPE[commune].get("type", "urbaine")
+            }
+        else:
+            # Chercher par nom (insensible à la casse)
+            for commune_name, data in COMMUNES_GUADELOUPE.items():
+                if commune_name.lower() == commune.lower():
+                    commune_data = {
+                        "name": commune_name,
+                        "coordinates": data["coordinates"],
+                        "population": data.get("population", 10000),
+                        "type": data.get("type", "urbaine")
+                    }
+                    break
         
         if not commune_data:
             raise HTTPException(status_code=404, detail="Commune non trouvée")
