@@ -380,6 +380,10 @@ const MapPage = () => {
         <MapContainer
           center={guadeloupeCenter}
           zoom={9}
+          minZoom={8}
+          maxZoom={12}
+          maxBounds={guadeloupeBounds}
+          maxBoundsViscosity={1.0}
           style={{ height: '100%', width: '100%' }}
           zoomControl={true}
         >
