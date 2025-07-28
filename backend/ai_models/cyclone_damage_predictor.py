@@ -480,7 +480,7 @@ class CycloneDamagePredictor:
             risk_score += 5
             risk_factors.append("Zone urbaine dense")
         
-        # 7. Analyse combinée (conditions synergiques)
+        # 8. Analyse combinée (conditions synergiques)
         if wind_speed > 100 and pressure < 990 and precipitation > 20:
             risk_score += 10
             risk_factors.append("Conditions synergiques critiques")
