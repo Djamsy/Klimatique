@@ -152,15 +152,36 @@ body {
   transform: translateY(-1px);
 }
 
-/* Alert Banner */
-.alert-banner {
-  background: linear-gradient(90deg, #dc2626, #ef4444);
+/* Alert Banner Responsive */
+.vigilance-alert-banner {
   animation: pulse 2s infinite;
+  position: relative;
+  z-index: 60;
 }
 
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.9; }
+}
+
+/* Responsive breakpoints pour la barre d'alerte */
+@media (max-width: 768px) {
+  .vigilance-alert-banner {
+    font-size: 0.75rem;
+    padding: 0.5rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .vigilance-alert-banner {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  .vigilance-alert-banner .alert-icon {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
 }
 
 /* Responsive */
