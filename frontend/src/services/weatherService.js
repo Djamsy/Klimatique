@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BACKEND_URL = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL || 'https://8d787736-0b26-4ff8-be10-390df976d8dd.preview.emergentagent.com';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://8d787736-0b26-4ff8-be10-390df976d8dd.preview.emergentagent.com';
 const API = `${BACKEND_URL}/api`;
 
 console.log('🔧 Backend URL:', BACKEND_URL);
