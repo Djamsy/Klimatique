@@ -673,7 +673,7 @@ async def predict_cyclone_damage(commune: str):
         
         # Récupérer la vigilance officielle pour adaptation
         try:
-            vigilance_data = await meteo_france_service.get_vigilance_data('guadeloupe')
+            vigilance_data = await vigilance_alternative_service.get_enhanced_vigilance_data('guadeloupe')
             vigilance_level = vigilance_data.get('color_level', 'vert')
             
             # Adapter le niveau de risque selon la vigilance officielle
