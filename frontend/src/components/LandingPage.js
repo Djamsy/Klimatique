@@ -463,7 +463,7 @@ const LandingPage = () => {
         <div className="weather-animation-container">
           {/* Animation de pluie */}
           <div className="rain-animation">
-            {[...Array(10)].map((_, i) => (
+            {[...Array(20)].map((_, i) => (
               <div key={i} className="rain-drop"></div>
             ))}
           </div>
@@ -471,10 +471,13 @@ const LandingPage = () => {
           {/* Animation de foudre */}
           <div className="lightning-animation">
             <div className="lightning-flash"></div>
+            <div className="lightning-flash"></div>
+            <div className="lightning-flash"></div>
           </div>
           
           {/* Animation d'ouragan */}
           <div className="hurricane-animation">
+            <div className="hurricane-spiral"></div>
             <div className="hurricane-spiral"></div>
             <div className="hurricane-eye"></div>
           </div>
@@ -487,10 +490,14 @@ const LandingPage = () => {
             <div className="cloud"></div>
             <div className="cloud"></div>
             <div className="cloud"></div>
+            <div className="cloud"></div>
+            <div className="cloud"></div>
           </div>
           
           {/* Animation de vent */}
           <div className="wind-animation">
+            <div className="wind-line"></div>
+            <div className="wind-line"></div>
             <div className="wind-line"></div>
             <div className="wind-line"></div>
             <div className="wind-line"></div>
