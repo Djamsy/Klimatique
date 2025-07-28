@@ -142,13 +142,14 @@ class WeatherBackupService:
             
             # Ajouter de la variabilité réaliste
             import random
+            import numpy as np
             
             weather_data = {
                 'temperature': base_weather['temp'] + random.uniform(-2, 2),
                 'humidity': max(50, min(95, base_weather['humidity'] + random.randint(-5, 5))),
                 'wind_speed': max(5, base_weather['wind'] + random.uniform(-3, 5)),
                 'pressure': base_weather['pressure'] + random.uniform(-5, 5),
-                'precipitation': max(0, random.exponential(1) if pattern == 'rainy' else random.exponential(0.3)),
+                'precipitation': max(0, np.random.exponential(1) if pattern == 'rainy' else np.random.exponential(0.3)),
                 'weather_description': self._get_weather_description(pattern),
                 'weather_icon': self._get_weather_icon(pattern),
                 'source': 'backup_generated',
