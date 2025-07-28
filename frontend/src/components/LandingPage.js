@@ -947,28 +947,52 @@ const LandingPage = () => {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial) => (
-              <Card key={testimonial.id} className="testimonial-card p-6">
-                <CardContent>
-                  <div className="flex mb-4">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
-                    ))}
-                  </div>
-                  <p className="text-gray-700 mb-6 italic">"{testimonial.content}"</p>
-                  <div className="flex items-center">
-                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                      <span className="text-blue-800 font-semibold">{testimonial.avatar}</span>
-                    </div>
-                    <div>
-                      <div className="font-semibold text-gray-900">{testimonial.name}</div>
-                      <div className="text-sm text-gray-600">{testimonial.role}</div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="grid lg:grid-cols-4 gap-8">
+            {/* Témoignages */}
+            <div className="lg:col-span-3">
+              <div className="grid md:grid-cols-3 gap-8">
+                {testimonials.map((testimonial) => (
+                  <Card key={testimonial.id} className="testimonial-card p-6">
+                    <CardContent>
+                      <div className="flex mb-4">
+                        {[...Array(5)].map((_, i) => (
+                          <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
+                        ))}
+                      </div>
+                      <p className="text-gray-700 mb-6 italic">"{testimonial.content}"</p>
+                      <div className="flex items-center">
+                        <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                          <span className="text-blue-800 font-semibold">{testimonial.avatar}</span>
+                        </div>
+                        <div>
+                          <div className="font-semibold text-gray-900">{testimonial.name}</div>
+                          <div className="text-sm text-gray-600">{testimonial.role}</div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+            
+            {/* Encart Publicitaire Sidebar */}
+            <div className="lg:col-span-1">
+              <div className="sticky top-24">
+                <AdBanner position="sidebar" className="mb-4">
+                  {AdContent.sidebarWeather}
+                </AdBanner>
+                
+                {/* Statistiques additionnelles */}
+                <Card className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50">
+                  <CardContent className="text-center">
+                    <div className="text-2xl font-bold text-blue-800 mb-2">{stats.users}</div>
+                    <p className="text-sm text-gray-600 mb-3">Utilisateurs actifs</p>
+                    <div className="text-lg font-semibold text-green-700 mb-1">{stats.precision}%</div>
+                    <p className="text-xs text-gray-500">Précision des alertes</p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
           </div>
         </div>
       </section>
