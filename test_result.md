@@ -294,7 +294,6 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Fix AI parameter mismatch in precalculation service"
     - "Fix frontend white page error"
   stuck_tasks: []
   test_all: false
