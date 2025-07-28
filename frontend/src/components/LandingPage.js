@@ -1171,9 +1171,9 @@ const LandingPage = () => {
             </p>
           </div>
           
-          <div className="grid lg:grid-cols-4 gap-8">
-            {/* Témoignages dynamiques */}
-            <div className="lg:col-span-3">
+          <div className="grid lg:grid-cols-4 gap-6 md:gap-8">
+            {/* Témoignages dynamiques - Mobile first */}
+            <div className="lg:col-span-3 order-2 lg:order-1">
               {/* Bouton pour ajouter un témoignage - Mobile optimisé */}
               <div className="mb-6 md:mb-8 text-center">
                 <Button 
