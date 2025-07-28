@@ -21,6 +21,8 @@ from models import (
     ScheduledPostResponse, SocialStatsResponse, TestimonialRequest,
     TestimonialResponse, ActiveUsersResponse
 )
+from services.ai_precalculation_service import get_ai_precalculation_service
+from services.ai_scheduler import start_ai_scheduler, get_ai_scheduler
 from services.weather_cache_service import WeatherCacheService
 from services.weather_service import WeatherService
 from services.alert_service import AlertService
