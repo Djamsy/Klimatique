@@ -214,11 +214,11 @@ const WeatherOverlays = ({ onOverlayChange }) => {
       return null;
     }
 
-    // Utiliser l'URL du backend si disponible, sinon fallback
+    // Construire l'URL des tiles
     let tileUrl;
     
     if (overlay.data && overlay.data.tile_url_template) {
-      // Utiliser l'URL du backend (recommended)
+      // Utiliser l'URL du backend (recommandé)
       tileUrl = overlay.data.tile_url_template;
       console.log(`✅ Using backend tile URL for ${type}: ${overlay.data.status}`);
       
@@ -228,20 +228,11 @@ const WeatherOverlays = ({ onOverlayChange }) => {
       
       if (!apiKey) {
         console.error('OpenWeatherMap API key not found');
-        return null;
-      }
-      
-      let layerName;
-      
-      // Vérifier si on doit utiliser le fallback
-      const shouldUseFallback = overlayBackupService.shouldUseFallback(type);
-      
-      if (shouldUseFallback) {
-        // Utiliser l'URL de fallback
-        tileUrl = overlayBackupService.generateFallbackUrl(type);
-        console.log(`🔄 Using fallback URL for ${type}`);
+        // Utiliser une URL de fallback générique
+        tileUrl = `https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=demo`;
       } else {
-        // URL normale
+        // Déterminer le nom de la couche
+        let layerName;
         switch (type) {
           case 'clouds':
             layerName = 'clouds_new';
@@ -256,8 +247,18 @@ const WeatherOverlays = ({ onOverlayChange }) => {
             return null;
         }
         
-        tileUrl = `https://tile.openweathermap.org/map/${layerName}/{z}/{x}/{y}.png?appid=${apiKey}`;
-        console.log(`⚠️ Using manual tile URL for ${type} (backend data missing)`);
+        // Vérifier si on doit utiliser le fallback
+        const shouldUseFallback = overlayBackupService.shouldUseFallback(type);
+        
+        if (shouldUseFallback) {
+          // Utiliser l'URL de fallback
+          tileUrl = overlayBackupService.generateFallbackUrl(type);
+          console.log(`🔄 Using fallback URL for ${type}`);
+        } else {
+          // URL normale
+          tileUrl = `https://tile.openweathermap.org/map/${layerName}/{z}/{x}/{y}.png?appid=${apiKey}`;
+          console.log(`⚠️ Using manual tile URL for ${type} (backend data missing)`);
+        }
       }
     }
     
@@ -274,7 +275,7 @@ const WeatherOverlays = ({ onOverlayChange }) => {
     
     return (
       <TileLayer
-        key={`${type}-${lastRefresh}-${overlay.data?.timestamp || 'fallback'}`}
+        key={`${type}-${lastRefresh}-${overlay.data?.timestamp || Date.now()}`}
         url={tileUrl}
         opacity={getOverlayOpacity(type)}
         zIndex={getOverlayZIndex(type)}
