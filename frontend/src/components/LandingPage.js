@@ -943,7 +943,7 @@ const LandingPage = () => {
               Ils nous font confiance
             </h2>
             <p className="text-xl text-gray-600">
-              Découvrez comment Météo Sentinelle accompagne déjà les acteurs locaux
+              Découvrez comment Klimaclique accompagne déjà les acteurs locaux
             </p>
           </div>
           
