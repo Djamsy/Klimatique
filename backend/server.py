@@ -710,10 +710,9 @@ async def get_cyclone_prediction(commune: str):
         }
         
         damage_prediction = cyclone_predictor.predict_damage(
-            commune_name=commune,
-            coordinates=commune_data['coordinates'],
-            weather_conditions=weather_conditions,
-            population=commune_data.get('population', 10000)
+            weather_data=weather_conditions,
+            commune_info=commune_data,
+            vigilance_level='vert'
         )
         
         return {
