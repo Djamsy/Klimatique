@@ -531,15 +531,15 @@ class CycloneDamagePredictor:
     
     def _calculate_risk_level(self, risk_score):
         """Calcule le niveau de risque basé sur le score - adapté aux conditions normales"""
-        # Seuils ajustés pour les conditions météo normales (non-cycloniques)
-        if risk_score >= 45:  # Était 80
+        # Seuils ajustés pour les conditions météo normales de Guadeloupe
+        if risk_score >= 40:  # Conditions vraiment critiques
             return 'critique'
-        elif risk_score >= 25:  # Était 60
+        elif risk_score >= 20:  # Conditions préoccupantes
             return 'élevé'
-        elif risk_score >= 10:  # Était 30
+        elif risk_score >= 15:  # Conditions à surveiller
             return 'modéré'
         else:
-            return 'faible'
+            return 'faible'  # Conditions normales
     
     def _generate_enhanced_recommendations(self, damage_infra, damage_agri, damage_pop, commune_info, weather_data, risk_factors):
         """Génère des recommandations améliorées basées sur les conditions météorologiques"""
