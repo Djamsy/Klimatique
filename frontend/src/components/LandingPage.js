@@ -58,6 +58,48 @@ const LandingPage = () => {
   const { toast } = useToast();
   const { theme: vigilanceTheme, loading: themeLoading } = useVigilanceTheme();
 
+  // Fonction pour déterminer l'animation météo selon l'analyse IA
+  const getWeatherAnimation = () => {
+    // Priorité aux données de vigilance
+    if (vigilanceData) {
+      switch (vigilanceData.color_level) {
+        case 'rouge':
+          return 'weather-hurricane';
+        case 'orange':
+          return 'weather-lightning';
+        case 'jaune':
+          return 'weather-rain';
+        case 'vert':
+        default:
+          return 'weather-sun';
+      }
+    }
+
+    // Ensuite analyse IA globale
+    if (globalRisk) {
+      if (globalRisk.critical_risk_count > 0) {
+        return 'weather-hurricane';
+      } else if (globalRisk.high_risk_count > 0) {
+        return 'weather-lightning';
+      } else if (globalRisk.moderate_risk_count > 0) {
+        return 'weather-rain';
+      }
+    }
+
+    // Analyse des données météo individuelles
+    if (weatherData && weatherData.length > 0) {
+      const hasStorm = weatherData.some(w => w.riskLevel === 'critique');
+      const hasHighRisk = weatherData.some(w => w.riskLevel === 'élevé');
+      const hasModerateRisk = weatherData.some(w => w.riskLevel === 'modéré');
+      
+      if (hasStorm) return 'weather-hurricane';
+      if (hasHighRisk) return 'weather-lightning';
+      if (hasModerateRisk) return 'weather-rain';
+    }
+
+    return 'weather-sun'; // Par défaut
+  };
+
   // Communes principales pour l'affichage
   const mainCommunes = ['Pointe-à-Pitre', 'Basse-Terre', 'Sainte-Anne', 'Le Moule', 'Saint-François'];
 
