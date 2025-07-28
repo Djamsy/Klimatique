@@ -452,7 +452,7 @@ const LandingPage = () => {
             </div>
             
             {/* Titre principal avec adaptation */}
-            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 text-white leading-tight">
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 text-white leading-tight animate-fade-in-up">
               <span className="block">
                 {vigilanceData && vigilanceData.color_level !== 'vert' ? 
                   'Restez informés,' : 
@@ -462,7 +462,7 @@ const LandingPage = () => {
             </h1>
             
             {/* Sous-titre adaptatif */}
-            <p className="text-xl sm:text-2xl lg:text-3xl mb-12 text-blue-100 leading-relaxed max-w-4xl mx-auto">
+            <p className="text-xl sm:text-2xl lg:text-3xl mb-12 text-blue-100 leading-relaxed max-w-4xl mx-auto animate-fade-in-up animate-delay-200">
               {vigilanceData && vigilanceData.color_level !== 'vert' ? 
                 'Suivez les recommandations officielles Météo France et restez informés.' :
                 'Recommandations officielles et analyse IA pour votre sécurité en Guadeloupe.'
@@ -473,10 +473,10 @@ const LandingPage = () => {
             </p>
             
             {/* Boutons d'action modernisés */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16 animate-fade-in-up animate-delay-400">
               <Button 
                 size="lg" 
-                className="group relative overflow-hidden bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold text-lg px-8 py-4 rounded-2xl border-0 shadow-xl shadow-cyan-500/25 transition-all duration-300 transform hover:scale-105"
+                className="group relative overflow-hidden bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold text-lg px-8 py-4 rounded-2xl border-0 shadow-xl shadow-cyan-500/25 transition-all duration-300 transform hover:scale-105 btn-animated"
                 onClick={handleNavigateToMap}
               >
                 <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -488,7 +488,7 @@ const LandingPage = () => {
               <Button 
                 variant="outline" 
                 size="lg" 
-                className="group border-2 border-white/30 text-white bg-white/10 hover:bg-white/20 backdrop-blur-sm font-semibold text-lg px-8 py-4 rounded-2xl transition-all duration-300 transform hover:scale-105"
+                className="group border-2 border-white/30 text-white bg-white/10 hover:bg-white/20 backdrop-blur-sm font-semibold text-lg px-8 py-4 rounded-2xl transition-all duration-300 transform hover:scale-105 btn-animated"
                 onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
               >
                 <Bell className="w-5 h-5 mr-3" />
