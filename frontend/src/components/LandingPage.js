@@ -1001,7 +1001,7 @@ const LandingPage = () => {
       <section id="contact" className="cta-gradient text-white py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Rejoignez la communauté Météo Sentinelle
+            Rejoignez la communauté Klimaclique
           </h2>
           <p className="text-xl text-blue-100 mb-8">
             Soyez parmi les premiers à bénéficier de notre service d'alerte météo nouvelle génération alimenté par la NASA
