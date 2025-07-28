@@ -195,6 +195,30 @@ backend:
         -agent: "testing"
         -comment: "✅ TESTÉ ET VALIDÉ: Corrections NASA API fonctionnent universellement sur 5 communes (Pointe-à-Pitre, Basse-Terre, Sainte-Anne, Le Gosier, Saint-François). Variation réaliste température (2°C), vent (7.2km/h), humidité (12%). Aucune valeur figée à 72km/h. Diversité inter-communes acceptable. Valeurs réalistes climat tropical. Système backup opérationnel."
 
+  - task: "Système témoignages utilisateurs"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py, /app/backend/services/user_activity_service.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "main"
+        -comment: "Nouveau système permettant aux utilisateurs de laisser des témoignages. Support témoignages anonymes, validation contenu, modération auto-approval, stockage MongoDB. Endpoints POST /api/testimonials (soumission) et GET /api/testimonials (récupération avec limite)."
+
+  - task: "Compteur utilisateurs actifs"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py, /app/backend/services/user_activity_service.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "main"
+        -comment: "Système de tracking d'activité utilisateur en temps réel. Endpoints POST /api/users/activity (tracking session) et GET /api/users/active-count (comptage dans fenêtre 5 minutes). Nettoyage automatique sessions expirées. Affichage temps réel sur frontend."
+
 frontend:
   - task: "Encarts publicitaires page d'accueil"
     implemented: true
