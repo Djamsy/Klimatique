@@ -379,7 +379,7 @@ const LandingPage = () => {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
               <Shield className="h-8 w-8 text-blue-800 mr-3" />
-              <span className="text-xl font-bold text-blue-800">Météo Sentinelle</span>
+              <span className="text-xl font-bold text-blue-800">Klimaclique</span>
             </div>
             <div className="hidden md:flex space-x-8">
               <a href="#features" className="text-gray-700 hover:text-blue-800 transition-colors">Fonctionnalités</a>
