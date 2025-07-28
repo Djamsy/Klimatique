@@ -763,28 +763,9 @@ const MapPage = () => {
         </MapContainer>
         )}
       </div>
-                      </div>
-                    </div>
-                    <Switch
-                      checked={activeOverlays[key]}
-                      onCheckedChange={() => toggleOverlay(key)}
-                      className="ml-1 flex-shrink-0 scale-75 sm:scale-100"
-                    />
-                  </div>
-                );
-              })}
-            </div>
-            
-            <div className="mt-4 pt-4 border-t border-gray-200">
-              <p className="text-xs text-gray-500">
-                <Shield className="inline w-3 h-3 mr-1" />
-                Données satellite NASA GIBS • Mise à jour quotidienne
-              </p>
-            </div>
-          </div>
-        )}
 
-        {/* Légende flottante */}
+      {/* Légende flottante - Seulement sur desktop */}
+      {!isMobile && (
         <div className="absolute bottom-6 left-6 bg-white rounded-lg shadow-lg p-4 z-50 max-w-xs">
           <h4 className="font-semibold text-gray-900 mb-3">Légende des risques</h4>
           <div className="space-y-2">
@@ -798,6 +779,15 @@ const MapPage = () => {
             </div>
             <div className="flex items-center gap-3">
               <div className="w-4 h-4 bg-orange-500 rounded-full border-2 border-white shadow"></div>
+              <span className="text-sm">Risque élevé</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-4 h-4 bg-red-500 rounded-full border-2 border-white shadow"></div>
+              <span className="text-sm">Risque critique</span>
+            </div>
+          </div>
+        </div>
+      )}
               <span className="text-sm">Risque élevé</span>
             </div>
             <div className="flex items-center gap-3">
