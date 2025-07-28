@@ -397,7 +397,7 @@ const MapPage = () => {
         {/* Liste des communes */}
         <div className="space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto">
           {filteredCommunes.map((commune, index) => {
-            const riskLevel = getRiskLevel(commune.name);
+            const riskLevel = getCommuneRiskLevel(commune.name);
             const weather = weatherByCommune[commune.name];
             
             return (
@@ -481,13 +481,13 @@ const MapPage = () => {
           <div className="grid grid-cols-2 gap-4 text-center">
             <div className="bg-green-50 rounded-lg p-2">
               <div className="text-lg font-bold text-green-700">
-                {filteredCommunes.filter(c => getRiskLevel(c.name) === 'faible').length}
+                {filteredCommunes.filter(c => getCommuneRiskLevel(c.name) === 'faible').length}
               </div>
               <div className="text-xs text-green-600">Risque faible</div>
             </div>
             <div className="bg-orange-50 rounded-lg p-2">
               <div className="text-lg font-bold text-orange-700">
-                {filteredCommunes.filter(c => ['modéré', 'élevé', 'critique'].includes(getRiskLevel(c.name))).length}
+                {filteredCommunes.filter(c => ['modéré', 'élevé', 'critique'].includes(getCommuneRiskLevel(c.name))).length}
               </div>
               <div className="text-xs text-orange-600">Vigilance requise</div>
             </div>
