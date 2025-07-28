@@ -398,6 +398,15 @@ const LandingPage = () => {
         </div>
       </nav>
 
+      {/* Encart Publicitaire Principal - Top Banner */}
+      <div className="bg-gray-50 border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+          <AdBanner position="top">
+            {AdContent.topBanner}
+          </AdBanner>
+        </div>
+      </div>
+
       {/* Hero Section avec vigilance adaptative */}
       <section className="relative overflow-hidden">
         {/* Background avec gradient adaptatif selon vigilance */}
