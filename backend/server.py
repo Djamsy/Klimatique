@@ -1035,6 +1035,205 @@ async def get_api_status():
         }
 
 # =============================================================================
+# ENDPOINTS RÉSEAUX SOCIAUX
+# =============================================================================
+
+@api_router.post("/social/credentials", response_model=SocialCredentialsResponse)
+async def store_social_credentials(credentials: SocialCredentialsRequest):
+    """Stocke les identifiants des réseaux sociaux"""
+    try:
+        from services.social_media_service import social_media_service
+        
+        success = await social_media_service.store_social_credentials(
+            platform=credentials.platform.value,
+            credentials=credentials.credentials
+        )
+        
+        return SocialCredentialsResponse(
+            success=success,
+            platform=credentials.platform,
+            message=f"Identifiants {credentials.platform.value} stockés avec succès" if success else "Erreur lors du stockage"
+        )
+        
+    except Exception as e:
+        logger.error(f"Error storing social credentials: {e}")
+        raise HTTPException(status_code=500, detail="Erreur stockage identifiants")
+
+@api_router.post("/social/post", response_model=SocialPostResponse)  
+async def create_social_post(post_request: SocialPostRequest):
+    """Crée un post sur les réseaux sociaux"""
+    try:
+        from services.social_media_service import social_media_service
+        
+        # Si une commune est spécifiée, récupérer les données météo
+        if post_request.commune:
+            weather_data = await weather_service.get_weather_for_commune(post_request.commune)
+            vigilance_data = await meteo_france_service.get_vigilance_data('guadeloupe')
+            
+            # Optionnel: ajouter prédiction IA
+            ai_prediction = None
+            if post_request.include_ai_prediction and weather_data:
+                try:
+                    coords = weather_data.coordinates
+                    severe_weather = await openweather_service.get_severe_weather_data(coords[0], coords[1])
+                    
+                    if severe_weather:
+                        commune_info = get_commune_info(post_request.commune)
+                        ai_prediction = cyclone_predictor.predict_damage(
+                            weather_data=severe_weather['current'],
+                            commune_info=commune_info
+                        )
+                except Exception as e:
+                    logger.warning(f"Could not get AI prediction for social post: {e}")
+            
+            # Formater le post avec les données météo
+            content = social_media_service.format_weather_post(
+                weather_data.dict() if weather_data else {},
+                vigilance_data,
+                ai_prediction
+            )
+        else:
+            # Utiliser le contenu fourni directement
+            content = post_request.content
+        
+        # Poster sur toutes les plateformes ou celles spécifiées
+        if post_request.platforms:
+            results = {}
+            platforms = [p.value for p in post_request.platforms]
+            
+            if 'twitter' in platforms:
+                results['twitter'] = await social_media_service.post_to_twitter(content)
+            if 'facebook' in platforms:  
+                results['facebook'] = await social_media_service.post_to_facebook(content)
+        else:
+            results = await social_media_service.post_to_all_platforms(content)
+        
+        return SocialPostResponse(
+            success=any(r.get('success', False) for r in results.values()),
+            results=results
+        )
+        
+    except Exception as e:
+        logger.error(f"Error creating social post: {e}")
+        raise HTTPException(status_code=500, detail="Erreur création post")
+
+@api_router.post("/social/schedule", response_model=ScheduledPostResponse)
+async def schedule_social_post(schedule_request: ScheduledPostRequest):
+    """Programme un post sur les réseaux sociaux"""
+    try:
+        from services.social_post_scheduler import social_post_scheduler
+        
+        platforms = [p.value for p in schedule_request.platforms] if schedule_request.platforms else ['twitter', 'facebook']
+        
+        job_id = await social_post_scheduler.schedule_custom_post(
+            content=schedule_request.content,
+            schedule_time=schedule_request.schedule_time,
+            platforms=platforms
+        )
+        
+        return ScheduledPostResponse(
+            success=True,
+            job_id=job_id,
+            scheduled_time=schedule_request.schedule_time,
+            platforms=schedule_request.platforms or [SocialPlatform.TWITTER, SocialPlatform.FACEBOOK]
+        )
+        
+    except Exception as e:
+        logger.error(f"Error scheduling social post: {e}")
+        raise HTTPException(status_code=500, detail="Erreur programmation post")
+
+@api_router.delete("/social/schedule/{job_id}")
+async def cancel_scheduled_post(job_id: str):
+    """Annule un post programmé"""
+    try:
+        from services.social_post_scheduler import social_post_scheduler
+        
+        success = await social_post_scheduler.cancel_scheduled_post(job_id)
+        
+        return {
+            "success": success,
+            "message": "Post programmé annulé avec succès" if success else "Erreur lors de l'annulation"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error cancelling scheduled post: {e}")
+        raise HTTPException(status_code=500, detail="Erreur annulation post")
+
+@api_router.get("/social/stats", response_model=SocialStatsResponse)
+async def get_social_stats(days: int = 30):
+    """Récupère les statistiques des posts sur les réseaux sociaux"""
+    try:
+        from services.social_media_service import social_media_service
+        
+        stats = await social_media_service.get_post_statistics(days=days)
+        
+        return SocialStatsResponse(
+            total_posts=stats['total_posts'],
+            platform_breakdown=stats['platform_breakdown'],
+            period_days=stats['period_days'],
+            last_updated=stats.get('last_updated', datetime.now().isoformat())
+        )
+        
+    except Exception as e:
+        logger.error(f"Error getting social stats: {e}")
+        raise HTTPException(status_code=500, detail="Erreur statistiques réseaux sociaux")
+
+@api_router.get("/social/scheduler/status")
+async def get_scheduler_status():
+    """Statut du planificateur de posts sociaux"""
+    try:
+        from services.social_post_scheduler import social_post_scheduler
+        
+        status = await social_post_scheduler.get_scheduler_status()
+        return status
+        
+    except Exception as e:
+        logger.error(f"Error getting scheduler status: {e}")
+        raise HTTPException(status_code=500, detail="Erreur statut planificateur")
+
+@api_router.post("/social/scheduler/start")
+async def start_social_scheduler():
+    """Démarre le planificateur de posts sociaux"""
+    try:
+        from services.social_post_scheduler import social_post_scheduler
+        
+        await social_post_scheduler.start_scheduler()
+        return {"message": "Planificateur de posts sociaux démarré avec succès"}
+        
+    except Exception as e:
+        logger.error(f"Error starting social scheduler: {e}")
+        raise HTTPException(status_code=500, detail="Erreur démarrage planificateur")
+
+@api_router.post("/social/scheduler/stop") 
+async def stop_social_scheduler():
+    """Arrête le planificateur de posts sociaux"""
+    try:
+        from services.social_post_scheduler import social_post_scheduler
+        
+        await social_post_scheduler.stop_scheduler()
+        return {"message": "Planificateur de posts sociaux arrêté avec succès"}
+        
+    except Exception as e:
+        logger.error(f"Error stopping social scheduler: {e}")
+        raise HTTPException(status_code=500, detail="Erreur arrêt planificateur")
+
+@api_router.get("/social/test-connections")
+async def test_social_connections():
+    """Teste les connexions aux API des réseaux sociaux"""
+    try:
+        from services.social_media_service import social_media_service
+        
+        results = social_media_service.test_connections()
+        return {
+            "connections": results,
+            "overall_status": "connected" if any(r.get('connected', False) for r in results.values()) else "disconnected"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error testing social connections: {e}")
+        raise HTTPException(status_code=500, detail="Erreur test connexions")
+
+# =============================================================================
 # ENDPOINTS LEGACY (compatibilité avec le frontend existant)
 # =============================================================================
 
