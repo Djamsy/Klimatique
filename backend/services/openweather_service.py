@@ -64,7 +64,7 @@ class OpenWeatherService:
                     'temp': base_temp + random.uniform(-2, 2),
                     'humidity': max(50, min(95, humidity + random.uniform(-10, 10))),
                     'pressure': pressure + random.uniform(-3, 3),
-                    'wind_speed': max(5, wind_speed + random.uniform(-5, 5)),
+                    'wind_speed': max(5, min(25, wind_speed + random.uniform(-5, 5))),
                     'pop': min(100, precipitation * 20 + random.uniform(-10, 10)),
                     'rain': {'1h': max(0, precipitation + random.uniform(-0.5, 0.5))} if random.random() > 0.7 else {}
                 }
