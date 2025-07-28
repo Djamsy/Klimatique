@@ -420,34 +420,6 @@ const LandingPage = () => {
                 Alertes Bêta
               </Button>
             </div>
-            
-            {/* Stats adaptatives */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-8 max-w-4xl mx-auto">
-              <div className="text-center bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-white/20">
-                <div className="text-2xl sm:text-3xl font-bold text-cyan-400 mb-2">
-                  {vigilanceData ? vigilanceData.color_level.toUpperCase() : 'VERT'}
-                </div>
-                <div className="text-white text-sm sm:text-base">Vigilance</div>
-              </div>
-              <div className="text-center bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-white/20">
-                <div className="text-2xl sm:text-3xl font-bold text-green-400 mb-2">
-                  {vigilanceData ? vigilanceData.global_risk_score : stats.precision}<span className="text-sm text-green-300">%</span>
-                </div>
-                <div className="text-white text-sm sm:text-base">Score</div>
-              </div>
-              <div className="text-center bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-white/20">
-                <div className="text-2xl sm:text-3xl font-bold text-purple-400 mb-2">
-                  {stats.response_time}<span className="text-sm text-purple-300">s</span>
-                </div>
-                <div className="text-white text-sm sm:text-base">Temps réel</div>
-              </div>
-              <div className="text-center bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-white/20">
-                <div className="text-2xl sm:text-3xl font-bold text-yellow-400 mb-2">
-                  {stats.users}
-                </div>
-                <div className="text-white text-sm sm:text-base">Utilisateurs</div>
-              </div>
-            </div>
           </div>
         </div>
         
