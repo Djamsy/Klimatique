@@ -261,22 +261,28 @@ class NASAWeatherService:
         """Identifie les facteurs de risque spécifiques"""
         factors = []
         
-        if weather.wind_speed > 80:
+        if weather.wind_speed > 100:
             factors.append("Risque cyclonique majeur")
-        elif weather.wind_speed > 60:
+        elif weather.wind_speed > 80:
             factors.append("Vents destructeurs")
-        elif weather.wind_speed > 40:
+        elif weather.wind_speed > 50:
             factors.append("Vents violents")
+        elif weather.wind_speed > 35:
+            factors.append("Vents forts")
         
         if weather.precipitation > 25:
             factors.append("Risque d'inondation critique")
         elif weather.precipitation > 15:
             factors.append("Fortes précipitations")
-        elif weather.precipitation > 5:
+        elif weather.precipitation > 8:
             factors.append("Pluies importantes")
+        elif weather.precipitation > 3:
+            factors.append("Pluies modérées")
         
-        if weather.precipitation_probability > 80:
+        if weather.precipitation_probability > 90:
             factors.append("Précipitations quasi-certaines")
+        elif weather.precipitation_probability > 70:
+            factors.append("Précipitations très probables")
         
         if weather.humidity > 90:
             factors.append("Humidité extrême")
