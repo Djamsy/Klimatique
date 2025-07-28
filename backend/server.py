@@ -66,7 +66,7 @@ async def lifespan(app: FastAPI):
     
     # Initialiser les services sociaux et backup
     try:
-        global social_media_service, social_post_scheduler, weather_backup_service, user_activity_service
+        global social_media_service, social_post_scheduler, weather_backup_service, user_activity_service, ai_precalculation_service
         
         from services.social_media_service import SocialMediaService
         from services.social_post_scheduler import SocialPostScheduler
@@ -79,6 +79,9 @@ async def lifespan(app: FastAPI):
         # Service d'activité utilisateur
         user_activity_service = await get_user_activity_service()
         
+        # Service IA précalculation
+        ai_precalculation_service = await get_ai_precalculation_service()
+        
         # Services sociaux
         social_media_service = SocialMediaService(db)
         social_post_scheduler = SocialPostScheduler(
@@ -89,17 +92,23 @@ async def lifespan(app: FastAPI):
             cyclone_predictor=cyclone_predictor
         )
         
+        # Démarrer le scheduler IA
+        await start_ai_scheduler()
+        
         # Mettre à jour les services globaux
         import services.social_media_service as sms_module
         import services.social_post_scheduler as sps_module
         import services.weather_backup_service as wbs_module
         import services.user_activity_service as uas_module
+        import services.ai_precalculation_service as aips_module
+        
         sms_module.social_media_service = social_media_service
         sps_module.social_post_scheduler = social_post_scheduler
         wbs_module.weather_backup_service = weather_backup_service
         uas_module.user_activity_service = user_activity_service
+        aips_module.ai_precalculation_service = ai_precalculation_service
         
-        logger.info("Social media, backup and user activity services initialized successfully")
+        logger.info("Social media, backup, user activity and AI services initialized successfully")
         
     except Exception as e:
         logger.error(f"Failed to initialize services: {e}")
