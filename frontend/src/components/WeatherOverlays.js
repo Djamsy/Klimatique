@@ -63,6 +63,8 @@ const WeatherOverlays = ({ onOverlayChange }) => {
 
   const loadOverlay = async (type) => {
     try {
+      console.log(`🔄 Loading overlay ${type}...`);
+      
       setOverlays(prev => ({
         ...prev,
         [type]: { ...prev[type], loading: true, status: 'loading' }
@@ -73,6 +75,8 @@ const WeatherOverlays = ({ onOverlayChange }) => {
       let success = false;
       
       try {
+        console.log(`📡 Fetching overlay data for ${type}...`);
+        
         // Tentative de chargement principal
         switch (type) {
           case 'clouds':
@@ -87,6 +91,8 @@ const WeatherOverlays = ({ onOverlayChange }) => {
           default:
             throw new Error(`Type d'overlay non supporté: ${type}`);
         }
+        
+        console.log(`✅ Overlay data received for ${type}:`, data);
         success = true;
         
       } catch (primaryError) {
@@ -106,20 +112,27 @@ const WeatherOverlays = ({ onOverlayChange }) => {
       // Enregistrer le résultat
       overlayBackupService.recordAttempt(type, success, data);
       
-      setOverlays(prev => ({
-        ...prev,
-        [type]: {
-          ...prev[type],
-          data: data.data || data,
-          loading: false,
-          status: success ? 'active' : 'failed'
-        }
-      }));
+      console.log(`💾 Updating overlay state for ${type}...`);
+      
+      setOverlays(prev => {
+        const newState = {
+          ...prev,
+          [type]: {
+            ...prev[type],
+            data: data.data || data,
+            loading: false,
+            status: success ? 'active' : 'failed'
+          }
+        };
+        console.log(`📊 New overlay state for ${type}:`, newState[type]);
+        return newState;
+      });
 
       setLastRefresh(Date.now());
+      console.log(`🎯 Overlay ${type} loaded successfully!`);
 
     } catch (err) {
-      console.error(`Error loading ${type} overlay:`, err);
+      console.error(`❌ Error loading ${type} overlay:`, err);
       
       // Enregistrer l'échec
       overlayBackupService.recordAttempt(type, false);
