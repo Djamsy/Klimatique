@@ -58,13 +58,18 @@ async def lifespan(app: FastAPI):
     # Startup
     logger.info("Starting Météo Sentinelle application...")
     
-    # Initialiser les services sociaux
+    # Initialiser les services sociaux et backup
     try:
-        global social_media_service, social_post_scheduler
+        global social_media_service, social_post_scheduler, weather_backup_service
         
         from services.social_media_service import SocialMediaService
         from services.social_post_scheduler import SocialPostScheduler
+        from services.weather_backup_service import WeatherBackupService
         
+        # Service de backup météo
+        weather_backup_service = WeatherBackupService(db)
+        
+        # Services sociaux
         social_media_service = SocialMediaService(db)
         social_post_scheduler = SocialPostScheduler(
             db=db,
@@ -77,13 +82,15 @@ async def lifespan(app: FastAPI):
         # Mettre à jour les services globaux
         import services.social_media_service as sms_module
         import services.social_post_scheduler as sps_module
+        import services.weather_backup_service as wbs_module
         sms_module.social_media_service = social_media_service
         sps_module.social_post_scheduler = social_post_scheduler
+        wbs_module.weather_backup_service = weather_backup_service
         
-        logger.info("Social media services initialized successfully")
+        logger.info("Social media and backup services initialized successfully")
         
     except Exception as e:
-        logger.error(f"Failed to initialize social media services: {e}")
+        logger.error(f"Failed to initialize services: {e}")
     
     # Démarrer le scheduler météo
     try:
