@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Tests complets pour l'API Météo Sentinelle - Endpoints météo et IA prédictive
-Teste les nouveaux endpoints overlay météo, pluviomètre et cache + IA cyclonique
+Tests complets pour l'API Météo Sentinelle - Focus sur les nouveaux endpoints réseaux sociaux
+Teste les endpoints API réseaux sociaux, modèles Pydantic, services et intégration météo
 """
 
 import asyncio
@@ -9,7 +9,7 @@ import httpx
 import json
 import os
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Dict, List
 
 # Configuration
