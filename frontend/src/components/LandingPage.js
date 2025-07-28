@@ -287,6 +287,72 @@ const LandingPage = () => {
     }
   ];
 
+  // Composant d'encart publicitaire
+  const AdBanner = ({ position, className = '', children }) => (
+    <div className={`ad-banner ad-${position} ${className}`}>
+      <div className="ad-content bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 text-center">
+        <div className="text-xs text-gray-500 mb-2 uppercase tracking-wide">Publicité</div>
+        {children}
+      </div>
+    </div>
+  );
+
+  // Différents types d'encarts publicitaires
+  const AdContent = {
+    topBanner: (
+      <div className="flex items-center justify-center space-x-4">
+        <div className="text-sm text-gray-700">
+          <strong className="text-blue-700">Protégez votre maison</strong> - Assurance Météo Antilles
+        </div>
+        <Button variant="outline" size="sm" className="text-xs">
+          En savoir plus
+        </Button>
+      </div>
+    ),
+    
+    sidebarWeather: (
+      <div className="space-y-2">
+        <div className="font-semibold text-blue-800">Équipement Météo Pro</div>
+        <p className="text-xs text-gray-600">Stations météo connectées pour particuliers et professionnels</p>
+        <Button variant="outline" size="sm" className="w-full text-xs">
+          Découvrir
+        </Button>
+      </div>
+    ),
+    
+    betweenSections: (
+      <div className="py-2">
+        <div className="flex items-center justify-between">
+          <div className="flex-1">
+            <div className="font-semibold text-green-800">Agriculture Connectée</div>
+            <p className="text-xs text-gray-600">Solutions IoT pour l'agriculture tropicale</p>
+          </div>
+          <Button variant="outline" size="sm" className="ml-4">
+            <ExternalLink className="w-3 h-3 mr-1" />
+            Voir
+          </Button>
+        </div>
+      </div>
+    ),
+    
+    footerSponsored: (
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="text-center p-3 bg-white rounded border">
+          <div className="font-semibold text-indigo-700">Météo Services Pro</div>
+          <p className="text-xs text-gray-600">API météo pour développeurs</p>
+        </div>
+        <div className="text-center p-3 bg-white rounded border">
+          <div className="font-semibold text-orange-700">Formation Sécurité</div>
+          <p className="text-xs text-gray-600">Gestion de crise météorologique</p>
+        </div>
+        <div className="text-center p-3 bg-white rounded border">
+          <div className="font-semibold text-teal-700">EcoTech Caraïbes</div>
+          <p className="text-xs text-gray-600">Technologies environnementales</p>
+        </div>
+      </div>
+    )
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Alert Banner - Vigilance dynamique */}
