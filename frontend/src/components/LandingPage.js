@@ -317,29 +317,10 @@ const LandingPage = () => {
     }
   ];
 
-  const testimonials = [
-    {
-      id: 1,
-      name: "Marie Dubois",
-      role: "Maire de Sainte-Anne",
-      content: "Grâce à Klimaclique, nous anticipons mieux les risques d'inondation. Un outil indispensable pour protéger nos citoyens.",
-      avatar: "MD"
-    },
-    {
-      id: 2,
-      name: "Jean-Claude Martin",
-      role: "Agriculteur, Basse-Terre",
-      content: "Les alertes précises m'ont permis de protéger mes cultures à plusieurs reprises. La précision locale fait toute la différence.",
-      avatar: "JM"
-    },
-    {
-      id: 3,
-      name: "Dr. Sophie Laurent",
-      role: "Médecin urgentiste, CHU",
-      content: "L'anticipation des événements extrêmes nous aide à mieux organiser les services d'urgence. Un gain de temps vital.",
-      avatar: "SL"
-    }
-  ];
+  // Service de génération de session ID pour le tracking
+  const generateSessionId = () => {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2);
+  };
 
   // Composant d'encart publicitaire
   const AdBanner = ({ position, className = '', children }) => (
