@@ -77,6 +77,12 @@ const NASAOverlayController = ({ map, activeOverlays, setActiveOverlays }) => {
 
     const currentDate = getCurrentDate();
     const layers = {};
+    
+    // Limites géographiques de la Guadeloupe
+    const guadeloupeBounds = [
+      [15.8, -61.9],  // Sud-Ouest
+      [16.6, -61.0]   // Nord-Est
+    ];
 
     // Crée les couches overlay pour chaque type
     Object.entries(NASA_GIBS_LAYERS).forEach(([key, config]) => {
