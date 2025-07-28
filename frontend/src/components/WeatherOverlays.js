@@ -184,6 +184,12 @@ const WeatherOverlays = ({ onOverlayChange }) => {
     
     const tileUrl = `https://tile.openweathermap.org/map/${layerName}/{z}/{x}/{y}.png?appid=${apiKey}`;
     
+    // Limites géographiques de la Guadeloupe pour économiser les données
+    const guadeloupeBounds = [
+      [15.8, -61.9],  // Sud-Ouest
+      [16.6, -61.0]   // Nord-Est
+    ];
+    
     console.log(`Rendering overlay ${type} with URL: ${tileUrl}`);
     
     return (
@@ -192,7 +198,10 @@ const WeatherOverlays = ({ onOverlayChange }) => {
         url={tileUrl}
         opacity={getOverlayOpacity(type)}
         zIndex={getOverlayZIndex(type)}
-        attribution={`OpenWeatherMap ${type}`}
+        attribution={`OpenWeatherMap ${type} • Zone Guadeloupe`}
+        bounds={guadeloupeBounds}
+        maxZoom={12}
+        minZoom={8}
       />
     );
   };
