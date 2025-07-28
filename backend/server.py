@@ -808,7 +808,7 @@ async def get_ai_model_info():
         logger.error(f"Error getting AI model info: {e}")
         raise HTTPException(status_code=500, detail="Erreur informations modèle IA")
 
-@api_router.post("/ai/model/retrain")
+@api_router.get("/ai/model/retrain")
 async def retrain_ai_model():
     """Re-entraîne le modèle IA (admin uniquement)"""
     try:
@@ -820,6 +820,71 @@ async def retrain_ai_model():
     except Exception as e:
         logger.error(f"Error retraining AI model: {e}")
         raise HTTPException(status_code=500, detail="Erreur re-entraînement modèle IA")
+
+@api_router.get("/ai/test/{commune}")
+async def test_ai_with_fallback(commune: str):
+    """Test de l'IA avec données fallback - endpoint de debug"""
+    try:
+        # Force l'utilisation de données fallback pour test
+        from services.openweather_service import OpenWeatherService
+        
+        # Créer instance temporaire avec fallback forcé
+        temp_service = OpenWeatherService()
+        
+        # Obtenir coordonnées de la commune
+        commune_info = get_commune_info(commune)
+        coords = commune_info['coordinates']
+        
+        # Générer données fallback
+        fallback_data = temp_service.generate_fallback_weather_data(coords[0], coords[1])
+        
+        # Adapter au format severe_weather
+        severe_weather = {
+            'current': {
+                'wind_speed': fallback_data['current']['wind_speed'],
+                'pressure': fallback_data['current']['pressure'], 
+                'temperature': fallback_data['current']['temperature'],
+                'humidity': fallback_data['current']['humidity'],
+                'precipitation': fallback_data['current'].get('rain', {}).get('1h', 0),
+                'source': 'test_fallback'
+            },
+            'timeline': {},
+            'fallback_mode': True
+        }
+        
+        # Test de l'IA
+        prediction = cyclone_predictor.predict_damage(
+            weather_data=severe_weather['current'],
+            commune_info=commune_info
+        )
+        
+        # Adaptation vigilance
+        try:
+            vigilance_data = await meteo_france_service.get_vigilance_data('guadeloupe')
+            vigilance_level = vigilance_data.get('color_level', 'vert')
+            adapted_risk = cyclone_predictor.adapt_risk_to_vigilance(
+                prediction['risk_level'], vigilance_level
+            )
+        except:
+            adapted_risk = prediction['risk_level']
+            vigilance_level = 'unknown'
+        
+        return {
+            "message": "Test IA avec données fallback",
+            "commune": commune,
+            "fallback_weather": fallback_data['current'],
+            "original_risk": prediction['risk_level'],
+            "adapted_risk": adapted_risk,
+            "vigilance_level": vigilance_level,
+            "risk_score": prediction['risk_score'],
+            "confidence": prediction['confidence'],
+            "recommendations": prediction['recommendations'][:3],
+            "test_mode": True
+        }
+        
+    except Exception as e:
+        logger.error(f"Error in AI test: {e}")
+        raise HTTPException(status_code=500, detail=f"Erreur test IA: {str(e)}")
 
 # =============================================================================
 # ENDPOINTS CONFIGURATION & UTILITAIRES
