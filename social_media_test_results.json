@@ -1,0 +1,73 @@
+{
+  "total_tests": 12,
+  "passed": 8,
+  "failed": 4,
+  "errors": [
+    "Statistiques Sociales: Status 500: {\"detail\":\"Erreur statistiques réseaux sociaux\"}",
+    "Résolution Risques IA - Pointe-à-Pitre: Status 404: {\"detail\":\"Données météo non disponibles pour Pointe-à-Pitre\"}",
+    "Résolution Risques IA - Basse-Terre: Status 404: {\"detail\":\"Données météo non disponibles pour Basse-Terre\"}",
+    "Résolution Risques IA - Sainte-Anne: Status 404: {\"detail\":\"Données météo non disponibles pour Sainte-Anne\"}"
+  ],
+  "detailed_results": {
+    "Test Connexions Sociales": {
+      "success": true,
+      "details": "Status: disconnected",
+      "timestamp": "2025-07-28T01:04:12.131993"
+    },
+    "Statut Scheduler Social": {
+      "success": true,
+      "details": "Running: False, Jobs: 0",
+      "timestamp": "2025-07-28T01:04:12.252685"
+    },
+    "Statistiques Sociales": {
+      "success": false,
+      "details": "Status 500: {\"detail\":\"Erreur statistiques réseaux sociaux\"}",
+      "timestamp": "2025-07-28T01:04:12.355287"
+    },
+    "Post Social Sans Credentials": {
+      "success": true,
+      "details": "Gestion d'erreur correcte sans credentials",
+      "timestamp": "2025-07-28T01:04:12.420701"
+    },
+    "Stockage Credentials": {
+      "success": true,
+      "details": "Platform: twitter, Success: True",
+      "timestamp": "2025-07-28T01:04:12.455250"
+    },
+    "Post Météo Intégré - Pointe-à-Pitre": {
+      "success": true,
+      "details": "Intégration météo OK pour Pointe-à-Pitre",
+      "timestamp": "2025-07-28T01:04:12.553375"
+    },
+    "Post Météo Intégré - Basse-Terre": {
+      "success": true,
+      "details": "Intégration météo OK pour Basse-Terre",
+      "timestamp": "2025-07-28T01:04:12.609242"
+    },
+    "Post Météo Intégré - Sainte-Anne": {
+      "success": true,
+      "details": "Intégration météo OK pour Sainte-Anne",
+      "timestamp": "2025-07-28T01:04:12.623354"
+    },
+    "Programmation Post Social": {
+      "success": true,
+      "details": "Job ID: custom_post_1753664652.635617, Annulation OK",
+      "timestamp": "2025-07-28T01:04:12.811544"
+    },
+    "Résolution Risques IA - Pointe-à-Pitre": {
+      "success": false,
+      "details": "Status 404: {\"detail\":\"Données météo non disponibles pour Pointe-à-Pitre\"}",
+      "timestamp": "2025-07-28T01:04:12.826035"
+    },
+    "Résolution Risques IA - Basse-Terre": {
+      "success": false,
+      "details": "Status 404: {\"detail\":\"Données météo non disponibles pour Basse-Terre\"}",
+      "timestamp": "2025-07-28T01:04:12.919580"
+    },
+    "Résolution Risques IA - Sainte-Anne": {
+      "success": false,
+      "details": "Status 404: {\"detail\":\"Données météo non disponibles pour Sainte-Anne\"}",
+      "timestamp": "2025-07-28T01:04:12.935798"
+    }
+  }
+}
