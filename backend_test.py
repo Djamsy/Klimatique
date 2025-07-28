@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Tests complets pour l'API Météo Sentinelle - Focus sur les nouveaux endpoints réseaux sociaux
-Teste les endpoints API réseaux sociaux, modèles Pydantic, services et intégration météo
+Tests complets pour l'API Météo Sentinelle - Focus sur les corrections implémentées
+Teste les corrections: IA vigilance verte, système backup météo, intégration backup
 """
 
 import asyncio
@@ -16,13 +16,11 @@ from typing import Dict, List
 BACKEND_URL = "https://d77d7f0e-effd-4bb4-a235-509e3ee58622.preview.emergentagent.com/api"
 TIMEOUT = 30.0
 
-# Communes à tester (selon la demande)
+# Communes à tester (selon la demande spécifique)
 TEST_COMMUNES = [
     "Pointe-à-Pitre",
     "Basse-Terre", 
-    "Sainte-Anne",
-    "Le Moule",
-    "Marie-Galante"
+    "Sainte-Anne"
 ]
 
 class AIEndpointTester:
