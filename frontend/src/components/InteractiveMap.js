@@ -430,11 +430,13 @@ const InteractiveMap = () => {
         </p>
       </div>
 
-      <div className="rounded-lg overflow-hidden border-2 border-gray-200" style={{ height: '500px' }}>
+      <div className="rounded-lg overflow-hidden border-2 border-gray-200" style={{ height: window.innerWidth < 768 ? '400px' : '500px' }}>
         <MapContainer
           center={guadeloupeCenter}
-          zoom={10}
+          zoom={window.innerWidth < 768 ? 9 : 10}
           style={{ height: '100%', width: '100%' }}
+          closePopupOnClick={true}
+          zoomControl={window.innerWidth >= 768}
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
