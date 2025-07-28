@@ -377,22 +377,22 @@ const LandingPage = () => {
       <nav className="navbar sticky top-0 z-50 bg-white/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <div className="flex items-center">
+            <div className="flex items-center animate-fade-in-left">
               <Shield className="h-8 w-8 text-blue-800 mr-3" />
               <span className="text-xl font-bold text-blue-800">Klimaclique</span>
             </div>
-            <div className="hidden md:flex space-x-8">
-              <a href="#features" className="text-gray-700 hover:text-blue-800 transition-colors">Fonctionnalités</a>
-              <a href="#previsions" className="text-gray-700 hover:text-blue-800 transition-colors">Prévisions</a>
+            <div className="hidden md:flex space-x-8 animate-fade-in-down">
+              <a href="#features" className="text-gray-700 hover:text-blue-800 transition-colors duration-300">Fonctionnalités</a>
+              <a href="#previsions" className="text-gray-700 hover:text-blue-800 transition-colors duration-300">Prévisions</a>
               <Button 
                 variant="ghost" 
                 onClick={handleNavigateToMap}
-                className="text-gray-700 hover:text-blue-800 transition-colors"
+                className="text-gray-700 hover:text-blue-800 transition-colors duration-300 btn-animated"
               >
                 Carte Interactive
               </Button>
-              <a href="#temoignages" className="text-gray-700 hover:text-blue-800 transition-colors">Témoignages</a>
-              <a href="#contact" className="text-gray-700 hover:text-blue-800 transition-colors">Contact</a>
+              <a href="#temoignages" className="text-gray-700 hover:text-blue-800 transition-colors duration-300">Témoignages</a>
+              <a href="#contact" className="text-gray-700 hover:text-blue-800 transition-colors duration-300">Contact</a>
             </div>
           </div>
         </div>
