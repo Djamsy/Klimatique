@@ -91,13 +91,6 @@ class SocialStatsResponse(BaseModel):
     platform_breakdown: Dict[str, int]
     period_days: int
     last_updated: str
-    commune: str
-    coordinates: List[float]  # [lat, lon]
-    current_weather: WeatherData
-    forecast_5_days: List[WeatherForecastDay]
-    source: WeatherSource
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
-    expires_at: datetime
     call_count_today: int = 0
     last_api_call: Optional[datetime] = None
 
