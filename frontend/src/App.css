@@ -101,6 +101,30 @@ body {
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
   }
+
+  /* Optimisations spécifiques carte de vigilance */
+  .vigilance-marker {
+    z-index: 600 !important;
+  }
+  
+  /* Popups vigilance plus compacts */
+  .leaflet-popup.leaflet-zoom-animated .leaflet-popup-content-wrapper {
+    padding: 2px !important;
+  }
+  
+  .leaflet-popup.leaflet-zoom-animated .leaflet-popup-content {
+    margin: 6px 8px !important;
+    font-size: 12px !important;
+    line-height: 1.3 !important;
+  }
+}
+
+/* Styles généraux pour les popups plus compacts */
+.leaflet-popup-close-button {
+  color: #666 !important;
+  font-size: 16px !important;
+  font-weight: bold !important;
+  padding: 4px 8px !important;
 }
 
 /* Amélioration générale des popups */
