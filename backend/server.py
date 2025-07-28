@@ -63,14 +63,18 @@ async def lifespan(app: FastAPI):
     
     # Initialiser les services sociaux et backup
     try:
-        global social_media_service, social_post_scheduler, weather_backup_service
+        global social_media_service, social_post_scheduler, weather_backup_service, user_activity_service
         
         from services.social_media_service import SocialMediaService
         from services.social_post_scheduler import SocialPostScheduler
         from services.weather_backup_service import WeatherBackupService
+        from services.user_activity_service import get_user_activity_service
         
         # Service de backup météo
         weather_backup_service = WeatherBackupService(db)
+        
+        # Service d'activité utilisateur
+        user_activity_service = await get_user_activity_service()
         
         # Services sociaux
         social_media_service = SocialMediaService(db)
@@ -86,11 +90,13 @@ async def lifespan(app: FastAPI):
         import services.social_media_service as sms_module
         import services.social_post_scheduler as sps_module
         import services.weather_backup_service as wbs_module
+        import services.user_activity_service as uas_module
         sms_module.social_media_service = social_media_service
         sps_module.social_post_scheduler = social_post_scheduler
         wbs_module.weather_backup_service = weather_backup_service
+        uas_module.user_activity_service = user_activity_service
         
-        logger.info("Social media and backup services initialized successfully")
+        logger.info("Social media, backup and user activity services initialized successfully")
         
     except Exception as e:
         logger.error(f"Failed to initialize services: {e}")
