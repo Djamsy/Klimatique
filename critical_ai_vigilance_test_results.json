@@ -1,0 +1,70 @@
+{
+  "total_tests": 10,
+  "passed": 6,
+  "failed": 4,
+  "critical_failures": [
+    "IA Critique Vigilance Verte - Sainte-Anne: CRITIQUE: weather_risk_score=12.3 > 12 en vigilance VERTE"
+  ],
+  "detailed_results": {
+    "Vigilance Data": {
+      "success": true,
+      "details": "Endpoint: /vigilance/guadeloupe, Niveau: vert",
+      "is_critical": false,
+      "timestamp": "2025-07-28T01:35:02.848609"
+    },
+    "IA Critique Vigilance Verte - Pointe-à-Pitre": {
+      "success": true,
+      "details": "✅ Vigilance: vert, Risk: faible, Score: 9.1",
+      "is_critical": false,
+      "timestamp": "2025-07-28T01:35:02.879352"
+    },
+    "IA Critique Vigilance Verte - Basse-Terre": {
+      "success": true,
+      "details": "✅ Vigilance: vert, Risk: faible, Score: 8.2",
+      "is_critical": false,
+      "timestamp": "2025-07-28T01:35:02.945016"
+    },
+    "IA Critique Vigilance Verte - Sainte-Anne": {
+      "success": false,
+      "details": "CRITIQUE: weather_risk_score=12.3 > 12 en vigilance VERTE",
+      "is_critical": true,
+      "timestamp": "2025-07-28T01:35:02.973467"
+    },
+    "Cohérence IA-Vigilance - Pointe-à-Pitre": {
+      "success": true,
+      "details": "Cohérent: Vigilance vert ↔ IA faible (score: 8.4)",
+      "is_critical": false,
+      "timestamp": "2025-07-28T01:35:03.041898"
+    },
+    "Cohérence IA-Vigilance - Basse-Terre": {
+      "success": true,
+      "details": "Cohérent: Vigilance vert ↔ IA faible (score: 8.8)",
+      "is_critical": false,
+      "timestamp": "2025-07-28T01:35:03.068503"
+    },
+    "Cohérence IA-Vigilance - Sainte-Anne": {
+      "success": true,
+      "details": "Cohérent: Vigilance vert ↔ IA faible (score: 12.4)",
+      "is_critical": false,
+      "timestamp": "2025-07-28T01:35:03.094007"
+    },
+    "Recommandations IA - Pointe-à-Pitre": {
+      "success": false,
+      "details": "Manque de recommandations préventives appropriées",
+      "is_critical": false,
+      "timestamp": "2025-07-28T01:35:03.163096"
+    },
+    "Recommandations IA - Basse-Terre": {
+      "success": false,
+      "details": "Manque de recommandations préventives appropriées",
+      "is_critical": false,
+      "timestamp": "2025-07-28T01:35:03.231192"
+    },
+    "Recommandations IA - Sainte-Anne": {
+      "success": false,
+      "details": "Manque de recommandations préventives appropriées",
+      "is_critical": false,
+      "timestamp": "2025-07-28T01:35:03.299232"
+    }
+  }
+}
