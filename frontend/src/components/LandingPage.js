@@ -1179,15 +1179,89 @@ const LandingPage = () => {
                 </Button>
               </div>
 
-              {/* Formulaire de témoignage */}
+              {/* Formulaire de témoignage - Version mobile simplifiée */}
               {showTestimonialForm && (
-                <Card className="mb-8 p-6">
-                  <CardHeader>
-                    <CardTitle>Votre témoignage</CardTitle>
-                    <p className="text-sm text-gray-600">Partagez votre expérience avec Klimaclique (tous les champs sont optionnels sauf le témoignage)</p>
+                <Card className="mb-8 p-4 md:p-6">
+                  <CardHeader className="pb-4">
+                    <CardTitle className="text-lg md:text-xl">Votre témoignage</CardTitle>
+                    <p className="text-sm text-gray-600">Partagez votre expérience (tous les champs sont optionnels sauf le témoignage)</p>
                   </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
+                  <CardContent className="space-y-4">
+                    {/* Version mobile compacte */}
+                    <div className="block md:hidden space-y-3">
+                      <div>
+                        <Input
+                          value={newTestimonial.name}
+                          onChange={(e) => setNewTestimonial({...newTestimonial, name: e.target.value})}
+                          placeholder="Votre nom (optionnel)"
+                          className="w-full text-sm"
+                        />
+                      </div>
+                      <div>
+                        <Input
+                          value={newTestimonial.role}
+                          onChange={(e) => setNewTestimonial({...newTestimonial, role: e.target.value})}
+                          placeholder="Votre profession (optionnel)"
+                          className="w-full text-sm"
+                        />
+                      </div>
+                      <div>
+                        <Textarea
+                          value={newTestimonial.content}
+                          onChange={(e) => setNewTestimonial({...newTestimonial, content: e.target.value})}
+                          placeholder="Votre témoignage..."
+                          className="w-full min-h-[80px] text-sm"
+                          maxLength={500}
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          {newTestimonial.content.length}/500
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-700 mb-2">Note :</p>
+                        <div className="flex items-center space-x-1">
+                          {[1, 2, 3, 4, 5].map((rating) => (
+                            <button
+                              key={rating}
+                              type="button"
+                              onClick={() => setNewTestimonial({...newTestimonial, rating})}
+                              className="focus:outline-none p-1"
+                            >
+                              <Star 
+                                className={`w-8 h-8 ${rating <= newTestimonial.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
+                              />
+                            </button>
+                          ))}
+                        </div>
+                        <p className="text-sm text-gray-600 mt-1">{newTestimonial.rating}/5 étoiles</p>
+                      </div>
+                      <div className="flex flex-col space-y-2">
+                        <Button 
+                          onClick={submitTestimonial}
+                          disabled={isSubmittingTestimonial || !newTestimonial.content.trim()}
+                          className="bg-green-600 hover:bg-green-700 text-white w-full py-3"
+                        >
+                          {isSubmittingTestimonial ? (
+                            <>
+                              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                              Envoi...
+                            </>
+                          ) : (
+                            'Publier le témoignage'
+                          )}
+                        </Button>
+                        <Button 
+                          variant="outline"
+                          onClick={() => setShowTestimonialForm(false)}
+                          className="w-full"
+                        >
+                          Annuler
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Version desktop (cachée sur mobile) */}
+                    <div className="hidden md:block space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
