@@ -715,59 +715,49 @@ async def get_cyclone_prediction(commune: str):
         logger.error(f"❌ Erreur prédiction IA pour {commune}: {e}")
         raise HTTPException(status_code=500, detail=f"Erreur lors de la prédiction: {str(e)}")
 
-@api_router.get("/ai/cyclone/timeline/{commune}", response_model=CycloneTimelinePrediction)
-async def predict_cyclone_timeline(commune: str):
-    """Prédiction évolution des dégâts cycloniques dans le temps"""
+@api_router.get("/ai/cyclone/timeline/{commune}")
+async def get_cyclone_timeline(commune: str):
+    """Timeline de prédiction cyclonique pour une commune (données précalculées)"""
     try:
-        # Récupère les données météo actuelles
-        weather_data = await weather_service.get_weather_for_commune(commune)
-        if not weather_data:
-            raise HTTPException(status_code=404, detail=f"Données météo non disponibles pour {commune}")
+        logger.info(f"🕒 Récupération timeline IA précalculée pour {commune}")
         
-        coords = weather_data.coordinates
-        severe_weather = await openweather_service.get_severe_weather_data(coords[0], coords[1])
+        if not ai_precalculation_service:
+            raise HTTPException(status_code=503, detail="Service IA non disponible")
         
-        if not severe_weather:
-            raise HTTPException(status_code=500, detail="Données météo sévères non disponibles")
+        # Récupérer depuis le cache
+        cached_timeline = await ai_precalculation_service.get_cached_timeline(commune)
         
-        # Prépare les informations de la commune
-        commune_info = get_commune_info(commune)
+        if cached_timeline:
+            logger.info(f"✅ Timeline trouvée en cache pour {commune}")
+            return cached_timeline
         
-        # Prédictions timeline
-        timeline_predictions = cyclone_predictor.predict_timeline_damage(
-            weather_timeline=severe_weather['timeline'],
-            commune_info=commune_info
-        )
+        # Fallback minimal
+        logger.warning(f"⚠️ Pas de timeline en cache pour {commune}")
         
-        # Formate les réponses
-        formatted_timeline = {}
-        for time_key, prediction in timeline_predictions.items():
-            formatted_timeline[time_key] = CycloneAIResponse(
-                commune=commune,
-                coordinates=coords,
-                damage_predictions=CycloneDamagePrediction(
-                    infrastructure=prediction['damage_predictions']['infrastructure'],
-                    agriculture=prediction['damage_predictions']['agriculture'],
-                    population_impact=prediction['damage_predictions']['population_impact']
-                ),
-                risk_level=RiskLevel(prediction['risk_level']),
-                risk_score=prediction['risk_score'],
-                confidence=prediction['confidence'],
-                recommendations=prediction['recommendations'],
-                weather_context=severe_weather['timeline'][time_key]
-            )
+        commune_data = None
+        from data.communes_data import GUADELOUPE_COMMUNES
+        for c in GUADELOUPE_COMMUNES:
+            if c['name'].lower() == commune.lower():
+                commune_data = c
+                break
         
-        return CycloneTimelinePrediction(
-            commune=commune,
-            coordinates=coords,
-            timeline_predictions=formatted_timeline
-        )
+        if not commune_data:
+            raise HTTPException(status_code=404, detail="Commune non trouvée")
         
-    except HTTPException:
-        raise
+        return {
+            "commune": commune,
+            "coordinates": commune_data['coordinates'],
+            "timeline_predictions": {
+                "H+0": {"risk_evolution": {"wind_risk": 10, "flood_risk": 5, "infrastructure_risk": 3}},
+                "H+6": {"risk_evolution": {"wind_risk": 25, "flood_risk": 15, "infrastructure_risk": 10}},
+                "H+12": {"risk_evolution": {"wind_risk": 45, "flood_risk": 30, "infrastructure_risk": 25}}
+            },
+            "data_source": "fallback"
+        }
+        
     except Exception as e:
-        logger.error(f"Error predicting cyclone timeline for {commune}: {e}")
-        raise HTTPException(status_code=500, detail="Erreur prédiction timeline IA")
+        logger.error(f"❌ Erreur timeline IA pour {commune}: {e}")
+        raise HTTPException(status_code=500, detail=f"Erreur lors de la timeline: {str(e)}")
 
 @api_router.get("/ai/cyclone/historical/{commune}", response_model=CommuneHistoricalResponse)
 async def get_historical_cyclone_damage(commune: str):
