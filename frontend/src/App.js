@@ -5,6 +5,7 @@ import LandingPage from "./components/LandingPage";
 import MapPage from "./components/MapPage";
 import CommunePage from "./components/CommunePage";
 import WeatherAnimationDemo from "./components/WeatherAnimationDemo";
+import VigilancePreview from "./components/VigilancePreview";
 import { Toaster } from "./components/ui/toaster";
 import { useVigilanceTheme } from "./hooks/useVigilanceTheme";
 
