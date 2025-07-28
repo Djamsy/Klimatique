@@ -102,9 +102,24 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Corrections: Risques IA non-responsive à vigilance verte + backup données météo pour éviter erreurs chargement + encarts pub page d'accueil"
+user_problem_statement: "White page frontend error and AI parameter mismatch causing backend failures"
 
 backend:
+  - task: "Fix AI parameter mismatch in precalculation service"
+    implemented: true
+    working: true
+    file: "/app/backend/services/ai_precalculation_service.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: false
+        -agent: "user"
+        -comment: "Backend AI endpoints failing with error: CycloneDamagePredictor.predict_damage() got an unexpected keyword argument 'commune_name'"
+        -working: true
+        -agent: "main"
+        -comment: "Fixed parameter mismatch in _calculate_commune_prediction method. Changed from passing individual parameters (commune_name, coordinates, weather_conditions, population) to proper parameters (weather_data, commune_info, vigilance_level) matching the predict_damage function signature."
+
   - task: "Correction adaptation risques IA vigilance verte"
     implemented: true
     working: true
@@ -226,6 +241,21 @@ backend:
         -comment: "✅ TESTÉ ET VALIDÉ: Compteur utilisateurs actifs opérationnel. POST /api/users/activity enregistrement session OK, GET /api/users/active-count comptage temps réel fonctionnel (fenêtre 5 minutes). Service user_activity_service initialisé correctement au démarrage. Réponse structurée avec active_count et last_updated."
 
 frontend:
+  - task: "Fix frontend white page error"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/services/weatherService.js"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+        -working: false
+        -agent: "user"
+        -comment: "Frontend showing white page error: Cannot read properties of undefined (reading 'REACT_APP_BACKEND_URL') at weatherService.js"
+        -working: true
+        -agent: "main"
+        -comment: "Fixed environment variable access in weatherService.js. Removed incorrect import.meta.env syntax (Vite-specific) and kept only process.env.REACT_APP_BACKEND_URL for React compatibility. Frontend now loads properly."
+
   - task: "Encarts publicitaires page d'accueil"
     implemented: true
     working: true
