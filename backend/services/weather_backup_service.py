@@ -243,7 +243,23 @@ class WeatherBackupService:
             try:
                 backup_data = await self.get_backup_weather_with_fallback(commune)
                 
-                if backup_data and 'temperature' in backup_data:
+                # Check if backup data is valid - handle both direct and nested structures
+                is_valid = False
+                temp_value = None
+                
+                if backup_data:
+                    # Check for direct temperature field (generated backup)
+                    if 'temperature' in backup_data:
+                        is_valid = True
+                        temp_value = backup_data.get('temperature')
+                    # Check for nested structure (recent backup from API)
+                    elif 'current' in backup_data and isinstance(backup_data['current'], dict):
+                        current = backup_data['current']
+                        if 'temperature_current' in current or 'temperature_min' in current:
+                            is_valid = True
+                            temp_value = current.get('temperature_current') or current.get('temperature_min')
+                
+                if is_valid:
                     results['successful_backups'] += 1
                     results['commune_results'][commune] = {
                         'status': 'success',
