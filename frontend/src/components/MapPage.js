@@ -455,15 +455,15 @@ const MapPage = () => {
                 <Popup 
                   className="custom-popup"
                   closeButton={false}
-                  minWidth={250}
-                  maxWidth={300}
+                  minWidth={window.innerWidth < 768 ? 200 : 250}
+                  maxWidth={window.innerWidth < 768 ? 280 : 300}
                   autoPan={true}
                   keepInView={true}
                 >
                   <Card className="border-0 shadow-none">
-                    <CardHeader className="pb-3">
+                    <CardHeader className="pb-2 sm:pb-3">
                       <div className="flex items-center justify-between">
-                        <h3 className="font-semibold text-lg text-gray-900">
+                        <h3 className="font-semibold text-sm sm:text-lg text-gray-900">
                           {commune.name}
                         </h3>
                         <Badge 
@@ -481,10 +481,10 @@ const MapPage = () => {
                     
                     <CardContent className="pt-0">
                       {weather ? (
-                        <div className="space-y-3">
-                          <div className="grid grid-cols-2 gap-3 text-sm">
+                        <div className="space-y-2 sm:space-y-3">
+                          <div className="grid grid-cols-2 gap-2 sm:gap-3 text-xs sm:text-sm">
                             <div className="flex items-center justify-between">
-                              <span className="text-gray-600">Température:</span>
+                              <span className="text-gray-600">Temp:</span>
                               <span className="font-medium">
                                 {Math.round(weather.current?.temperature_max || 0)}°C
                               </span>
@@ -509,38 +509,38 @@ const MapPage = () => {
                             </div>
                           </div>
                           
-                          <div className="flex space-x-2 pt-3 border-t">
+                          <div className="flex flex-col sm:flex-row space-y-1 sm:space-y-0 sm:space-x-2 pt-2 sm:pt-3 border-t">
                             <Button 
                               size="sm"
-                              className="flex-1 bg-blue-600 hover:bg-blue-700"
+                              className="w-full bg-blue-600 hover:bg-blue-700 text-xs sm:text-sm py-1 sm:py-2"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleCommuneClick(commune);
                               }}
                             >
-                              <MapPin className="w-4 h-4 mr-2" />
+                              <MapPin className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                               Détails
                             </Button>
                             
                             <Button 
                               size="sm"
                               variant="outline"
-                              className="flex-1 border-blue-200 text-blue-600 hover:bg-blue-50"
+                              className="w-full border-blue-200 text-blue-600 hover:bg-blue-50 text-xs sm:text-sm py-1 sm:py-2"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setSelectedCommune(commune);
                                 setShowPluviometer(true);
                               }}
                             >
-                              <Activity className="w-4 h-4 mr-2" />
+                              <Activity className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                               Pluie
                             </Button>
                           </div>
                         </div>
                       ) : (
-                        <div className="text-center py-6">
-                          <Loader2 className="h-5 w-5 animate-spin mx-auto text-blue-600 mb-2" />
-                          <p className="text-sm text-gray-600">Chargement des données...</p>
+                        <div className="text-center py-4 sm:py-6">
+                          <Loader2 className="h-4 w-4 sm:h-5 sm:w-5 animate-spin mx-auto text-blue-600 mb-2" />
+                          <p className="text-xs sm:text-sm text-gray-600">Chargement...</p>
                         </div>
                       )}
                     </CardContent>
