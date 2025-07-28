@@ -67,7 +67,7 @@ COMMUNES_GUADELOUPE = {
             "population": 0.6
         }
     },
-    "Gosier": {
+    "Le Gosier": {
         "type": "côtière",
         "population": 29034,
         "coordinates": [16.1833, -61.5167],
