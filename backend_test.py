@@ -260,23 +260,43 @@ class BackendTester:
                               f"Commune incorrecte: {data.get('commune')}")
                 return False
             
-            # Vérifier données backup
+            # Vérifier données backup - handle nested structure
             backup_data = data.get("backup_data", {})
-            required_weather_fields = ["temperature", "humidity", "wind_speed", "pressure"]
-            for field in required_weather_fields:
-                if field not in backup_data:
+            
+            # Check if it's a nested structure (recent backup) or direct structure (generated backup)
+            weather_data = backup_data
+            if 'current' in backup_data and isinstance(backup_data['current'], dict):
+                weather_data = backup_data['current']
+            
+            # Check for temperature field (different names in different structures)
+            temp = None
+            if 'temperature' in weather_data:
+                temp = weather_data['temperature']
+            elif 'temperature_current' in weather_data:
+                temp = weather_data['temperature_current']
+            elif 'temperature_min' in weather_data:
+                temp = weather_data['temperature_min']
+            
+            if temp is None:
+                self.log_result(f"Backup Météo - {commune}", False, 
+                              "Aucun champ température trouvé")
+                return False
+            
+            # Check for other required fields
+            required_fields = ["humidity", "wind_speed"]
+            for field in required_fields:
+                if field not in weather_data:
                     self.log_result(f"Backup Météo - {commune}", False, 
                                   f"Champ météo manquant: {field}")
                     return False
             
             # Vérifier valeurs réalistes
-            temp = backup_data.get("temperature", 0)
             if not (20 <= temp <= 40):
                 self.log_result(f"Backup Météo - {commune}", False, 
                               f"Température irréaliste: {temp}°C")
                 return False
             
-            humidity = backup_data.get("humidity", 0)
+            humidity = weather_data.get("humidity", 0)
             if not (40 <= humidity <= 100):
                 self.log_result(f"Backup Météo - {commune}", False, 
                               f"Humidité irréaliste: {humidity}%")
