@@ -416,7 +416,7 @@ const MapPage = () => {
         </div>
       </div>
 
-      {/* Map Container - Mobile optimized */}
+      {/* Map Container - Mobile optimized avec closePopupOnClick désactivé */}
       <div className="flex-1 relative">
         <MapContainer
           center={guadeloupeCenter}
@@ -431,6 +431,7 @@ const MapPage = () => {
           doubleClickZoom={true}
           scrollWheelZoom={false} // Désactiver le zoom avec scroll pour éviter les conflits
           dragging={true}
+          closePopupOnClick={false} // Ne pas fermer les popups automatiquement
         >
           {/* Couche de base satellite */}
           <TileLayer
