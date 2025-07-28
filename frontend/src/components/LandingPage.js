@@ -235,9 +235,21 @@ const LandingPage = () => {
 
   useEffect(() => {
     loadInitialData();
+    loadActiveUsers();
+    loadTestimonials();
+    trackUserActivity();
+    
     // Nettoie le cache expiré au chargement
     const { CacheUtils } = require('../services/weatherService');
     CacheUtils.cleanExpiredCache();
+    
+    // Mettre à jour les utilisateurs actifs toutes les 30 secondes
+    const activeUsersInterval = setInterval(() => {
+      loadActiveUsers();
+      trackUserActivity();
+    }, 30000);
+    
+    return () => clearInterval(activeUsersInterval);
   }, []);
 
   useEffect(() => {
