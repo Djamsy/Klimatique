@@ -19,6 +19,75 @@ class OpenWeatherService:
         self.api_key = os.environ.get('OPENWEATHER_API_KEY')
         self.base_url = "https://api.openweathermap.org/data/2.5"
         self.onecall_url = "https://api.openweathermap.org/data/3.0/onecall"
+        self.api_blocked = False  # Track API status
+        
+    def generate_fallback_weather_data(self, lat: float, lon: float) -> Dict:
+        """Génère des données météo de fallback réalistes pour la Guadeloupe"""
+        import random
+        
+        # Données météo tropicales réalistes pour la Guadeloupe
+        base_temp = 26 + random.uniform(-2, 4)  # 24-30°C
+        humidity = 75 + random.uniform(-10, 15)  # 65-90%
+        pressure = 1013 + random.uniform(-8, 8)  # 1005-1021 hPa
+        wind_speed = 15 + random.uniform(-5, 15)  # 10-30 km/h
+        precipitation = random.uniform(0, 2)  # 0-2 mm/h normal
+        
+        # Ajustements selon localisation (côte vs intérieur)
+        if lat < 16.15:  # Basse-Terre (plus montagneux)
+            precipitation += random.uniform(0, 1)
+            humidity += 5
+            wind_speed -= 2
+        
+        current_time = datetime.now()
+        
+        return {
+            'current': {
+                'dt': int(current_time.timestamp()),
+                'temperature': base_temp,
+                'temperature_max': base_temp + random.uniform(1, 3),
+                'temperature_min': base_temp - random.uniform(1, 2),
+                'humidity': max(50, min(95, humidity)),
+                'pressure': pressure,
+                'wind_speed': max(5, wind_speed),
+                'wind_deg': random.randint(60, 120),  # Vents alizés typiques
+                'precipitation_probability': min(100, precipitation * 20),
+                'weather': [{
+                    'main': 'Clouds' if random.random() > 0.3 else 'Clear',
+                    'description': 'Partiellement nuageux' if random.random() > 0.3 else 'Ensoleillé'
+                }],
+                'rain': {'1h': precipitation} if precipitation > 0.1 else {},
+                'source': 'fallback'
+            },
+            'hourly': [
+                {
+                    'dt': int((current_time + timedelta(hours=h)).timestamp()),
+                    'temp': base_temp + random.uniform(-2, 2),
+                    'humidity': max(50, min(95, humidity + random.uniform(-10, 10))),
+                    'pressure': pressure + random.uniform(-3, 3),
+                    'wind_speed': max(5, wind_speed + random.uniform(-5, 5)),
+                    'pop': min(100, precipitation * 20 + random.uniform(-10, 10)),
+                    'rain': {'1h': max(0, precipitation + random.uniform(-0.5, 0.5))} if random.random() > 0.7 else {}
+                }
+                for h in range(24)
+            ],
+            'daily': [
+                {
+                    'dt': int((current_time + timedelta(days=d)).timestamp()),
+                    'temp': {
+                        'max': base_temp + random.uniform(2, 4),
+                        'min': base_temp - random.uniform(1, 2)
+                    },
+                    'humidity': max(50, min(95, humidity + random.uniform(-5, 5))),
+                    'pressure': pressure + random.uniform(-2, 2),
+                    'wind_speed': max(5, wind_speed + random.uniform(-3, 3)),
+                    'pop': min(100, precipitation * 15 + random.uniform(-5, 5)),
+                    'rain': max(0, precipitation * 24 + random.uniform(-5, 5))
+                }
+                for d in range(7)
+            ],
+            'fallback': True,
+            'location': f"Guadeloupe ({lat:.2f}, {lon:.2f})"
+        }
         
     async def get_current_and_forecast(self, lat: float, lon: float) -> Optional[Dict]:
         """Récupère données actuelles et prévisions depuis OpenWeatherMap"""
