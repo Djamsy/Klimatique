@@ -788,116 +788,30 @@ const MapPage = () => {
           </div>
         </div>
       )}
-              <span className="text-sm">Risque élevé</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-4 h-4 bg-red-500 rounded-full border-2 border-white shadow"></div>
-              <span className="text-sm">Risque critique</span>
-            </div>
-          </div>
-          <div className="mt-3 pt-3 border-t border-gray-200">
-            <p className="text-xs text-gray-600">
-              <Shield className="inline w-3 h-3 mr-1" />
-              Vue satellite • Couches NASA GIBS • Temps réel
-            </p>
-            <p className="text-xs text-gray-500 mt-1">
-              {GUADELOUPE_COMMUNES.length} communes de Guadeloupe
-            </p>
-          </div>
-        </div>
 
-        {/* Bouton de test pluviomètre */}
-        <div className="absolute bottom-6 left-6 z-[1010]">
-          <Button
-            onClick={() => {
-              setSelectedCommune({ name: 'Pointe-à-Pitre' });
-              setShowPluviometer(true);
-            }}
-            className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg"
-            size="lg"
-          >
-            <Activity className="w-5 h-5 mr-2" />
-            Test Pluviomètre
-          </Button>
-        </div>
-
-        {/* Panneau de droite avec pluviomètre */}
-        {showPluviometer && selectedCommune && (
-          <div className="absolute top-6 right-6 w-80 z-[1020] space-y-4">
-            <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-xl p-4 border">
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="font-semibold text-gray-900 flex items-center">
-                  <Activity className="w-5 h-5 mr-2 text-blue-600" />
-                  Pluviomètre
-                </h4>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowPluviometer(false)}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  <EyeOff className="w-4 h-4" />
-                </Button>
-              </div>
-              <p className="text-sm text-gray-600">{selectedCommune.name}</p>
+      {/* Pluviometer Widget */}
+      {showPluviometer && selectedCommune && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[2000]">
+          <div className="bg-white rounded-lg p-6 max-w-lg w-full mx-4 max-h-[80vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Pluviomètre - {selectedCommune.name}</h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowPluviometer(false)}
+              >
+                ×
+              </Button>
             </div>
             <PluviometerWidget commune={selectedCommune.name} />
           </div>
-        )}
+        </div>
+      )}
+    </div>
+  );
+};
 
-        {/* Stats flottantes - affichage conditionnel */}
-        {!showPluviometer && (
-          <div className="absolute top-6 right-6 bg-white/95 backdrop-blur-sm rounded-lg shadow-xl p-4 z-[1000] border">
-            <div className="flex items-center justify-between mb-3">
-              <h4 className="font-semibold text-gray-900">Tableau de bord</h4>
-              <div className="flex gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowGlobalRisk(!showGlobalRisk)}
-                  className={showGlobalRisk ? 'text-blue-600' : ''}
-                >
-                  <Brain className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowLayerControls(!showLayerControls)}
-                  className={showLayerControls ? 'text-blue-600' : ''}
-                >
-                  <Layers className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-            
-            {showGlobalRisk && globalRisk ? (
-              <div className="space-y-3">
-                <div className="flex items-center justify-between pb-2 border-b">
-                  <span className="text-sm font-medium">Risque Global</span>
-                  <Badge 
-                    className="text-xs px-2 py-1"
-                    style={{ 
-                      backgroundColor: getRiskColor(globalRisk.global_risk_level) + '20',
-                      color: getRiskColor(globalRisk.global_risk_level),
-                      border: `1px solid ${getRiskColor(globalRisk.global_risk_level)}60`
-                    }}
-                  >
-                    {globalRisk.global_risk_level}
-                  </Badge>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-3 text-center">
-                  <div>
-                    <div className="text-xl font-bold text-orange-600">{globalRisk.high_risk_count}</div>
-                    <div className="text-xs text-gray-600">Risque élevé</div>
-                  </div>
-                  <div>
-                    <div className="text-xl font-bold text-red-600">{globalRisk.critical_risk_count}</div>
-                    <div className="text-xs text-gray-600">Critique</div>
-                  </div>
-                </div>
-                
-                {globalRisk.affected_communes.length > 0 && (
+export default MapPage;
                   <div className="mt-3 pt-3 border-t border-gray-200">
                     <p className="text-xs font-medium text-gray-700 mb-1">Communes à risque:</p>
                     <div className="flex flex-wrap gap-1">
