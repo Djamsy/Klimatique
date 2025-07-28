@@ -1000,14 +1000,14 @@ const LandingPage = () => {
       {/* CTA Section */}
       <section id="contact" className="cta-gradient text-white py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 animate-fade-in-up">
             Rejoignez la communauté Klimaclique
           </h2>
-          <p className="text-xl text-blue-100 mb-8">
+          <p className="text-xl text-blue-100 mb-8 animate-fade-in-up animate-delay-200">
             Soyez parmi les premiers à bénéficier de notre service d'alerte météo nouvelle génération alimenté par la NASA
           </p>
           
-          <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
+          <form onSubmit={handleSubmit} className="max-w-2xl mx-auto animate-fade-in-up animate-delay-400">
             <div className="grid md:grid-cols-2 gap-4 mb-6">
               <Input
                 type="email"
@@ -1016,12 +1016,12 @@ const LandingPage = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={isSubmitting}
-                className="bg-white/10 border-white/20 text-white placeholder-white/70"
+                className="bg-white/10 border-white/20 text-white placeholder-white/70 transition-all duration-300 focus:ring-2 focus:ring-white/50"
               />
               <Button 
                 type="submit" 
                 disabled={isSubmitting}
-                className="bg-white text-blue-800 hover:bg-blue-50 disabled:opacity-50"
+                className="bg-white text-blue-800 hover:bg-blue-50 disabled:opacity-50 btn-animated"
               >
                 {isSubmitting ? (
                   <>
@@ -1038,7 +1038,7 @@ const LandingPage = () => {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               disabled={isSubmitting}
-              className="bg-white/10 border-white/20 text-white placeholder-white/70 mb-4"
+              className="bg-white/10 border-white/20 text-white placeholder-white/70 mb-4 transition-all duration-300 focus:ring-2 focus:ring-white/50"
               rows={3}
             />
           </form>
