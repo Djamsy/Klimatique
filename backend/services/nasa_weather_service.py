@@ -130,7 +130,7 @@ class NASAWeatherService:
                     temperature_min=day_data.get("T2M_MIN", 24),
                     temperature_max=day_data.get("T2M_MAX", 29),
                     humidity=int(day_data.get("RH2M", 75)),
-                    wind_speed=day_data.get("WS10M", 20) * 3.6,
+                    wind_speed=day_data.get("WS10M", 6) * 3.6,  # 6 m/s = 22 km/h (vent normal)
                     precipitation=day_data.get("PRECTOTCORR", 0),
                     precipitation_probability=self._calculate_rain_probability(day_data.get("PRECTOTCORR", 0)),
                     weather_description=self._get_weather_description(day_data),
