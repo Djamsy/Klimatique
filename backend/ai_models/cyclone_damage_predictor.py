@@ -435,19 +435,19 @@ class CycloneDamagePredictor:
         if wind_speed < 62 and pressure > 1000:  # Conditions normales
             # Ajustement pour conditions météo quotidiennes
             if precipitation > 2:  # Pluie légère
-                risk_score += 3
+                risk_score += 2  # Réduit de 3 à 2
                 risk_factors.append(f"Précipitations quotidiennes: {precipitation:.1f} mm/h")
             
             if humidity > 80:  # Humidité élevée normale
-                risk_score += 2
+                risk_score += 1  # Réduit de 2 à 1
                 risk_factors.append(f"Humidité élevée: {humidity}%")
             
             if temperature > 30:  # Chaleur forte
-                risk_score += 3
+                risk_score += 2  # Réduit de 3 à 2
                 risk_factors.append(f"Température élevée: {temperature:.1f}°C")
             
-            # Score de base minimal pour conditions normales  
-            risk_score += 3  # Réduit de 8 à 3 pour permettre "faible"
+            # Score de base minimal pour conditions normales - encore réduit
+            risk_score += 1  # Réduit de 3 à 1 pour favoriser "faible"
         
         # 5. Analyse humidité
         if humidity > 90:
