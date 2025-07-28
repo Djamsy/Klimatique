@@ -10,7 +10,7 @@ import json
 import sys
 from datetime import datetime
 
-BACKEND_URL = "https://6c0658c1-f5e4-4a08-98c7-406d205120ea.preview.emergentagent.com/api"
+BACKEND_URL = "https://7cc3db80-543d-4833-ab38-94990a7b2d12.preview.emergentagent.com/api"
 TIMEOUT = 30.0
 
 class WeatherScenarioTester:
