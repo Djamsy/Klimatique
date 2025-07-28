@@ -124,6 +124,9 @@ const createCustomIcon = (riskLevel) => {
   };
   
   const color = colors[riskLevel] || '#22c55e';
+  const isMobile = window.innerWidth < 768;
+  const size = isMobile ? 24 : 20;
+  const innerSize = isMobile ? 10 : 8;
   
   return L.divIcon({
     html: `
@@ -131,24 +134,27 @@ const createCustomIcon = (riskLevel) => {
         background-color: ${color}; 
         border: 3px solid white; 
         border-radius: 50%; 
-        width: 20px; 
-        height: 20px;
+        width: ${size}px; 
+        height: ${size}px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         display: flex;
         align-items: center;
         justify-content: center;
-      ">
+        cursor: pointer;
+        transition: transform 0.2s ease;
+        touch-action: manipulation;
+      " ontouchstart="this.style.transform='scale(1.1)'" ontouchend="this.style.transform='scale(1)'" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
         <div style="
-          width: 8px; 
-          height: 8px; 
+          width: ${innerSize}px; 
+          height: ${innerSize}px; 
           background-color: white; 
           border-radius: 50%;
         "></div>
       </div>
     `,
-    className: 'custom-marker',
-    iconSize: [20, 20],
-    iconAnchor: [10, 10]
+    className: 'custom-marker vigilance-marker',
+    iconSize: [size, size],
+    iconAnchor: [size/2, size/2]
   });
 };
 
