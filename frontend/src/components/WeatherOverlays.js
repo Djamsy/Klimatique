@@ -285,10 +285,12 @@ const WeatherOverlays = ({ onOverlayChange }) => {
         minZoom={8}
         onLoad={() => {
           console.log(`✅ TileLayer ${type} loaded successfully`);
+          console.log(`🔍 Tile URL for ${type}: ${tileUrl}`);
           overlayBackupService.recordAttempt(type, true);
         }}
         onError={(error) => {
           console.error(`❌ TileLayer ${type} failed to load:`, error);
+          console.error(`🔍 Failed URL for ${type}: ${tileUrl}`);
           overlayBackupService.recordAttempt(type, false);
         }}
       />
