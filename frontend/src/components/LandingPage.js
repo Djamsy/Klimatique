@@ -661,11 +661,16 @@ const LandingPage = () => {
               </span>
             </div>
             
-            {/* Compteur d'utilisateurs actifs */}
-            <div className="inline-flex items-center bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-8 border border-white/20">
-              <Users className="w-4 h-4 text-green-400 mr-2" />
-              <span className="text-green-100 text-sm font-medium">
-                {activeUsers} utilisateur{activeUsers > 1 ? 's' : ''} actif{activeUsers > 1 ? 's' : ''} maintenant
+            {/* Compteur d'utilisateurs actifs - Mobile optimisé */}
+            <div className="inline-flex items-center bg-white/10 backdrop-blur-sm rounded-full px-3 py-2 md:px-4 md:py-2 mb-8 border border-white/20">
+              <Users className="w-3 h-3 md:w-4 md:h-4 text-green-400 mr-2" />
+              <span className="text-green-100 text-xs md:text-sm font-medium">
+                <span className="hidden sm:inline">
+                  {activeUsers} utilisateur{activeUsers > 1 ? 's' : ''} actif{activeUsers > 1 ? 's' : ''} maintenant
+                </span>
+                <span className="sm:hidden">
+                  {activeUsers} actif{activeUsers > 1 ? 's' : ''}
+                </span>
               </span>
               <div className="ml-2 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
             </div>
