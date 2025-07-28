@@ -938,11 +938,11 @@ const LandingPage = () => {
       {/* Testimonials Section */}
       <section id="temoignages" className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16 animate-fade-in-up">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Ils nous font confiance
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 animate-fade-in-up animate-delay-200">
               Découvrez comment Klimaclique accompagne déjà les acteurs locaux
             </p>
           </div>
@@ -951,8 +951,8 @@ const LandingPage = () => {
             {/* Témoignages */}
             <div className="lg:col-span-3">
               <div className="grid md:grid-cols-3 gap-8">
-                {testimonials.map((testimonial) => (
-                  <Card key={testimonial.id} className="testimonial-card p-6">
+                {testimonials.map((testimonial, index) => (
+                  <Card key={testimonial.id} className={`testimonial-card p-6 animate-fade-in-up animate-delay-${(index + 1) * 100} section-hover`}>
                     <CardContent>
                       <div className="flex mb-4">
                         {[...Array(5)].map((_, i) => (
