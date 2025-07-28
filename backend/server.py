@@ -720,7 +720,7 @@ async def get_cyclone_prediction(commune: str):
             "coordinates": commune_data['coordinates'],
             "damage_predictions": damage_prediction['damage_predictions'],
             "risk_level": damage_prediction['risk_level'],
-            "confidence_score": damage_prediction['confidence_score'],
+            "confidence_score": damage_prediction['confidence'],
             "recommendations": damage_prediction['recommendations'],
             "weather_conditions": weather_conditions,
             "data_source": "realtime_fallback"
