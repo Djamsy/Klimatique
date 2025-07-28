@@ -481,12 +481,13 @@ class CycloneDamagePredictor:
             return 60  # Confiance réduite hors plage
     
     def _calculate_risk_level(self, risk_score):
-        """Calcule le niveau de risque basé sur le score"""
-        if risk_score >= 80:
+        """Calcule le niveau de risque basé sur le score - adapté aux conditions normales"""
+        # Seuils ajustés pour les conditions météo normales (non-cycloniques)
+        if risk_score >= 45:  # Était 80
             return 'critique'
-        elif risk_score >= 60:
+        elif risk_score >= 25:  # Était 60
             return 'élevé'
-        elif risk_score >= 30:
+        elif risk_score >= 10:  # Était 30
             return 'modéré'
         else:
             return 'faible'
