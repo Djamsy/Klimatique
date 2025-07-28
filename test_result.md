@@ -228,7 +228,7 @@ metadata:
 
 test_plan:
   current_focus: 
-    - "Modification calque nuage - suppression limite et changement nom"
+    - "Vérification consistance données météo multi-communes"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -244,3 +244,5 @@ agent_communication:
     -message: "🔍 VÉRIFICATION POST-INTÉGRATION PUBLICITAIRE RÉUSSIE (20/20 - 100% succès): ✅ Tous les systèmes backend restent opérationnels après intégration des encarts publicitaires ✅ IA vigilance verte: risques faibles adaptés (8.7-13.3 scores) ✅ Système backup météo: 100% succès sur 6 communes ✅ Intégration backup service météo: données cohérentes ✅ Vigilance Météo France: endpoints fonctionnels ✅ API status: tous services actifs ✅ Cache et optimisation: opérationnels. BACKEND STABLE ET PRÊT POUR PRODUCTION."
     -agent: "main"
     -message: "✅ CALQUE NUAGE MODIFIÉ: Nom 'Nuages' remplacé par 'Klimaclique' dans l'interface et la légende. Limite minZoom=8 supprimée pour permettre visualisation à tous les niveaux de zoom. Test effectué avec succès - overlay 'Klimaclique' s'active correctement sur la carte et apparaît dans le panneau de contrôle."
+    -agent: "main"
+    -message: "Phase 1 démarrée: Ajout de la tâche de vérification de consistance des données météo multi-communes. Besoin de tester que les corrections NASA API fonctionnent universellement avec variation des données sur 5 jours et entre communes. Focus sur: Pointe-à-Pitre, Basse-Terre, Sainte-Anne, Le Gosier, Saint-François."
