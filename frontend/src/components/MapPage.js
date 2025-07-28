@@ -339,25 +339,39 @@ const MapPage = () => {
 
   return (
     <div className="h-screen flex flex-col bg-gray-900">
-      {/* Header */}
+      {/* Header - Mobile optimized */}
       <header className="bg-white shadow-sm border-b z-50 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-4">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
+          <div className="flex justify-between items-center py-2 sm:py-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <Button
                 variant="ghost"
                 onClick={handleBackToHome}
-                className="hover:bg-gray-100"
+                className="hover:bg-gray-100 p-2 sm:px-4"
+                size="sm"
               >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Accueil
+                <ArrowLeft className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Accueil</span>
               </Button>
               <div className="flex items-center">
-                <Shield className="h-8 w-8 text-blue-800 mr-3" />
-                <span className="text-xl font-bold text-blue-800">Klimaclique - Carte Interactive</span>
+                <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-blue-800 mr-2 sm:mr-3" />
+                <span className="text-sm sm:text-xl font-bold text-blue-800">
+                  <span className="sm:hidden">Carte</span>
+                  <span className="hidden sm:inline">Klimaclique - Carte Interactive</span>
+                </span>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              {/* Mobile controls */}
+              <Button
+                variant="outline"
+                onClick={() => setShowLayerControls(!showLayerControls)}
+                className="sm:hidden p-2"
+                size="sm"
+              >
+                <Layers className="w-4 h-4" />
+              </Button>
+              {/* Desktop controls */}
               <Button
                 variant="outline"
                 onClick={() => setShowLayerControls(!showLayerControls)}
@@ -366,7 +380,7 @@ const MapPage = () => {
                 <Layers className="w-4 h-4 mr-2" />
                 Couches NASA
               </Button>
-              <Badge variant="outline" className="hidden sm:flex">
+              <Badge variant="outline" className="hidden lg:flex text-xs">
                 <AlertTriangle className="w-3 h-3 mr-1" />
                 {GUADELOUPE_COMMUNES.length} communes • Données NASA
               </Badge>
@@ -375,12 +389,13 @@ const MapPage = () => {
         </div>
       </header>
 
-      {/* Instruction Banner */}
-      <div className="bg-blue-50 border-b border-blue-200 py-3 px-4 z-40 relative">
+      {/* Instruction Banner - Mobile optimized */}
+      <div className="bg-blue-50 border-b border-blue-200 py-2 sm:py-3 px-2 sm:px-4 z-40 relative">
         <div className="max-w-7xl mx-auto flex items-center justify-center">
-          <Info className="w-4 h-4 text-blue-600 mr-2" />
-          <span className="text-blue-800 font-medium">
-            Vue satellite Guadeloupe • Navigation limitée à l'archipel • Cliquez sur une commune pour les détails
+          <Info className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600 mr-2 flex-shrink-0" />
+          <span className="text-xs sm:text-sm text-blue-800 font-medium text-center">
+            <span className="sm:hidden">Cliquez sur une commune</span>
+            <span className="hidden sm:inline">Vue satellite Guadeloupe • Navigation limitée à l'archipel • Cliquez sur une commune pour les détails</span>
           </span>
         </div>
       </div>
