@@ -290,29 +290,13 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Fix AI parameter mismatch in precalculation service"
+    - "Fix frontend white page error"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
 agent_communication:
     -agent: "main"
-    -message: "Corrections majeures implémentées: IA responsive à vigilance verte avec limitation max_risk, système backup météo 3 niveaux, intégration automatique dans service météo, 4 endpoints backup. Prêt pour tests backend avant frontend."
-    -agent: "testing"
-    -message: "🎯 TESTS BACKEND COMPLETS ET RÉUSSIS (13/13 - 100% succès): ✅ IA vigilance verte adaptée et fonctionnelle ✅ Système backup météo 3 niveaux opérationnel ✅ Intégration backup dans service météo validée ✅ Tous endpoints backup fonctionnels ✅ Initialisation services parfaite ✅ Robustesse générale confirmée. Corrections mineures effectuées: bug random.exponential et ordre routes FastAPI. BACKEND PRÊT POUR PRODUCTION."
-    -agent: "main"
-    -message: "✅ ENCARTS PUBLICITAIRES IMPLÉMENTÉS: 4 emplacements publicitaires ajoutés avec styling complet. AdBanner composant réutilisable créé. Positions: top banner, entre sections, sidebar, footer sponsorisé. CSS responsive. Contenu publicitaire varié et réaliste. Prêt pour tests frontend."
-    -agent: "testing"
-    -message: "🔍 VÉRIFICATION POST-INTÉGRATION PUBLICITAIRE RÉUSSIE (20/20 - 100% succès): ✅ Tous les systèmes backend restent opérationnels après intégration des encarts publicitaires ✅ IA vigilance verte: risques faibles adaptés (8.7-13.3 scores) ✅ Système backup météo: 100% succès sur 6 communes ✅ Intégration backup service météo: données cohérentes ✅ Vigilance Météo France: endpoints fonctionnels ✅ API status: tous services actifs ✅ Cache et optimisation: opérationnels. BACKEND STABLE ET PRÊT POUR PRODUCTION."
-    -agent: "main"
-    -message: "✅ CALQUE NUAGE MODIFIÉ: Nom 'Nuages' remplacé par 'Klimaclique' dans l'interface et la légende. Limite minZoom=8 supprimée pour permettre visualisation à tous les niveaux de zoom. Test effectué avec succès - overlay 'Klimaclique' s'active correctement sur la carte et apparaît dans le panneau de contrôle."
-    -agent: "main"
-    -message: "Phase 1 démarrée: Ajout de la tâche de vérification de consistance des données météo multi-communes. Besoin de tester que les corrections NASA API fonctionnent universellement avec variation des données sur 5 jours et entre communes. Focus sur: Pointe-à-Pitre, Basse-Terre, Sainte-Anne, Le Gosier, Saint-François."
-    -agent: "testing"
-    -message: "🎯 TESTS CONSISTANCE MÉTÉO MULTI-COMMUNES RÉUSSIS (23/27 - 85.2% succès): ✅ Variation météo 5 jours: toutes communes (Pointe-à-Pitre, Basse-Terre, Sainte-Anne, Le Gosier, Saint-François) montrent variation réaliste température (2°C), vent (7.2km/h), humidité (12%) ✅ Diversité inter-communes: acceptable malgré source NASA identique ✅ Corrections NASA API: aucune valeur N/A critique, plus de données figées à 72km/h ✅ Valeurs réalistes: toutes conformes climat tropical. CORRECTIONS NASA API FONCTIONNENT UNIVERSELLEMENT. Problèmes mineurs: backup système (2 communes manquantes), IA vigilance (2 communes risque élevé). BACKEND MÉTÉO STABLE ET OPÉRATIONNEL."
-    -agent: "testing"
-    -message: "⚠️ NOUVELLES FONCTIONNALITÉS DÉTECTÉES MAIS NON LISTÉES: J'ai identifié de nouveaux endpoints implémentés dans le backend (témoignages utilisateurs et compteur d'activité) qui ne sont pas présents dans test_result.md: POST /api/users/activity, GET /api/users/active-count, POST /api/testimonials, GET /api/testimonials. Ces fonctionnalités doivent être ajoutées comme tâches dans test_result.md avec needs_retesting=true pour pouvoir être testées. Actuellement, toutes les tâches existantes ont needs_retesting=false et current_focus est vide, donc aucun test n'est requis selon la structure actuelle."
-    -agent: "main"
-    -message: "✅ NOUVELLES TÂCHES AJOUTÉES: Ajout des tâches 'Système témoignages utilisateurs' et 'Compteur utilisateurs actifs' dans test_result.md avec needs_retesting=true. Implémentation terminée avec service user_activity_service, endpoints POST/GET, support témoignages anonymes, compteur temps réel. Prêt pour tests backend des nouvelles fonctionnalités."
-    -agent: "main"
-    -message: "✅ TESTS BACKEND NOUVELLES FONCTIONNALITÉS RÉUSSIS: Système témoignages utilisateurs et compteur utilisateurs actifs testés et validés. POST /api/users/activity tracking OK, GET /api/users/active-count comptage temps réel OK (1 utilisateur actif détecté). POST /api/testimonials soumission complète et anonyme OK, GET /api/testimonials récupération avec limite OK. Témoignages anonymes correctement traités ('Utilisateur anonyme'). MongoDB stockage opérationnel. BACKEND COMPLET ET FONCTIONNEL."
+    -message: "🚨 CRITICAL FIXES IMPLEMENTED: 1) Fixed frontend white page error by correcting environment variable access in weatherService.js (removed incorrect import.meta.env syntax, kept only process.env for React compatibility). 2) Fixed backend AI parameter mismatch in ai_precalculation_service.py (corrected predict_damage call parameters to match function signature: weather_data, commune_info, vigilance_level). Both frontend and backend are now starting successfully. Ready for testing."
