@@ -176,7 +176,7 @@ const WeatherAnimationDemo = () => {
                   <div className="weather-animation-container">
                     {/* Animation de pluie */}
                     <div className="rain-animation">
-                      {[...Array(15)].map((_, i) => (
+                      {[...Array(25)].map((_, i) => (
                         <div key={i} className="rain-drop"></div>
                       ))}
                     </div>
@@ -184,10 +184,13 @@ const WeatherAnimationDemo = () => {
                     {/* Animation de foudre */}
                     <div className="lightning-animation">
                       <div className="lightning-flash"></div>
+                      <div className="lightning-flash"></div>
+                      <div className="lightning-flash"></div>
                     </div>
                     
                     {/* Animation d'ouragan */}
                     <div className="hurricane-animation">
+                      <div className="hurricane-spiral"></div>
                       <div className="hurricane-spiral"></div>
                       <div className="hurricane-eye"></div>
                     </div>
@@ -200,10 +203,14 @@ const WeatherAnimationDemo = () => {
                       <div className="cloud"></div>
                       <div className="cloud"></div>
                       <div className="cloud"></div>
+                      <div className="cloud"></div>
+                      <div className="cloud"></div>
                     </div>
                     
                     {/* Animation de vent */}
                     <div className="wind-animation">
+                      <div className="wind-line"></div>
+                      <div className="wind-line"></div>
                       <div className="wind-line"></div>
                       <div className="wind-line"></div>
                       <div className="wind-line"></div>
