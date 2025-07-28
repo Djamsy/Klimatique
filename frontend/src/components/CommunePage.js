@@ -514,7 +514,7 @@ const CommunePage = () => {
                 <div className="mt-4 pt-4 border-t border-gray-200">
                   <p className="text-xs text-gray-500 flex items-center gap-1">
                     <Shield className="w-3 h-3" />
-                    Données NASA • Météo Sentinelle • Temps réel
+                    Données NASA • Klimaclique • Temps réel
                   </p>
                 </div>
               </CardContent>
