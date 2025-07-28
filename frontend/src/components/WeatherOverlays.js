@@ -21,9 +21,9 @@ import {
 
 const WeatherOverlays = ({ onOverlayChange }) => {
   const [overlays, setOverlays] = useState({
-    clouds: { active: false, data: null, loading: false },
-    precipitation: { active: false, data: null, loading: false },
-    radar: { active: false, data: null, loading: false }
+    clouds: { active: false, data: null, loading: false, status: 'inactive' },
+    precipitation: { active: false, data: null, loading: false, status: 'inactive' },
+    radar: { active: false, data: null, loading: false, status: 'inactive' }
   });
   const [error, setError] = useState(null);
   const [lastRefresh, setLastRefresh] = useState(Date.now());
@@ -31,13 +31,27 @@ const WeatherOverlays = ({ onOverlayChange }) => {
   const map = useMap();
 
   useEffect(() => {
+    // Écouter les événements de retry
+    const handleRetry = (event) => {
+      const { overlayType } = event.detail;
+      if (overlays[overlayType]?.active) {
+        console.log(`🔄 Retrying overlay ${overlayType} due to scheduled retry`);
+        loadOverlay(overlayType);
+      }
+    };
+
+    window.addEventListener('overlayRetry', handleRetry);
+    
     // Rafraîchir automatiquement toutes les 10 minutes
     const interval = setInterval(() => {
       refreshActiveOverlays();
     }, 10 * 60 * 1000);
 
-    return () => clearInterval(interval);
-  }, []);
+    return () => {
+      window.removeEventListener('overlayRetry', handleRetry);
+      clearInterval(interval);
+    };
+  }, [overlays]);
 
   const refreshActiveOverlays = async () => {
     const activeOverlays = Object.entries(overlays).filter(([_, overlay]) => overlay.active);
