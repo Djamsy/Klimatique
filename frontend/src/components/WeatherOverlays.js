@@ -202,41 +202,51 @@ const WeatherOverlays = ({ onOverlayChange }) => {
       return null;
     }
 
-    // Construire l'URL correcte pour les tiles OpenWeatherMap
-    const apiKey = process.env.REACT_APP_OPENWEATHER_API_KEY;
-    
-    if (!apiKey) {
-      console.error('OpenWeatherMap API key not found');
-      return null;
-    }
-    
-    let layerName;
+    // Utiliser l'URL du backend si disponible, sinon fallback
     let tileUrl;
     
-    // Vérifier si on doit utiliser le fallback
-    const shouldUseFallback = overlayBackupService.shouldUseFallback(type);
-    
-    if (shouldUseFallback) {
-      // Utiliser l'URL de fallback
-      tileUrl = overlayBackupService.generateFallbackUrl(type);
-      console.log(`🔄 Using fallback URL for ${type}`);
+    if (overlay.data && overlay.data.tile_url_template) {
+      // Utiliser l'URL du backend (recommended)
+      tileUrl = overlay.data.tile_url_template;
+      console.log(`✅ Using backend tile URL for ${type}: ${overlay.data.status}`);
+      
     } else {
-      // URL normale
-      switch (type) {
-        case 'clouds':
-          layerName = 'clouds_new';
-          break;
-        case 'precipitation':
-          layerName = 'precipitation_new';
-          break;
-        case 'radar':
-          layerName = 'radar';
-          break;
-        default:
-          return null;
+      // Fallback : construire l'URL manuellement
+      const apiKey = process.env.REACT_APP_OPENWEATHER_API_KEY;
+      
+      if (!apiKey) {
+        console.error('OpenWeatherMap API key not found');
+        return null;
       }
       
-      tileUrl = `https://tile.openweathermap.org/map/${layerName}/{z}/{x}/{y}.png?appid=${apiKey}`;
+      let layerName;
+      
+      // Vérifier si on doit utiliser le fallback
+      const shouldUseFallback = overlayBackupService.shouldUseFallback(type);
+      
+      if (shouldUseFallback) {
+        // Utiliser l'URL de fallback
+        tileUrl = overlayBackupService.generateFallbackUrl(type);
+        console.log(`🔄 Using fallback URL for ${type}`);
+      } else {
+        // URL normale
+        switch (type) {
+          case 'clouds':
+            layerName = 'clouds_new';
+            break;
+          case 'precipitation':
+            layerName = 'precipitation_new';
+            break;
+          case 'radar':
+            layerName = 'radar';
+            break;
+          default:
+            return null;
+        }
+        
+        tileUrl = `https://tile.openweathermap.org/map/${layerName}/{z}/{x}/{y}.png?appid=${apiKey}`;
+        console.log(`⚠️ Using manual tile URL for ${type} (backend data missing)`);
+      }
     }
     
     if (!tileUrl) {
@@ -250,15 +260,13 @@ const WeatherOverlays = ({ onOverlayChange }) => {
       [16.6, -61.0]   // Nord-Est
     ];
     
-    console.log(`Rendering overlay ${type} with URL: ${tileUrl}${shouldUseFallback ? ' (FALLBACK)' : ''}`);
-    
     return (
       <TileLayer
-        key={`${type}-${lastRefresh}-${shouldUseFallback ? 'fallback' : 'primary'}`}
+        key={`${type}-${lastRefresh}-${overlay.data?.timestamp || 'fallback'}`}
         url={tileUrl}
         opacity={getOverlayOpacity(type)}
         zIndex={getOverlayZIndex(type)}
-        attribution={`OpenWeatherMap ${type} • Zone Guadeloupe${shouldUseFallback ? ' (Backup)' : ''}`}
+        attribution={`OpenWeatherMap ${type} • Zone Guadeloupe${overlay.data?.status === 'rate_limited' ? ' (Rate Limited)' : ''}`}
         bounds={guadeloupeBounds}
         maxZoom={12}
         minZoom={8}
