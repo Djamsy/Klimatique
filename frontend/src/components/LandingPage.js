@@ -48,6 +48,18 @@ const LandingPage = () => {
   const [isLoadingWeather, setIsLoadingWeather] = useState(true);
   const [communes, setCommunes] = useState([]);
   const [globalRisk, setGlobalRisk] = useState(null);
+  const [activeUsers, setActiveUsers] = useState(0);
+  const [testimonials, setTestimonials] = useState([]);
+  const [isLoadingTestimonials, setIsLoadingTestimonials] = useState(true);
+  const [newTestimonial, setNewTestimonial] = useState({
+    name: '',
+    role: '',
+    commune: '',
+    content: '',
+    rating: 5
+  });
+  const [showTestimonialForm, setShowTestimonialForm] = useState(false);
+  const [isSubmittingTestimonial, setIsSubmittingTestimonial] = useState(false);
   const [vigilanceData, setVigilanceData] = useState(null);
   const [stats, setStats] = useState({
     total: 32,
