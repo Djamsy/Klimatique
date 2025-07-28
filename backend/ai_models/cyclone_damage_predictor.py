@@ -536,7 +536,7 @@ class CycloneDamagePredictor:
             return 'critique'
         elif risk_score >= 20:  # Conditions préoccupantes
             return 'élevé'
-        elif risk_score >= 15:  # Conditions à surveiller
+        elif risk_score >= 16:  # Conditions à surveiller (ajusté)
             return 'modéré'
         else:
             return 'faible'  # Conditions normales
