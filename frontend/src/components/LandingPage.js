@@ -578,7 +578,7 @@ const LandingPage = () => {
               Technologie de pointe au service de votre sécurité
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Météo Sentinelle combine données satellitaires NASA, intelligence artificielle et 
+              Klimaclique combine données satellitaires NASA, intelligence artificielle et 
               connaissance du terrain pour vous offrir des prédictions d'une précision inégalée.
             </p>
           </div>
