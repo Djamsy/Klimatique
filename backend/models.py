@@ -48,6 +48,15 @@ class WeatherForecastDay(BaseModel):
 
 class WeatherCache(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    commune: str
+    coordinates: List[float]  # [lat, lon]
+    current_weather: WeatherData
+    forecast_5_days: List[WeatherForecastDay]
+    source: WeatherSource
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    expires_at: datetime
+    call_count_today: int = 0
+    last_api_call: Optional[datetime] = None
 
 # Modèles pour les réseaux sociaux
 class SocialPlatform(str, Enum):
