@@ -547,34 +547,36 @@ const MapPage = () => {
           })}
         </MapContainer>
 
-        {/* Contrôles des couches NASA GIBS */}
+        {/* Contrôles des couches NASA GIBS - Mobile optimized */}
         {showLayerControls && (
-          <div className="absolute top-6 left-6 bg-white rounded-lg shadow-lg p-4 z-50 min-w-80">
-            <div className="flex justify-between items-center mb-4">
-              <h4 className="font-semibold text-gray-900 flex items-center gap-2">
-                <Layers className="w-5 h-5" />
-                Couches NASA GIBS
+          <div className="absolute top-4 left-2 right-2 sm:top-6 sm:left-6 sm:right-auto bg-white rounded-lg shadow-lg p-3 sm:p-4 z-50 sm:min-w-80">
+            <div className="flex justify-between items-center mb-3 sm:mb-4">
+              <h4 className="font-semibold text-gray-900 flex items-center gap-2 text-sm sm:text-base">
+                <Layers className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="sm:hidden">Couches NASA</span>
+                <span className="hidden sm:inline">Couches NASA GIBS</span>
               </h4>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowLayerControls(false)}
+                className="h-6 w-6 sm:h-8 sm:w-8 p-0"
               >
                 ×
               </Button>
             </div>
             
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               <div className="flex justify-between items-center pb-2 border-b">
-                <span className="text-sm font-medium">Contrôles rapides</span>
-                <div className="flex gap-2">
-                  <Button size="sm" variant="outline" onClick={() => toggleAllOverlays(true)}>
-                    <Eye className="w-3 h-3 mr-1" />
-                    Tout
+                <span className="text-xs sm:text-sm font-medium">Contrôles rapides</span>
+                <div className="flex gap-1 sm:gap-2">
+                  <Button size="sm" variant="outline" onClick={() => toggleAllOverlays(true)} className="px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm">
+                    <Eye className="w-3 h-3 sm:mr-1" />
+                    <span className="hidden sm:inline">Tout</span>
                   </Button>
-                  <Button size="sm" variant="outline" onClick={() => toggleAllOverlays(false)}>
-                    <EyeOff className="w-3 h-3 mr-1" />
-                    Aucun
+                  <Button size="sm" variant="outline" onClick={() => toggleAllOverlays(false)} className="px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm">
+                    <EyeOff className="w-3 h-3 sm:mr-1" />
+                    <span className="hidden sm:inline">Aucun</span>
                   </Button>
                 </div>
               </div>
@@ -582,17 +584,18 @@ const MapPage = () => {
               {Object.entries(NASA_GIBS_LAYERS).map(([key, config]) => {
                 const IconComponent = config.icon;
                 return (
-                  <div key={key} className="flex items-center justify-between py-2">
-                    <div className="flex items-center gap-3">
-                      <IconComponent className="w-4 h-4 text-blue-600" />
-                      <div>
-                        <div className="font-medium text-sm">{config.name}</div>
-                        <div className="text-xs text-gray-500">{config.description}</div>
+                  <div key={key} className="flex items-center justify-between py-1 sm:py-2">
+                    <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                      <IconComponent className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600 flex-shrink-0" />
+                      <div className="min-w-0 flex-1">
+                        <div className="font-medium text-xs sm:text-sm truncate">{config.name}</div>
+                        <div className="text-xs text-gray-500 truncate sm:block hidden">{config.description}</div>
                       </div>
                     </div>
                     <Switch
                       checked={activeOverlays[key]}
                       onCheckedChange={() => toggleOverlay(key)}
+                      className="ml-2 flex-shrink-0"
                     />
                   </div>
                 );
