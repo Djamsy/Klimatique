@@ -232,7 +232,7 @@ const MapPage = () => {
     precipitation: false
   });
   const [globalRisk, setGlobalRisk] = useState(null);
-  const [showGlobalRisk, setShowGlobalRisk] = useState(false);
+  const [showGlobalRisk, setShowGlobalRisk] = useState(true); // Afficher l'IA par défaut
   const [cacheStats, setCacheStats] = useState(null);
 
   useEffect(() => {
