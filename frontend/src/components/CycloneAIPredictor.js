@@ -20,28 +20,43 @@ const CycloneAIPredictor = ({ commune, showTimeline = false, showHistorical = fa
       setLoading(true);
       setError(null);
       
+      console.log('🤖 Fetching IA predictions for:', commune);
+      
       const predictionData = await CycloneAIService.getCyclonePrediction(commune);
+      console.log('✅ Prediction data received:', predictionData);
       setPrediction(predictionData);
       
       if (showTimeline) {
+        console.log('🕒 Fetching timeline data...');
         const timelineData = await CycloneAIService.getCycloneTimeline(commune);
+        console.log('✅ Timeline data received:', timelineData);
         setTimeline(timelineData);
       }
       
       if (showHistorical) {
+        console.log('📚 Fetching historical data...');
         const historicalData = await CycloneAIService.getHistoricalDamage(commune);
+        console.log('✅ Historical data received:', historicalData);
         setHistorical(historicalData);
       }
       
       // Récupère le risque global une seule fois
       if (!globalRisk) {
+        console.log('🌍 Fetching global risk...');
         const globalData = await CycloneAIService.getGlobalCycloneRisk();
+        console.log('✅ Global risk received:', globalData);
         setGlobalRisk(globalData);
       }
       
     } catch (err) {
-      console.error('Error fetching AI predictions:', err);
-      setError('Erreur lors du chargement des prédictions IA');
+      console.error('❌ Error fetching AI predictions:', err);
+      console.error('❌ Error details:', {
+        message: err.message,
+        status: err.response?.status,
+        statusText: err.response?.statusText,
+        data: err.response?.data
+      });
+      setError(`Erreur lors du chargement des prédictions IA: ${err.message}`);
     } finally {
       setLoading(false);
     }
