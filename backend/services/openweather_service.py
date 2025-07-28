@@ -138,10 +138,40 @@ class OpenWeatherService:
                 if response.status_code == 200:
                     data = response.json()
                     logger.info(f"Successfully fetched OpenWeatherMap data for {lat}, {lon}")
+                    
+                    # Enregistrer la requête réussie et mettre en cache
+                    if commune:
+                        await quota_manager.record_api_request(True, commune)
+                        await quota_manager.cache_weather_data(commune, data)
+                    
                     return data
+                    
+                elif response.status_code == 429:
+                    # Rate limit exceeded
+                    logger.error(f"OpenWeatherMap API rate limit exceeded")
+                    self.api_blocked = True
+                    
+                    if commune:
+                        await quota_manager.record_api_request(False, commune)
+                    
+                    # Utiliser cache expiré ou fallback
+                    if commune:
+                        expired_cache = quota_manager.weather_cache.find_one(
+                            {'commune': commune},
+                            sort=[('timestamp', -1)]
+                        )
+                        if expired_cache:
+                            logger.info(f"Using expired cache due to rate limit for {commune}")
+                            expired_cache.pop('_id', None)
+                            return expired_cache.get('weather_data')
+                    
+                    return self.generate_fallback_weather_data(lat, lon)
+                
                 else:
                     logger.error(f"OpenWeatherMap API error {response.status_code}: {response.text}")
-                    return None
+                    if commune:
+                        await quota_manager.record_api_request(False, commune)
+                    return self.generate_fallback_weather_data(lat, lon)
                     
         except httpx.TimeoutException:
             logger.error("OpenWeatherMap API timeout")
