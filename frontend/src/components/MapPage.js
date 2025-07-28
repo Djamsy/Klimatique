@@ -766,6 +766,14 @@ const MapPage = () => {
         </MapContainer>
         )}
 
+      {/* DEBUG PANEL - Temporaire */}
+      <div className="absolute bottom-6 right-6 bg-red-100 rounded-lg shadow-lg p-2 z-50 text-xs">
+        <div>isMobile: {isMobile ? 'true' : 'false'}</div>
+        <div>globalRisk: {globalRisk ? 'loaded' : 'null'}</div>
+        <div>showGlobalRisk: {showGlobalRisk ? 'true' : 'false'}</div>
+        <div>Risk Level: {globalRisk?.global_risk_level || 'N/A'}</div>
+      </div>
+
       {/* Panneau IA Cyclonique - En haut à droite */}
       {!isMobile && (
         <div className="absolute top-6 right-6 bg-white rounded-lg shadow-lg p-4 z-50 min-w-80">
