@@ -450,7 +450,7 @@ const LandingPage = () => {
       </div>
 
       {/* Hero Section avec vigilance adaptative */}
-      <section className="relative overflow-hidden">
+      <section className={`relative overflow-hidden ${getWeatherAnimation()}`}>
         {/* Background avec gradient adaptatif selon vigilance */}
         <div className={`absolute inset-0 ${
           vigilanceData ? 
@@ -458,6 +458,44 @@ const LandingPage = () => {
             'bg-gradient-to-br from-blue-900 via-blue-800 to-purple-900'
         }`}></div>
         <div className="absolute inset-0 bg-black opacity-20"></div>
+        
+        {/* Conteneur d'animations météorologiques dynamiques */}
+        <div className="weather-animation-container">
+          {/* Animation de pluie */}
+          <div className="rain-animation">
+            {[...Array(10)].map((_, i) => (
+              <div key={i} className="rain-drop"></div>
+            ))}
+          </div>
+          
+          {/* Animation de foudre */}
+          <div className="lightning-animation">
+            <div className="lightning-flash"></div>
+          </div>
+          
+          {/* Animation d'ouragan */}
+          <div className="hurricane-animation">
+            <div className="hurricane-spiral"></div>
+            <div className="hurricane-eye"></div>
+          </div>
+          
+          {/* Animation de soleil */}
+          <div className="sun-animation"></div>
+          
+          {/* Animation de nuages */}
+          <div className="clouds-animation">
+            <div className="cloud"></div>
+            <div className="cloud"></div>
+            <div className="cloud"></div>
+          </div>
+          
+          {/* Animation de vent */}
+          <div className="wind-animation">
+            <div className="wind-line"></div>
+            <div className="wind-line"></div>
+            <div className="wind-line"></div>
+          </div>
+        </div>
         
         {/* Animation de particules météo */}
         <div className="absolute inset-0 overflow-hidden">
