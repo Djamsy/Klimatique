@@ -1,4 +1,4 @@
-// Données mockées pour Météo Sentinelle
+// Données mockées pour Klimaclique
 
 export const weatherForecast = [
   {
