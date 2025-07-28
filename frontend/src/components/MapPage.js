@@ -353,7 +353,7 @@ const MapPage = () => {
                 Accueil
               </Button>
               <Shield className="h-8 w-8 text-blue-800 mr-3" />
-              <span className="text-xl font-bold text-blue-800">Météo Sentinelle - Carte Interactive</span>
+              <span className="text-xl font-bold text-blue-800">Klimaclique - Carte Interactive</span>
             </div>
             <div className="flex items-center space-x-4">
               <Button
