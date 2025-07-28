@@ -333,10 +333,10 @@ class NASAWeatherService:
         # Essaie l'API NASA
         weather_data = await self.fetch_nasa_weather_data(commune, lat, lon)
         
-        # FORCER L'UTILISATION DES DONNÉES MOCKÉES POUR DEBUG
-        if not weather_data or True:  # Toujours utiliser les données mockées
+        # Vérification plus robuste des données NASA
+        if not weather_data or not self._is_valid_nasa_response(weather_data):
             # Fallback avec données mockées réalistes
-            logger.warning(f"NASA API unavailable for {commune}, using mock data")
+            logger.warning(f"NASA API unavailable or invalid response for {commune}, using mock data")
             weather_data = self._generate_mock_forecast_data(commune)
         
         # Parse les données
