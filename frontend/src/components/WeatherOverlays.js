@@ -298,7 +298,7 @@ const WeatherOverlays = ({ onOverlayChange }) => {
   const getOverlayOpacity = (type) => {
     switch (type) {
       case 'clouds':
-        return 0.6;
+        return 0.8;  // Augmenter l'opacité pour les nuages
       case 'precipitation':
         return 0.7;
       case 'radar':
