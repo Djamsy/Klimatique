@@ -197,7 +197,7 @@ const WeatherOverlays = ({ onOverlayChange }) => {
   const getOverlayLabel = (type) => {
     switch (type) {
       case 'clouds':
-        return 'Nuages';
+        return 'Klimaclique';
       case 'precipitation':
         return 'Précipitations';
       case 'radar':
