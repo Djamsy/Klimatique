@@ -211,21 +211,38 @@ const WeatherOverlays = ({ onOverlayChange }) => {
     }
     
     let layerName;
-    switch (type) {
-      case 'clouds':
-        layerName = 'clouds_new';
-        break;
-      case 'precipitation':
-        layerName = 'precipitation_new';
-        break;
-      case 'radar':
-        layerName = 'radar';
-        break;
-      default:
-        return null;
+    let tileUrl;
+    
+    // Vérifier si on doit utiliser le fallback
+    const shouldUseFallback = overlayBackupService.shouldUseFallback(type);
+    
+    if (shouldUseFallback) {
+      // Utiliser l'URL de fallback
+      tileUrl = overlayBackupService.generateFallbackUrl(type);
+      console.log(`🔄 Using fallback URL for ${type}`);
+    } else {
+      // URL normale
+      switch (type) {
+        case 'clouds':
+          layerName = 'clouds_new';
+          break;
+        case 'precipitation':
+          layerName = 'precipitation_new';
+          break;
+        case 'radar':
+          layerName = 'radar';
+          break;
+        default:
+          return null;
+      }
+      
+      tileUrl = `https://tile.openweathermap.org/map/${layerName}/{z}/{x}/{y}.png?appid=${apiKey}`;
     }
     
-    const tileUrl = `https://tile.openweathermap.org/map/${layerName}/{z}/{x}/{y}.png?appid=${apiKey}`;
+    if (!tileUrl) {
+      console.error(`Could not generate URL for ${type} overlay`);
+      return null;
+    }
     
     // Limites géographiques de la Guadeloupe pour économiser les données
     const guadeloupeBounds = [
@@ -233,18 +250,26 @@ const WeatherOverlays = ({ onOverlayChange }) => {
       [16.6, -61.0]   // Nord-Est
     ];
     
-    console.log(`Rendering overlay ${type} with URL: ${tileUrl}`);
+    console.log(`Rendering overlay ${type} with URL: ${tileUrl}${shouldUseFallback ? ' (FALLBACK)' : ''}`);
     
     return (
       <TileLayer
-        key={`${type}-${lastRefresh}`}
+        key={`${type}-${lastRefresh}-${shouldUseFallback ? 'fallback' : 'primary'}`}
         url={tileUrl}
         opacity={getOverlayOpacity(type)}
         zIndex={getOverlayZIndex(type)}
-        attribution={`OpenWeatherMap ${type} • Zone Guadeloupe`}
+        attribution={`OpenWeatherMap ${type} • Zone Guadeloupe${shouldUseFallback ? ' (Backup)' : ''}`}
         bounds={guadeloupeBounds}
         maxZoom={12}
         minZoom={8}
+        onLoad={() => {
+          console.log(`✅ TileLayer ${type} loaded successfully`);
+          overlayBackupService.recordAttempt(type, true);
+        }}
+        onError={(error) => {
+          console.error(`❌ TileLayer ${type} failed to load:`, error);
+          overlayBackupService.recordAttempt(type, false);
+        }}
       />
     );
   };
