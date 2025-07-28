@@ -48,7 +48,7 @@ class OpenWeatherService:
                 'temperature_min': base_temp - random.uniform(1, 2),
                 'humidity': max(50, min(95, humidity)),
                 'pressure': pressure,
-                'wind_speed': max(5, wind_speed),
+                'wind_speed': max(5, min(25, wind_speed)),  # Limiter à 25 km/h max pour conditions normales
                 'wind_deg': random.randint(60, 120),  # Vents alizés typiques
                 'precipitation_probability': min(100, precipitation * 20),
                 'weather': [{
