@@ -802,80 +802,63 @@ async def get_historical_damage(commune: str):
         logger.error(f"❌ Erreur historique IA pour {commune}: {e}")
         raise HTTPException(status_code=500, detail=f"Erreur lors de l'historique: {str(e)}")
 
-@api_router.get("/ai/cyclone/global-risk", response_model=GlobalCycloneRisk)
-async def get_global_cyclone_risk():
-    """Évaluation globale du risque cyclonique en Guadeloupe"""
+@api_router.get("/ai/cyclone/global-risk")
+async def get_global_risk():
+    """Évaluation du risque cyclonique global (données précalculées)"""
     try:
-        # Analyse toutes les communes
-        communes = get_all_communes()[:10]  # Limite pour la démo
-        high_risk_communes = []
-        critical_risk_communes = []
+        logger.info("🌍 Récupération risque global IA précalculé")
         
-        for commune in communes:
-            try:
-                # Récupère prédiction pour chaque commune
-                weather_data = await weather_service.get_weather_for_commune(commune)
-                if not weather_data:
-                    continue
-                    
-                coords = weather_data.coordinates
-                severe_weather = await openweather_service.get_severe_weather_data(coords[0], coords[1])
-                
-                if severe_weather:
-                    commune_info = get_commune_info(commune)
-                    prediction = cyclone_predictor.predict_damage(
-                        weather_data=severe_weather['current'],
-                        commune_info=commune_info
-                    )
-                    
-                    risk_level = prediction['risk_level']
-                    if risk_level == 'critique':
-                        critical_risk_communes.append(commune)
-                    elif risk_level == 'élevé':
-                        high_risk_communes.append(commune)
-                        
-            except Exception as e:
-                logger.warning(f"Error analyzing {commune}: {e}")
-                continue
+        if not ai_precalculation_service:
+            raise HTTPException(status_code=503, detail="Service IA non disponible")
         
-        # Détermine le risque global
-        if critical_risk_communes:
-            global_risk = RiskLevel.CRITIQUE
-        elif len(high_risk_communes) >= 3:
-            global_risk = RiskLevel.ELEVE
-        elif high_risk_communes:
-            global_risk = RiskLevel.MODERE
-        else:
-            global_risk = RiskLevel.FAIBLE
+        # Récupérer depuis le cache
+        cached_global_risk = await ai_precalculation_service.get_cached_global_risk()
         
-        # Recommandations régionales
-        regional_recommendations = []
-        if global_risk == RiskLevel.CRITIQUE:
-            regional_recommendations = [
-                "Activation du plan ORSEC",
-                "Évacuation préventive recommandée",
-                "Fermeture des établissements scolaires",
-                "Renforcement des secours"
-            ]
-        elif global_risk == RiskLevel.ELEVE:
-            regional_recommendations = [
-                "Vigilance renforcée",
-                "Préparation des moyens d'évacuation",
-                "Stock d'urgence recommandé",
-                "Surveillance météo continue"
-            ]
+        if cached_global_risk:
+            logger.info("✅ Risque global trouvé en cache")
+            return cached_global_risk
         
-        return GlobalCycloneRisk(
-            global_risk_level=global_risk,
-            affected_communes=high_risk_communes + critical_risk_communes,
-            high_risk_count=len(high_risk_communes),
-            critical_risk_count=len(critical_risk_communes),
-            regional_recommendations=regional_recommendations
-        )
+        # Fallback minimal
+        logger.warning("⚠️ Pas de risque global en cache, fallback")
+        
+        return {
+            "global_risk_level": "faible",
+            "affected_communes": [],
+            "high_risk_count": 0,
+            "critical_risk_count": 0,
+            "regional_recommendations": [],
+            "last_analysis": datetime.utcnow(),
+            "data_source": "fallback"
+        }
         
     except Exception as e:
-        logger.error(f"Error getting global cyclone risk: {e}")
-        raise HTTPException(status_code=500, detail="Erreur analyse risque global")
+        logger.error(f"❌ Erreur risque global IA: {e}")
+        raise HTTPException(status_code=500, detail=f"Erreur lors du calcul global: {str(e)}")
+
+# Endpoint pour déclencher manuellement un calcul IA
+@api_router.post("/ai/recalculate")
+async def trigger_ai_recalculation():
+    """Déclenche manuellement un recalcul IA (admin)"""
+    try:
+        scheduler = get_ai_scheduler()
+        result = await scheduler.trigger_manual_calculation()
+        return result
+        
+    except Exception as e:
+        logger.error(f"❌ Erreur recalcul manuel IA: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Endpoint pour le statut du scheduler IA
+@api_router.get("/ai/scheduler/status")
+async def get_ai_scheduler_status():
+    """Retourne le statut du scheduler IA"""
+    try:
+        scheduler = get_ai_scheduler()
+        return scheduler.get_scheduler_status()
+        
+    except Exception as e:
+        logger.error(f"❌ Erreur statut scheduler IA: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @api_router.get("/ai/model/info")
 async def get_ai_model_info():
