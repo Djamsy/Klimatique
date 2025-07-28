@@ -294,3 +294,41 @@ class GlobalCycloneRisk(BaseModel):
     critical_risk_count: int
     regional_recommendations: List[str]
     last_analysis: datetime = Field(default_factory=datetime.utcnow)
+
+# Modèles Témoignages Utilisateurs
+class TestimonialRequest(BaseModel):
+    name: Optional[str] = None  # Permet l'anonymat
+    role: Optional[str] = None  # Ex: "Agriculteur", "Maire", etc.
+    commune: Optional[str] = None
+    content: str = Field(..., min_length=10, max_length=500)
+    email: Optional[str] = None  # Pour contact si modération nécessaire
+    rating: int = Field(..., ge=1, le=5)  # Note de 1 à 5 étoiles
+
+class Testimonial(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str = "Utilisateur anonyme"  # Par défaut si anonyme
+    role: str = "Utilisateur"  # Par défaut
+    commune: Optional[str] = None
+    content: str
+    rating: int
+    approved: bool = False  # Modération
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    approved_at: Optional[datetime] = None
+
+class TestimonialResponse(BaseModel):
+    testimonials: List[Testimonial]
+    total_count: int
+    displayed_count: int
+
+# Modèles Compteur Utilisateurs Actifs
+class ActiveUserSession(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    session_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    ip_address: Optional[str] = None
+    user_agent: Optional[str] = None
+    last_activity: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class ActiveUsersResponse(BaseModel):
+    active_count: int
+    last_updated: datetime = Field(default_factory=datetime.utcnow)
