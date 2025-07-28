@@ -125,29 +125,51 @@ class OpenWeatherService:
             return None
     
     async def get_severe_weather_data(self, lat: float, lon: float) -> Optional[Dict]:
-        """Récupère données météo extrême pour IA cyclonique"""
+        """Récupère données météo extrême pour IA cyclonique avec fallback"""
         data = await self.get_current_and_forecast(lat, lon)
         
+        # Si l'API échoue, utiliser les données de fallback
         if not data:
-            return None
+            logger.warning(f"Using fallback weather data for IA at {lat}, {lon}")
+            data = self.generate_fallback_weather_data(lat, lon)
             
         try:
             current = data.get('current', {})
             hourly = data.get('hourly', [])
             
-            # Données actuelles pour IA
-            current_severe = {
-                'wind_speed': current.get('wind_speed', 0) * 3.6,  # m/s vers km/h
-                'wind_gust': current.get('wind_gust', 0) * 3.6 if 'wind_gust' in current else current.get('wind_speed', 0) * 3.6 * 1.3,
-                'pressure': current.get('pressure', 1013),
-                'temperature': current.get('temp', 25),
-                'humidity': current.get('humidity', 75),
-                'precipitation': self._get_precipitation_rate(current),
-                'visibility': current.get('visibility', 10000) / 1000,  # m vers km
-                'uv_index': current.get('uvi', 5),
-                'weather_id': current.get('weather', [{}])[0].get('id', 800),
-                'timestamp': datetime.fromtimestamp(current.get('dt', datetime.now().timestamp()))
-            }
+            # Adapter les clés selon si c'est fallback ou API réelle
+            is_fallback = data.get('fallback', False)
+            
+            if is_fallback:
+                # Données de fallback (structure différente)
+                current_severe = {
+                    'wind_speed': current.get('wind_speed', 15),  # Déjà en km/h
+                    'wind_gust': current.get('wind_speed', 15) * 1.3,
+                    'pressure': current.get('pressure', 1013),
+                    'temperature': current.get('temperature', 26),
+                    'humidity': current.get('humidity', 75),
+                    'precipitation': current.get('rain', {}).get('1h', 0),
+                    'visibility': 10,  # km
+                    'uv_index': 6,
+                    'weather_id': 803,  # Partiellement nuageux
+                    'timestamp': datetime.fromtimestamp(current.get('dt', datetime.now().timestamp())),
+                    'source': 'fallback'
+                }
+            else:
+                # Données API réelles (structure originale)
+                current_severe = {
+                    'wind_speed': current.get('wind_speed', 0) * 3.6,  # m/s vers km/h
+                    'wind_gust': current.get('wind_gust', 0) * 3.6 if 'wind_gust' in current else current.get('wind_speed', 0) * 3.6 * 1.3,
+                    'pressure': current.get('pressure', 1013),
+                    'temperature': current.get('temp', 25),
+                    'humidity': current.get('humidity', 75),
+                    'precipitation': self._get_precipitation_rate(current),
+                    'visibility': current.get('visibility', 10000) / 1000,  # m vers km
+                    'uv_index': current.get('uvi', 5),
+                    'weather_id': current.get('weather', [{}])[0].get('id', 800),
+                    'timestamp': datetime.fromtimestamp(current.get('dt', datetime.now().timestamp())),
+                    'source': 'api'
+                }
             
             # Prévisions horaires pour timeline
             timeline_predictions = {}
