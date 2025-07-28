@@ -409,7 +409,7 @@ const WeatherOverlays = ({ onOverlayChange }) => {
             <div className="grid grid-cols-1 gap-1 text-xs">
               <div className="flex items-center space-x-2">
                 <div className="w-3 h-3 bg-white border border-gray-300 rounded opacity-60"></div>
-                <span className="text-gray-600">Nuages</span>
+                <span className="text-gray-600">Klimaclique</span>
               </div>
               <div className="flex items-center space-x-2">
                 <div className="w-3 h-3 bg-blue-500 rounded opacity-70"></div>
