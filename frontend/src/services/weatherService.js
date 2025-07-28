@@ -1,7 +1,10 @@
 import axios from 'axios';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL || 'https://7cc3db80-543d-4833-ab38-94990a7b2d12.preview.emergentagent.com';
 const API = `${BACKEND_URL}/api`;
+
+console.log('🔧 Backend URL:', BACKEND_URL);
+console.log('🔧 API URL:', API);
 
 // Weather API Service
 export class WeatherService {
