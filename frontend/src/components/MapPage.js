@@ -155,8 +155,10 @@ const createCustomIcon = (riskLevel, isLarge = false) => {
   };
   
   const color = colors[riskLevel] || '#22c55e';
-  const size = isLarge ? 28 : 22;
-  const innerSize = isLarge ? 10 : 8;
+  // Taille plus grande sur mobile pour faciliter le touch
+  const isMobile = window.innerWidth < 768;
+  const size = isMobile ? (isLarge ? 32 : 26) : (isLarge ? 28 : 22);
+  const innerSize = isMobile ? (isLarge ? 12 : 10) : (isLarge ? 10 : 8);
   
   return L.divIcon({
     html: `
@@ -172,7 +174,8 @@ const createCustomIcon = (riskLevel, isLarge = false) => {
         justify-content: center;
         cursor: pointer;
         transition: transform 0.2s ease;
-      " onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
+        touch-action: manipulation;
+      " ontouchstart="this.style.transform='scale(1.2)'" ontouchend="this.style.transform='scale(1)'" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
         <div style="
           width: ${innerSize}px; 
           height: ${innerSize}px; 
