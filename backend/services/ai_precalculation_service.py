@@ -126,11 +126,19 @@ class AIPrecalculationService:
                 'precipitation': 15.0 # mm/h
             }
             
+            # Préparer les données pour le modèle IA
+            commune_info = {
+                'name': commune['name'],
+                'coordinates': commune['coordinates'],
+                'population': commune.get('population', 10000),
+                'type': commune.get('type', 'urbaine'),
+                'riskFactors': commune.get('riskFactors', [])
+            }
+            
             damage_prediction = self.predictor.predict_damage(
-                commune_name=commune['name'],
-                coordinates=commune['coordinates'],
-                weather_conditions=weather_conditions,
-                population=commune.get('population', 10000)
+                weather_data=weather_conditions,
+                commune_info=commune_info,
+                vigilance_level='vert'  # Utiliser vigilance verte par défaut pour le précalcul
             )
             
             return {
