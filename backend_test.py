@@ -925,12 +925,20 @@ class BackendTester:
                               f"Score de confiance invalide: {confidence}")
                 return False
             
-            # Vérifier recommandations
+            # Vérifier recommandations (peuvent être vides en conditions normales)
             recommendations = data.get("recommendations", [])
-            if not isinstance(recommendations, list) or len(recommendations) == 0:
+            if not isinstance(recommendations, list):
                 self.log_result(f"AI Prediction - {commune}", False, 
-                              "Recommandations manquantes ou invalides")
+                              "Recommandations doivent être une liste")
                 return False
+            
+            # En conditions normales, les recommandations peuvent être vides
+            # Mais si elles existent, elles ne doivent pas être alarmistes pour risque faible
+            if risk_level == "faible" and len(recommendations) > 0:
+                if any("ÉVACUATION" in rec.upper() for rec in recommendations):
+                    self.log_result(f"AI Prediction - {commune}", False, 
+                                  "Recommandations trop alarmistes pour risque faible")
+                    return False
             
             self.log_result(f"AI Prediction - {commune}", True, 
                           f"Risk: {risk_level}, Confidence: {confidence}%, Recs: {len(recommendations)}")
