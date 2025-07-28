@@ -215,3 +215,5 @@ test_plan:
 agent_communication:
     -agent: "main"
     -message: "Intégration Facebook/Twitter complète implémentée. Service de posts automatiques avec scheduler, 9 endpoints API, formatage posts météo avec données IA/vigilance. Problème risques IA analysé - système fonctionne correctement. Prêt pour tests backend."
+    -agent: "testing"
+    -message: "Tests backend réseaux sociaux terminés avec succès (12/12 tests passés). Tous endpoints fonctionnels, modèles Pydantic corrigés, services initialisés. Architecture solide et prête pour vraies clés API. Problème SocialStatsResponse résolu, WeatherCache modèle corrigé."
