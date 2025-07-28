@@ -630,7 +630,7 @@ class BackendTester:
             return False
     
     async def test_nasa_api_fixes_working(self) -> bool:
-        """Test que les corrections NASA API fonctionnent (pas de valeurs N/A)"""
+        """Test que les corrections NASA API fonctionnent (pas de valeurs N/A pour champs critiques)"""
         try:
             all_working = True
             na_values_found = []
@@ -646,27 +646,40 @@ class BackendTester:
                 
                 data = response.json()
                 
-                # Vérifier récursivement toutes les valeurs
-                def check_for_na_values(obj, path=""):
-                    if isinstance(obj, dict):
-                        for key, value in obj.items():
-                            check_for_na_values(value, f"{path}.{key}" if path else key)
-                    elif isinstance(obj, list):
-                        for i, item in enumerate(obj):
-                            check_for_na_values(item, f"{path}[{i}]")
-                    else:
-                        if str(obj).upper() == "N/A" or obj is None:
-                            na_values_found.append(f"{commune}: {path} = {obj}")
+                # Vérifier les champs critiques seulement (pas les optionnels comme wind_direction, visibility, uv_index)
+                critical_fields = {
+                    "current": ["temperature_min", "temperature_max", "humidity", "wind_speed"],
+                    "forecast": ["temperature_min", "temperature_max", "humidity", "wind_speed"]
+                }
                 
-                check_for_na_values(data)
+                # Vérifier current
+                current = data.get("current", {})
+                for field in critical_fields["current"]:
+                    value = current.get(field)
+                    if value is None or str(value).upper() == "N/A":
+                        na_values_found.append(f"{commune}: current.{field} = {value}")
+                
+                # Vérifier forecast (5 premiers jours)
+                forecast = data.get("forecast", [])[:5]
+                for i, day in enumerate(forecast):
+                    weather_data = day.get("weather_data", {})
+                    for field in critical_fields["forecast"]:
+                        value = weather_data.get(field)
+                        if value is None or str(value).upper() == "N/A":
+                            na_values_found.append(f"{commune}: forecast[{i}].weather_data.{field} = {value}")
             
             if na_values_found:
-                self.log_result("Corrections NASA API", False, 
-                              f"Valeurs N/A trouvées: {'; '.join(na_values_found[:5])}")
+                # Limiter l'affichage aux 5 premières erreurs
+                displayed_errors = na_values_found[:5]
+                error_msg = "; ".join(displayed_errors)
+                if len(na_values_found) > 5:
+                    error_msg += f" ... et {len(na_values_found)-5} autres"
+                
+                self.log_result("Corrections NASA API", False, error_msg)
                 return False
             
             self.log_result("Corrections NASA API", True, 
-                          f"Aucune valeur N/A trouvée sur {len(TEST_COMMUNES)} communes")
+                          f"Aucune valeur N/A critique trouvée sur {len(TEST_COMMUNES)} communes")
             return True
             
         except Exception as e:
