@@ -542,9 +542,9 @@ async def predict_cyclone_damage(commune: str):
         if not weather_data:
             raise HTTPException(status_code=404, detail=f"Données météo non disponibles pour {commune}")
         
-        # Récupère les données OpenWeatherMap pour l'IA
+        # Récupère les données OpenWeatherMap avec système de quotas
         coords = weather_data.coordinates
-        severe_weather = await openweather_service.get_severe_weather_data(coords[0], coords[1])
+        severe_weather = await openweather_service.get_severe_weather_data(coords[0], coords[1], commune)
         
         if not severe_weather:
             logger.warning(f"No weather data available for IA prediction: {commune}")
