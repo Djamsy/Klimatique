@@ -332,8 +332,14 @@ const WeatherOverlays = ({ onOverlayChange }) => {
                   {overlay.loading && (
                     <Loader2 className="h-3 w-3 animate-spin text-blue-600" />
                   )}
-                  {overlay.active && (
-                    <div className="w-2 h-2 bg-green-500 rounded-full" />
+                  {overlay.status === 'active' && (
+                    <div className="w-2 h-2 bg-green-500 rounded-full" title="Actif" />
+                  )}
+                  {overlay.status === 'failed' && (
+                    <AlertTriangle className="h-3 w-3 text-red-500" title="Échec" />
+                  )}
+                  {overlayBackupService.shouldUseFallback(type) && (
+                    <Shield className="h-3 w-3 text-orange-500" title="Mode backup" />
                   )}
                 </div>
                 
