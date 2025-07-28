@@ -1359,32 +1359,37 @@ const LandingPage = () => {
                 </Card>
               )}
 
-              {/* Liste des témoignages */}
+              {/* Liste des témoignages - Responsive */}
               {isLoadingTestimonials ? (
                 <div className="text-center py-8">
                   <Loader2 className="w-8 h-8 animate-spin mx-auto text-blue-600" />
                   <p className="text-gray-600 mt-2">Chargement des témoignages...</p>
                 </div>
               ) : testimonials.length > 0 ? (
-                <div className="grid md:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
                   {testimonials.map((testimonial, index) => (
-                    <Card key={testimonial.id} className={`testimonial-card p-6 animate-fade-in-up animate-delay-${(index + 1) * 100} section-hover`}>
-                      <CardContent>
-                        <div className="flex mb-4">
+                    <Card key={testimonial.id} className={`testimonial-card p-4 md:p-6 animate-fade-in-up animate-delay-${(index + 1) * 100} section-hover`}>
+                      <CardContent className="p-0">
+                        {/* Étoiles */}
+                        <div className="flex mb-3 md:mb-4">
                           {[...Array(5)].map((_, i) => (
-                            <Star key={i} className={`w-4 h-4 ${i < testimonial.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} />
+                            <Star key={i} className={`w-3 h-3 md:w-4 md:h-4 ${i < testimonial.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} />
                           ))}
                         </div>
-                        <p className="text-gray-700 mb-6 italic">"{testimonial.content}"</p>
+                        
+                        {/* Contenu du témoignage */}
+                        <p className="text-gray-700 mb-4 md:mb-6 italic text-sm md:text-base leading-relaxed">"{testimonial.content}"</p>
+                        
+                        {/* Informations auteur */}
                         <div className="flex items-center">
-                          <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                            <span className="text-blue-800 font-semibold">
+                          <div className="w-10 h-10 md:w-12 md:h-12 bg-blue-100 rounded-full flex items-center justify-center mr-3 md:mr-4 flex-shrink-0">
+                            <span className="text-blue-800 font-semibold text-sm md:text-base">
                               {testimonial.name.split(' ').map(n => n[0]).join('').substr(0, 2).toUpperCase()}
                             </span>
                           </div>
-                          <div>
-                            <div className="font-semibold text-gray-900">{testimonial.name}</div>
-                            <div className="text-sm text-gray-600">
+                          <div className="min-w-0 flex-1">
+                            <div className="font-semibold text-gray-900 text-sm md:text-base truncate">{testimonial.name}</div>
+                            <div className="text-xs md:text-sm text-gray-600 truncate">
                               {testimonial.role}
                               {testimonial.commune && ` • ${testimonial.commune}`}
                             </div>
@@ -1396,9 +1401,9 @@ const LandingPage = () => {
                 </div>
               ) : (
                 <div className="text-center py-8 bg-gray-50 rounded-lg">
-                  <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600 mb-4">Aucun témoignage pour le moment.</p>
-                  <p className="text-sm text-gray-500">Soyez le premier à partager votre expérience !</p>
+                  <Users className="w-10 h-10 md:w-12 md:h-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-600 mb-4 text-sm md:text-base">Aucun témoignage pour le moment.</p>
+                  <p className="text-xs md:text-sm text-gray-500">Soyez le premier à partager votre expérience !</p>
                 </div>
               )}
             </div>
