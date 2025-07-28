@@ -216,7 +216,7 @@ metadata:
 
 test_plan:
   current_focus: 
-    - "Encarts publicitaires page d'accueil"
+    - "Modification calque nuage - suppression limite et changement nom"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
