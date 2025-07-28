@@ -180,6 +180,18 @@ backend:
         -agent: "testing"
         -comment: "✅ TESTÉ ET VALIDÉ: Initialisation service backup parfaite. Service actif au démarrage, 6 communes supportées, intégration avec weather_service opérationnelle. Tests robustesse générale: API status OK, tous services initialisés."
 
+  - task: "Vérification consistance données météo multi-communes"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/services/nasa_weather_service.py, /app/backend/services/weather_service.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "main"
+        -comment: "Vérification nécessaire pour confirmer que les corrections NASA API fonctionnent universellement. Tests requis sur plusieurs communes pour s'assurer de la variation des données météo sur 5 jours et entre communes différentes."
+
 frontend:
   - task: "Encarts publicitaires page d'accueil"
     implemented: true
