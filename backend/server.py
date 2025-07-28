@@ -57,6 +57,33 @@ async def lifespan(app: FastAPI):
     # Startup
     logger.info("Starting Météo Sentinelle application...")
     
+    # Initialiser les services sociaux
+    try:
+        global social_media_service, social_post_scheduler
+        
+        from services.social_media_service import SocialMediaService
+        from services.social_post_scheduler import SocialPostScheduler
+        
+        social_media_service = SocialMediaService(db)
+        social_post_scheduler = SocialPostScheduler(
+            db=db,
+            weather_service=weather_service,
+            social_media_service=social_media_service,
+            meteo_france_service=meteo_france_service,
+            cyclone_predictor=cyclone_predictor
+        )
+        
+        # Mettre à jour les services globaux
+        import services.social_media_service as sms_module
+        import services.social_post_scheduler as sps_module
+        sms_module.social_media_service = social_media_service
+        sps_module.social_post_scheduler = social_post_scheduler
+        
+        logger.info("Social media services initialized successfully")
+        
+    except Exception as e:
+        logger.error(f"Failed to initialize social media services: {e}")
+    
     # Démarrer le scheduler météo
     try:
         from services.weather_scheduler import weather_scheduler
@@ -64,6 +91,14 @@ async def lifespan(app: FastAPI):
         logger.info("Weather scheduler started successfully")
     except Exception as e:
         logger.error(f"Failed to start weather scheduler: {e}")
+    
+    # Démarrer le scheduler social (optionnel - peut être activé via API)
+    try:
+        # await social_post_scheduler.start_scheduler()
+        # logger.info("Social post scheduler started successfully")
+        pass
+    except Exception as e:
+        logger.error(f"Failed to start social post scheduler: {e}")
     
     yield
     
@@ -77,6 +112,14 @@ async def lifespan(app: FastAPI):
         logger.info("Weather scheduler stopped successfully")
     except Exception as e:
         logger.error(f"Failed to stop weather scheduler: {e}")
+    
+    # Arrêter le scheduler social
+    try:
+        if social_post_scheduler and social_post_scheduler.is_running:
+            await social_post_scheduler.stop_scheduler()
+            logger.info("Social post scheduler stopped successfully")
+    except Exception as e:
+        logger.error(f"Failed to stop social post scheduler: {e}")
 
 # Create the main app
 app = FastAPI(
