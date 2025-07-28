@@ -89,11 +89,37 @@ class OpenWeatherService:
             'location': f"Guadeloupe ({lat:.2f}, {lon:.2f})"
         }
         
-    async def get_current_and_forecast(self, lat: float, lon: float) -> Optional[Dict]:
-        """Récupère données actuelles et prévisions depuis OpenWeatherMap"""
+    async def get_current_and_forecast(self, lat: float, lon: float, commune: str = None) -> Optional[Dict]:
+        """Récupère données actuelles et prévisions - utilise le système de quotas"""
         if not self.api_key:
             logger.error("OpenWeatherMap API key not configured")
-            return None
+            return self.generate_fallback_weather_data(lat, lon)
+        
+        # D'abord, vérifier le cache intelligent
+        if commune:
+            from services.api_quota_manager import quota_manager
+            cached_data = await quota_manager.get_cached_weather_data(commune)
+            if cached_data:
+                return cached_data.get('weather_data')
+        
+        # Vérifier le quota avant la requête API
+        if commune:
+            check = await quota_manager.can_make_request(commune)
+            if not check['allowed']:
+                logger.warning(f"API quota exceeded for {commune}: {check['reason']}")
+                # Essayer le cache même expiré avant fallback
+                if commune:
+                    expired_cache = quota_manager.weather_cache.find_one(
+                        {'commune': commune},
+                        sort=[('timestamp', -1)]
+                    )
+                    if expired_cache:
+                        logger.info(f"Using expired cache for {commune}")
+                        expired_cache.pop('_id', None)
+                        return expired_cache.get('weather_data')
+                
+                # Sinon, utiliser le fallback
+                return self.generate_fallback_weather_data(lat, lon)
             
         try:
             async with httpx.AsyncClient() as client:
