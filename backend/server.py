@@ -654,84 +654,66 @@ async def get_vigilance_data(departement: str):
 # ENDPOINTS IA PRÉDICTIVE CYCLONIQUE
 # =============================================================================
 
-@api_router.get("/ai/cyclone/predict/{commune}", response_model=CycloneAIResponse)
-async def predict_cyclone_damage(commune: str):
-    """Prédiction IA des dégâts cycloniques pour une commune"""
+@api_router.get("/ai/cyclone/predict/{commune}")
+async def get_cyclone_prediction(commune: str):
+    """Prédiction IA des dommages cycloniques pour une commune (données précalculées)"""
     try:
-        # Récupère les données météo actuelles
-        weather_data = await weather_service.get_weather_for_commune(commune)
-        if not weather_data:
-            raise HTTPException(status_code=404, detail=f"Données météo non disponibles pour {commune}")
+        logger.info(f"🤖 Récupération prédiction IA précalculée pour {commune}")
         
-        # Récupère les données OpenWeatherMap avec système de quotas
-        coords = weather_data.coordinates
-        severe_weather = await openweather_service.get_severe_weather_data(coords[0], coords[1], commune)
+        if not ai_precalculation_service:
+            raise HTTPException(status_code=503, detail="Service IA non disponible")
         
-        if not severe_weather:
-            logger.warning(f"No weather data available for IA prediction: {commune}")
-            raise HTTPException(status_code=500, detail="Données météo sévères non disponibles")
+        # Tenter de récupérer depuis le cache
+        cached_prediction = await ai_precalculation_service.get_cached_prediction(commune)
         
-        # Vérifier si on est en mode fallback
-        is_fallback = severe_weather.get('fallback_mode', False)
-        if is_fallback:
-            logger.info(f"IA prediction using fallback data for {commune}")
+        if cached_prediction:
+            logger.info(f"✅ Prédiction trouvée en cache pour {commune}")
+            return cached_prediction
         
-        # Prépare les informations de la commune
-        commune_info = get_commune_info(commune)
+        # Fallback: calcul en temps réel si pas de cache
+        logger.warning(f"⚠️ Pas de cache pour {commune}, calcul en temps réel")
         
-        # Prédiction IA
-        prediction = cyclone_predictor.predict_damage(
-            weather_data=severe_weather['current'],
-            commune_info=commune_info
+        # Trouver les données de la commune
+        commune_data = None
+        from data.communes_data import GUADELOUPE_COMMUNES
+        for c in GUADELOUPE_COMMUNES:
+            if c['name'].lower() == commune.lower():
+                commune_data = c
+                break
+        
+        if not commune_data:
+            raise HTTPException(status_code=404, detail="Commune non trouvée")
+        
+        # Conditions météo par défaut pour le fallback
+        weather_conditions = {
+            'wind_speed': 45.0,
+            'pressure': 990.0,
+            'temperature': 28.0,
+            'humidity': 75.0,
+            'precipitation': 15.0
+        }
+        
+        damage_prediction = cyclone_predictor.predict_damage(
+            commune_name=commune,
+            coordinates=commune_data['coordinates'],
+            weather_conditions=weather_conditions,
+            population=commune_data.get('population', 10000)
         )
         
-        # Ajuster les recommandations si en mode fallback
-        if is_fallback:
-            prediction['recommendations'].insert(0, 
-                "⚠️ Prédiction basée sur données simulées (API météo temporairement indisponible)")
-            prediction['confidence'] = max(40, prediction['confidence'] - 20)  # Réduire confiance
+        return {
+            "commune": commune,
+            "coordinates": commune_data['coordinates'],
+            "damage_predictions": damage_prediction['damage_predictions'],
+            "risk_level": damage_prediction['risk_level'],
+            "confidence_score": damage_prediction['confidence_score'],
+            "recommendations": damage_prediction['recommendations'],
+            "weather_conditions": weather_conditions,
+            "data_source": "realtime_fallback"
+        }
         
-        # Récupérer la vigilance officielle pour adaptation
-        try:
-            vigilance_data = await vigilance_alternative_service.get_enhanced_vigilance_data('guadeloupe')
-            vigilance_level = vigilance_data.get('color_level', 'vert')
-            
-            # Adapter le niveau de risque selon la vigilance officielle
-            adapted_risk_level = cyclone_predictor.adapt_risk_to_vigilance(
-                prediction['risk_level'], 
-                vigilance_level
-            )
-            
-            # Mettre à jour la prédiction avec le risque adapté
-            prediction['risk_level'] = adapted_risk_level
-            
-        except Exception as e:
-            logger.warning(f"Could not adapt risk to vigilance: {e}")
-            # Continuer avec le risque IA normal
-        
-        # Formate la réponse
-        response = CycloneAIResponse(
-            commune=commune,
-            coordinates=coords,
-            damage_predictions=CycloneDamagePrediction(
-                infrastructure=prediction['damage_predictions']['infrastructure'],
-                agriculture=prediction['damage_predictions']['agriculture'],
-                population_impact=prediction['damage_predictions']['population_impact']
-            ),
-            risk_level=RiskLevel(prediction['risk_level']),
-            risk_score=prediction['risk_score'],
-            confidence=prediction['confidence'],
-            recommendations=prediction['recommendations'],
-            weather_context=severe_weather['current']
-        )
-        
-        return response
-        
-    except HTTPException:
-        raise
     except Exception as e:
-        logger.error(f"Error predicting cyclone damage for {commune}: {e}")
-        raise HTTPException(status_code=500, detail="Erreur prédiction IA")
+        logger.error(f"❌ Erreur prédiction IA pour {commune}: {e}")
+        raise HTTPException(status_code=500, detail=f"Erreur lors de la prédiction: {str(e)}")
 
 @api_router.get("/ai/cyclone/timeline/{commune}", response_model=CycloneTimelinePrediction)
 async def predict_cyclone_timeline(commune: str):
