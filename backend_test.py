@@ -20,7 +20,9 @@ TIMEOUT = 30.0
 TEST_COMMUNES = [
     "Pointe-à-Pitre",
     "Basse-Terre", 
-    "Sainte-Anne"
+    "Sainte-Anne",
+    "Le Gosier",
+    "Saint-François"
 ]
 
 class BackendTester:
