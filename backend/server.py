@@ -72,7 +72,12 @@ async def lifespan(app: FastAPI):
         logger.error(f"Failed to stop weather scheduler: {e}")
 
 # Create the main app
-app = FastAPI(title="Météo Sentinelle API", version="1.0.0")
+app = FastAPI(
+    title="Météo Sentinelle - Guadeloupe Weather API",
+    description="API météorologique avancée pour la Guadeloupe avec IA prédictive",
+    version="2.0.0",
+    lifespan=lifespan
+)
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
