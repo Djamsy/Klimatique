@@ -44,6 +44,33 @@ weather_service = WeatherService(db, weather_cache_service, config)
 alert_service = AlertService(db)
 subscription_service = SubscriptionService(db)
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Gestion du cycle de vie de l'application"""
+    # Startup
+    logger.info("Starting Météo Sentinelle application...")
+    
+    # Démarrer le scheduler météo
+    try:
+        from services.weather_scheduler import weather_scheduler
+        await weather_scheduler.start_scheduler()
+        logger.info("Weather scheduler started successfully")
+    except Exception as e:
+        logger.error(f"Failed to start weather scheduler: {e}")
+    
+    yield
+    
+    # Shutdown
+    logger.info("Shutting down Météo Sentinelle application...")
+    
+    # Arrêter le scheduler météo
+    try:
+        from services.weather_scheduler import weather_scheduler  
+        await weather_scheduler.stop_scheduler()
+        logger.info("Weather scheduler stopped successfully")
+    except Exception as e:
+        logger.error(f"Failed to stop weather scheduler: {e}")
+
 # Create the main app
 app = FastAPI(title="Météo Sentinelle API", version="1.0.0")
 
