@@ -1,156 +1,151 @@
 {
   "total_tests": 27,
-  "passed": 15,
-  "failed": 12,
+  "passed": 20,
+  "failed": 7,
   "errors": [
-    "IA Vigilance Verte - Pointe-à-Pitre: Risque trop élevé pour conditions normales: élevé (score: 8.3)",
-    "IA Vigilance Verte - Sainte-Anne: Risque trop élevé pour conditions normales: élevé (score: 12.6)",
+    "IA Vigilance Verte - Pointe-à-Pitre: Risque trop élevé pour conditions normales: critique (score: 8.6)",
+    "IA Vigilance Verte - Sainte-Anne: Risque trop élevé pour conditions normales: élevé (score: 11.3)",
+    "IA Vigilance Verte - Le Gosier: Risque trop élevé pour conditions normales: élevé (score: 7.4)",
     "Système Backup Complet: Commune manquante dans résultats: Saint-François",
     "Statut Système Backup: Statut manquant pour Le Gosier",
-    "Variation Météo - Pointe-à-Pitre: Données journalières incomplètes",
-    "Variation Météo - Basse-Terre: Données journalières incomplètes",
-    "Variation Météo - Sainte-Anne: Données journalières incomplètes",
-    "Variation Météo - Le Gosier: Données journalières incomplètes",
-    "Variation Météo - Saint-François: Données journalières incomplètes",
     "Diversité Inter-Communes: Vents trop similaires entre communes: variation=0.0 km/h",
-    "Corrections NASA API: Valeurs N/A trouvées: Pointe-à-Pitre: current.wind_direction = None; Pointe-à-Pitre: current.visibility = None; Pointe-à-Pitre: current.uv_index = None; Pointe-à-Pitre: forecast[0].weather_data.temperature_current = None; Pointe-à-Pitre: forecast[0].weather_data.wind_direction = None",
-    "Valeurs Météo Réalistes: Pointe-à-Pitre: pression=101.3hPa (attendu: 980-1040hPa); Pointe-à-Pitre J1: temp_min=0°C; Pointe-à-Pitre J1: temp_max=0°C; Pointe-à-Pitre J1: humidité=0%; Pointe-à-Pitre J2: temp_min=0°C; Pointe-à-Pitre J2: temp_max=0°C; Pointe-à-Pitre J2: humidité=0%; Pointe-à-Pitre J3: temp_min=0°C; Pointe-à-Pitre J3: temp_max=0°C; Pointe-à-Pitre J3: humidité=0% ... et 40 autres"
+    "Valeurs Météo Réalistes: Pointe-à-Pitre: pression=101.3hPa (attendu: 980-1040hPa); Basse-Terre: pression=101.3hPa (attendu: 980-1040hPa); Sainte-Anne: pression=101.3hPa (attendu: 980-1040hPa); Le Gosier: pression=101.3hPa (attendu: 980-1040hPa); Saint-François: pression=101.3hPa (attendu: 980-1040hPa)"
   ],
   "detailed_results": {
     "IA Vigilance Verte - Pointe-à-Pitre": {
       "success": false,
-      "details": "Risque trop élevé pour conditions normales: élevé (score: 8.3)",
-      "timestamp": "2025-07-28T13:32:40.480455"
+      "details": "Risque trop élevé pour conditions normales: critique (score: 8.6)",
+      "timestamp": "2025-07-28T13:34:53.828159"
     },
     "IA Vigilance Verte - Basse-Terre": {
       "success": true,
-      "details": "Risk: faible, Score: 10.2, Adapté à vigilance verte",
-      "timestamp": "2025-07-28T13:32:40.675497"
+      "details": "Risk: modéré, Score: 10.2, Adapté à vigilance verte",
+      "timestamp": "2025-07-28T13:34:53.985730"
     },
     "IA Vigilance Verte - Sainte-Anne": {
       "success": false,
-      "details": "Risque trop élevé pour conditions normales: élevé (score: 12.6)",
-      "timestamp": "2025-07-28T13:32:40.837884"
+      "details": "Risque trop élevé pour conditions normales: élevé (score: 11.3)",
+      "timestamp": "2025-07-28T13:34:54.179110"
     },
     "IA Vigilance Verte - Le Gosier": {
-      "success": true,
-      "details": "Risk: faible, Score: 8.3, Adapté à vigilance verte",
-      "timestamp": "2025-07-28T13:32:41.034222"
+      "success": false,
+      "details": "Risque trop élevé pour conditions normales: élevé (score: 7.4)",
+      "timestamp": "2025-07-28T13:34:54.333967"
     },
     "IA Vigilance Verte - Saint-François": {
       "success": true,
-      "details": "Risk: modéré, Score: 12.8, Adapté à vigilance verte",
-      "timestamp": "2025-07-28T13:32:41.191726"
+      "details": "Risk: faible, Score: 12.6, Adapté à vigilance verte",
+      "timestamp": "2025-07-28T13:34:54.535798"
     },
     "Système Backup Complet": {
       "success": false,
       "details": "Commune manquante dans résultats: Saint-François",
-      "timestamp": "2025-07-28T13:32:41.248756"
+      "timestamp": "2025-07-28T13:34:54.593743"
     },
     "Statut Système Backup": {
       "success": false,
       "details": "Statut manquant pour Le Gosier",
-      "timestamp": "2025-07-28T13:32:41.262169"
+      "timestamp": "2025-07-28T13:34:54.609596"
     },
     "Backup Météo - Pointe-à-Pitre": {
       "success": true,
       "details": "Source: backup_recent, Temp: 27.0°C, Humidité: 70%",
-      "timestamp": "2025-07-28T13:32:41.272486"
+      "timestamp": "2025-07-28T13:34:54.619390"
     },
     "Backup Météo - Basse-Terre": {
       "success": true,
       "details": "Source: backup_recent, Temp: 26.0°C, Humidité: 70%",
-      "timestamp": "2025-07-28T13:32:41.282722"
+      "timestamp": "2025-07-28T13:34:54.629106"
     },
     "Backup Météo - Sainte-Anne": {
       "success": true,
       "details": "Source: backup_recent, Temp: 26.0°C, Humidité: 70%",
-      "timestamp": "2025-07-28T13:32:41.292602"
+      "timestamp": "2025-07-28T13:34:54.638959"
     },
     "Backup Météo - Le Gosier": {
       "success": true,
       "details": "Source: backup_recent, Temp: 27.0°C, Humidité: 70%",
-      "timestamp": "2025-07-28T13:32:41.301743"
+      "timestamp": "2025-07-28T13:34:54.648598"
     },
     "Backup Météo - Saint-François": {
       "success": true,
       "details": "Source: backup_recent, Temp: 28.0°C, Humidité: 70%",
-      "timestamp": "2025-07-28T13:32:41.310559"
+      "timestamp": "2025-07-28T13:34:54.657741"
     },
     "Intégration Backup - Pointe-à-Pitre": {
       "success": true,
       "details": "Source: nasa, Cached: True, Temp: 23.0-29.0°C",
-      "timestamp": "2025-07-28T13:32:41.324830"
+      "timestamp": "2025-07-28T13:34:54.672749"
     },
     "Intégration Backup - Basse-Terre": {
       "success": true,
       "details": "Source: nasa, Cached: True, Temp: 22.0-28.0°C",
-      "timestamp": "2025-07-28T13:32:41.339371"
+      "timestamp": "2025-07-28T13:34:54.686530"
     },
     "Intégration Backup - Sainte-Anne": {
       "success": true,
       "details": "Source: nasa, Cached: True, Temp: 22.0-28.0°C",
-      "timestamp": "2025-07-28T13:32:41.353912"
+      "timestamp": "2025-07-28T13:34:54.700148"
     },
     "Intégration Backup - Le Gosier": {
       "success": true,
       "details": "Source: nasa, Cached: True, Temp: 22.0-29.0°C",
-      "timestamp": "2025-07-28T13:32:41.367435"
+      "timestamp": "2025-07-28T13:34:54.714031"
     },
     "Intégration Backup - Saint-François": {
       "success": true,
       "details": "Source: nasa, Cached: True, Temp: 23.0-30.0°C",
-      "timestamp": "2025-07-28T13:32:41.380900"
+      "timestamp": "2025-07-28T13:34:54.728305"
     },
     "Variation Météo - Pointe-à-Pitre": {
-      "success": false,
-      "details": "Données journalières incomplètes",
-      "timestamp": "2025-07-28T13:32:41.394241"
+      "success": true,
+      "details": "Variation OK - Temp: 2.0-2.0°C, Vent: 7.2km/h, Humidité: 12.0%",
+      "timestamp": "2025-07-28T13:34:54.741572"
     },
     "Variation Météo - Basse-Terre": {
-      "success": false,
-      "details": "Données journalières incomplètes",
-      "timestamp": "2025-07-28T13:32:41.407412"
+      "success": true,
+      "details": "Variation OK - Temp: 2.0-2.0°C, Vent: 7.2km/h, Humidité: 12.0%",
+      "timestamp": "2025-07-28T13:34:54.756024"
     },
     "Variation Météo - Sainte-Anne": {
-      "success": false,
-      "details": "Données journalières incomplètes",
-      "timestamp": "2025-07-28T13:32:41.420924"
+      "success": true,
+      "details": "Variation OK - Temp: 2.0-2.0°C, Vent: 7.2km/h, Humidité: 12.0%",
+      "timestamp": "2025-07-28T13:34:54.771952"
     },
     "Variation Météo - Le Gosier": {
-      "success": false,
-      "details": "Données journalières incomplètes",
-      "timestamp": "2025-07-28T13:32:41.441529"
+      "success": true,
+      "details": "Variation OK - Temp: 2.0-2.0°C, Vent: 7.2km/h, Humidité: 12.0%",
+      "timestamp": "2025-07-28T13:34:54.786204"
     },
     "Variation Météo - Saint-François": {
-      "success": false,
-      "details": "Données journalières incomplètes",
-      "timestamp": "2025-07-28T13:32:41.455073"
+      "success": true,
+      "details": "Variation OK - Temp: 2.0-2.0°C, Vent: 7.2km/h, Humidité: 12.0%",
+      "timestamp": "2025-07-28T13:34:54.800558"
     },
     "Diversité Inter-Communes": {
       "success": false,
       "details": "Vents trop similaires entre communes: variation=0.0 km/h",
-      "timestamp": "2025-07-28T13:32:41.525706"
+      "timestamp": "2025-07-28T13:34:54.880716"
     },
     "Corrections NASA API": {
-      "success": false,
-      "details": "Valeurs N/A trouvées: Pointe-à-Pitre: current.wind_direction = None; Pointe-à-Pitre: current.visibility = None; Pointe-à-Pitre: current.uv_index = None; Pointe-à-Pitre: forecast[0].weather_data.temperature_current = None; Pointe-à-Pitre: forecast[0].weather_data.wind_direction = None",
-      "timestamp": "2025-07-28T13:32:41.595765"
+      "success": true,
+      "details": "Aucune valeur N/A critique trouvée sur 5 communes",
+      "timestamp": "2025-07-28T13:34:54.960257"
     },
     "Valeurs Météo Réalistes": {
       "success": false,
-      "details": "Pointe-à-Pitre: pression=101.3hPa (attendu: 980-1040hPa); Pointe-à-Pitre J1: temp_min=0°C; Pointe-à-Pitre J1: temp_max=0°C; Pointe-à-Pitre J1: humidité=0%; Pointe-à-Pitre J2: temp_min=0°C; Pointe-à-Pitre J2: temp_max=0°C; Pointe-à-Pitre J2: humidité=0%; Pointe-à-Pitre J3: temp_min=0°C; Pointe-à-Pitre J3: temp_max=0°C; Pointe-à-Pitre J3: humidité=0% ... et 40 autres",
-      "timestamp": "2025-07-28T13:32:41.665941"
+      "details": "Pointe-à-Pitre: pression=101.3hPa (attendu: 980-1040hPa); Basse-Terre: pression=101.3hPa (attendu: 980-1040hPa); Sainte-Anne: pression=101.3hPa (attendu: 980-1040hPa); Le Gosier: pression=101.3hPa (attendu: 980-1040hPa); Saint-François: pression=101.3hPa (attendu: 980-1040hPa)",
+      "timestamp": "2025-07-28T13:34:55.031864"
     },
     "API Status": {
       "success": true,
       "details": "API opérationnelle, 0 appels aujourd'hui",
-      "timestamp": "2025-07-28T13:32:41.716800"
+      "timestamp": "2025-07-28T13:34:55.081946"
     },
     "Initialisation Services": {
       "success": true,
       "details": "Tous les services initialisés: /status: OK, /config/communes: OK, /weather/backup/status: OK",
-      "timestamp": "2025-07-28T13:32:41.784315"
+      "timestamp": "2025-07-28T13:34:55.151858"
     }
   }
 }
