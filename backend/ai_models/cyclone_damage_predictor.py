@@ -457,7 +457,7 @@ class CycloneDamagePredictor:
             risk_score += 5
             risk_factors.append(f"Humidité élevée: {humidity}%")
         
-        # 5. Analyse précipitations
+        # 6. Analyse précipitations
         if precipitation > 50:  # Pluies torrentielles
             risk_score += 15
             risk_factors.append(f"Pluies torrentielles: {precipitation:.0f} mm/h")
