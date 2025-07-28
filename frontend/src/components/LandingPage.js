@@ -1413,15 +1413,27 @@ const LandingPage = () => {
               )}
             </div>
             
-            {/* Encart Publicitaire Sidebar */}
-            <div className="lg:col-span-1">
-              <div className="sticky top-24">
-                <AdBanner position="sidebar" className="mb-4">
+            {/* Encart Publicitaire Sidebar - Mobile friendly */}
+            <div className="lg:col-span-1 order-1 lg:order-2">
+              <div className="lg:sticky lg:top-24">
+                <AdBanner position="sidebar" className="mb-4 hidden lg:block">
                   {AdContent.sidebarWeather}
                 </AdBanner>
                 
-                {/* Statistiques additionnelles */}
-                <Card className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50">
+                {/* Version mobile de la sidebar */}
+                <div className="lg:hidden mb-6">
+                  <Card className="p-3 bg-gradient-to-br from-blue-50 to-indigo-50">
+                    <CardContent className="text-center p-0">
+                      <div className="text-xl md:text-2xl font-bold text-blue-800 mb-1">{stats.users}</div>
+                      <p className="text-xs text-gray-600 mb-2">Utilisateurs actifs</p>
+                      <div className="text-base md:text-lg font-semibold text-green-700 mb-1">{stats.precision}%</div>
+                      <p className="text-xs text-gray-500">Précision des alertes</p>
+                    </CardContent>
+                  </Card>
+                </div>
+                
+                {/* Statistiques additionnelles - Desktop */}
+                <Card className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 hidden lg:block">
                   <CardContent className="text-center">
                     <div className="text-2xl font-bold text-blue-800 mb-2">{stats.users}</div>
                     <p className="text-sm text-gray-600 mb-3">Utilisateurs actifs</p>
