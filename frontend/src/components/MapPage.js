@@ -305,7 +305,19 @@ const MapPage = () => {
   };
 
   const handleCommuneClick = (commune) => {
-    navigate(`/commune/${commune.slug}`);
+    // Créer un slug simple à partir du nom de la commune
+    const slug = commune.name.toLowerCase()
+      .replace(/[àáâãäå]/g, 'a')
+      .replace(/[èéêë]/g, 'e')
+      .replace(/[ìíîï]/g, 'i')
+      .replace(/[òóôõö]/g, 'o')
+      .replace(/[ùúûü]/g, 'u')
+      .replace(/[ç]/g, 'c')
+      .replace(/[^a-z0-9]/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+    
+    navigate(`/commune/${slug}`);
   };
 
   const handleBackToHome = () => {
