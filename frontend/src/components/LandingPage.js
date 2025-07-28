@@ -289,11 +289,23 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Alert Banner */}
-      <div className="alert-banner text-white py-2 px-4 text-center text-sm font-medium">
-        <AlertTriangle className="inline w-4 h-4 mr-2" />
-        Vigilance orange : Fortes pluies attendues ce weekend sur la Basse-Terre
-      </div>
+      {/* Alert Banner - Vigilance dynamique */}
+      {vigilanceTheme && !themeLoading && (
+        <div 
+          className={`text-white py-2 px-4 text-center text-sm font-medium transition-all duration-300`}
+          style={{
+            backgroundColor: vigilanceTheme.primary_color,
+            display: vigilanceTheme.level !== 'vert' ? 'block' : 'none'
+          }}
+        >
+          <AlertTriangle className="inline w-4 h-4 mr-2" />
+          Vigilance {vigilanceTheme.level.toUpperCase()} : {
+            vigilanceTheme.risks && vigilanceTheme.risks.length > 0 
+              ? vigilanceTheme.risks[0].description || `Conditions météorologiques ${vigilanceTheme.level}`
+              : `Vigilance ${vigilanceTheme.level} en cours`
+          }
+        </div>
+      )}
 
       {/* Navigation */}
       <nav className="navbar sticky top-0 z-50 bg-white/80 backdrop-blur-md">
