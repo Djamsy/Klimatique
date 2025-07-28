@@ -558,6 +558,24 @@ async def predict_cyclone_damage(commune: str):
             commune_info=commune_info
         )
         
+        # Récupérer la vigilance officielle pour adaptation
+        try:
+            vigilance_data = await meteo_france_service.get_vigilance_data('guadeloupe')
+            vigilance_level = vigilance_data.get('color_level', 'vert')
+            
+            # Adapter le niveau de risque selon la vigilance officielle
+            adapted_risk_level = cyclone_predictor.adapt_risk_to_vigilance(
+                prediction['risk_level'], 
+                vigilance_level
+            )
+            
+            # Mettre à jour la prédiction avec le risque adapté
+            prediction['risk_level'] = adapted_risk_level
+            
+        except Exception as e:
+            logger.warning(f"Could not adapt risk to vigilance: {e}")
+            # Continuer avec le risque IA normal
+        
         # Formate la réponse
         response = CycloneAIResponse(
             commune=commune,
