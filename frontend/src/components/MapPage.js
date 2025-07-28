@@ -566,55 +566,39 @@ const MapPage = () => {
           })}
         </MapContainer>
 
-        {/* Contrôles des couches NASA GIBS - Mobile optimized */}
+        {/* Contrôles des couches NASA GIBS - Version mobile compacte */}
         {showLayerControls && (
-          <div className="absolute top-4 left-2 right-2 sm:top-6 sm:left-6 sm:right-auto bg-white rounded-lg shadow-lg p-3 sm:p-4 z-50 sm:min-w-80">
-            <div className="flex justify-between items-center mb-3 sm:mb-4">
-              <h4 className="font-semibold text-gray-900 flex items-center gap-2 text-sm sm:text-base">
-                <Layers className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="sm:hidden">Couches NASA</span>
-                <span className="hidden sm:inline">Couches NASA GIBS</span>
+          <div className="absolute top-16 left-2 right-2 sm:top-20 sm:left-4 sm:right-auto bg-white rounded-lg shadow-lg p-2 sm:p-3 z-50 sm:max-w-64">
+            <div className="flex justify-between items-center mb-2">
+              <h4 className="font-medium text-gray-900 flex items-center gap-1 text-xs sm:text-sm">
+                <Layers className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span>Calques</span>
               </h4>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowLayerControls(false)}
-                className="h-6 w-6 sm:h-8 sm:w-8 p-0"
+                className="h-5 w-5 sm:h-6 sm:w-6 p-0 text-gray-400 hover:text-gray-600"
               >
                 ×
               </Button>
             </div>
             
-            <div className="space-y-3 sm:space-y-4">
-              <div className="flex justify-between items-center pb-2 border-b">
-                <span className="text-xs sm:text-sm font-medium">Contrôles rapides</span>
-                <div className="flex gap-1 sm:gap-2">
-                  <Button size="sm" variant="outline" onClick={() => toggleAllOverlays(true)} className="px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm">
-                    <Eye className="w-3 h-3 sm:mr-1" />
-                    <span className="hidden sm:inline">Tout</span>
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={() => toggleAllOverlays(false)} className="px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm">
-                    <EyeOff className="w-3 h-3 sm:mr-1" />
-                    <span className="hidden sm:inline">Aucun</span>
-                  </Button>
-                </div>
-              </div>
-              
+            <div className="space-y-1 sm:space-y-2">
               {Object.entries(NASA_GIBS_LAYERS).map(([key, config]) => {
                 const IconComponent = config.icon;
                 return (
-                  <div key={key} className="flex items-center justify-between py-1 sm:py-2">
-                    <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
-                      <IconComponent className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600 flex-shrink-0" />
+                  <div key={key} className="flex items-center justify-between py-1">
+                    <div className="flex items-center gap-1 sm:gap-2 flex-1 min-w-0">
+                      <IconComponent className="w-3 h-3 sm:w-3 sm:h-3 text-blue-600 flex-shrink-0" />
                       <div className="min-w-0 flex-1">
-                        <div className="font-medium text-xs sm:text-sm truncate">{config.name}</div>
-                        <div className="text-xs text-gray-500 truncate sm:block hidden">{config.description}</div>
+                        <div className="font-medium text-xs truncate">{config.name}</div>
                       </div>
                     </div>
                     <Switch
                       checked={activeOverlays[key]}
                       onCheckedChange={() => toggleOverlay(key)}
-                      className="ml-2 flex-shrink-0"
+                      className="ml-1 flex-shrink-0 scale-75 sm:scale-100"
                     />
                   </div>
                 );
