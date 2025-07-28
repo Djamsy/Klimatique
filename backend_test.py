@@ -726,9 +726,9 @@ class BackendTester:
                 if not (40 <= humidity <= 100):
                     unrealistic_values.append(f"{commune}: humidité={humidity}% (attendu: 40-100%)")
                 
-                # Pression atmosphérique - ajuster la plage pour les données en kPa
+                # Pression atmosphérique - 101.3 kPa = 1013 hPa (normal)
                 if pressure > 0:
-                    if pressure < 50:  # Probablement en kPa (101.3 kPa = 1013 hPa)
+                    if pressure < 200:  # Probablement en kPa (101.3 kPa = 1013 hPa)
                         if not (98 <= pressure <= 104):
                             unrealistic_values.append(f"{commune}: pression={pressure}kPa (attendu: 98-104kPa)")
                     else:  # Probablement en hPa
