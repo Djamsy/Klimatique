@@ -759,62 +759,48 @@ async def get_cyclone_timeline(commune: str):
         logger.error(f"❌ Erreur timeline IA pour {commune}: {e}")
         raise HTTPException(status_code=500, detail=f"Erreur lors de la timeline: {str(e)}")
 
-@api_router.get("/ai/cyclone/historical/{commune}", response_model=CommuneHistoricalResponse)
-async def get_historical_cyclone_damage(commune: str):
-    """Récupère l'historique des dégâts cycloniques pour une commune"""
+@api_router.get("/ai/cyclone/historical/{commune}")
+async def get_historical_damage(commune: str):
+    """Données historiques des dommages cycloniques (données précalculées)"""
     try:
-        # Données historiques simulées (à remplacer par une vraie base de données)
-        historical_events = [
-            {
-                "year": 2017,
-                "event_name": "Ouragan Irma",
-                "damage_type": "infrastructure",
-                "impact_level": RiskLevel.CRITIQUE,
-                "description": "Destruction massive des infrastructures, coupures d'électricité généralisées",
-                "estimated_damage_percent": 85.0
-            },
-            {
-                "year": 2017,
-                "event_name": "Ouragan Maria",
-                "damage_type": "agriculture",
-                "impact_level": RiskLevel.CRITIQUE,
-                "description": "Cultures détruites, plantations de bananes ravagées",
-                "estimated_damage_percent": 90.0
-            },
-            {
-                "year": 2022,
-                "event_name": "Tempête Fiona",
-                "damage_type": "infrastructure",
-                "impact_level": RiskLevel.MODERE,
-                "description": "Coupures d'électricité temporaires, quelques toitures endommagées",
-                "estimated_damage_percent": 25.0
-            }
-        ]
+        logger.info(f"📚 Récupération historique IA précalculé pour {commune}")
         
-        # Analyse de vulnérabilité
-        vulnerability_analysis = {
-            "risk_factors": [
-                "Proximité côtière",
-                "Densité population élevée",
-                "Infrastructures vieillissantes"
+        if not ai_precalculation_service:
+            raise HTTPException(status_code=503, detail="Service IA non disponible")
+        
+        # Récupérer depuis le cache
+        cached_historical = await ai_precalculation_service.get_cached_historical(commune)
+        
+        if cached_historical:
+            logger.info(f"✅ Historique trouvé en cache pour {commune}")
+            return cached_historical
+        
+        # Fallback minimal
+        logger.warning(f"⚠️ Pas d'historique en cache pour {commune}")
+        
+        commune_data = None
+        from data.communes_data import GUADELOUPE_COMMUNES
+        for c in GUADELOUPE_COMMUNES:
+            if c['name'].lower() == commune.lower():
+                commune_data = c
+                break
+        
+        if not commune_data:
+            raise HTTPException(status_code=404, detail="Commune non trouvée")
+        
+        return {
+            "commune": commune,
+            "coordinates": commune_data['coordinates'],
+            "historical_events": [
+                {"year": 2017, "event_name": "Ouragan Irma", "damage_type": "infrastructure", "damage_percentage": 15}
             ],
-            "vulnerability_score": 7.5,
-            "preparedness_level": "moyenne",
-            "evacuation_capacity": "limitée"
+            "risk_factors": commune_data.get('riskFactors', []),
+            "data_source": "fallback"
         }
         
-        coords = [16.25, -61.55]  # Coordonnées par défaut
-        
-        return CommuneHistoricalResponse(
-            commune=commune,
-            coordinates=coords,
-            historical_events=historical_events,
-            vulnerability_analysis=vulnerability_analysis
-        )
-        
     except Exception as e:
-        logger.error(f"Error getting historical data for {commune}: {e}")
-        raise HTTPException(status_code=500, detail="Erreur données historiques")
+        logger.error(f"❌ Erreur historique IA pour {commune}: {e}")
+        raise HTTPException(status_code=500, detail=f"Erreur lors de l'historique: {str(e)}")
 
 @api_router.get("/ai/cyclone/global-risk", response_model=GlobalCycloneRisk)
 async def get_global_cyclone_risk():
