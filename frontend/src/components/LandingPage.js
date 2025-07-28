@@ -290,19 +290,19 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Alert Banner - Vigilance dynamique */}
-      {vigilanceTheme && !themeLoading && (
+      {vigilanceTheme && !themeLoading && vigilanceTheme.level !== 'vert' && (
         <div 
-          className={`text-white py-2 px-4 text-center text-sm font-medium transition-all duration-300`}
+          className="vigilance-alert-banner text-white py-2 px-4 text-center text-sm font-medium transition-all duration-300"
           style={{
-            backgroundColor: vigilanceTheme.primary_color,
-            display: vigilanceTheme.level !== 'vert' ? 'block' : 'none'
+            backgroundColor: vigilanceTheme.primary_color
           }}
         >
-          <AlertTriangle className="inline w-4 h-4 mr-2" />
-          Vigilance {vigilanceTheme.level.toUpperCase()} : {
-            vigilanceTheme.risks && vigilanceTheme.risks.length > 0 
-              ? vigilanceTheme.risks[0].description || `Conditions météorologiques ${vigilanceTheme.level}`
-              : `Vigilance ${vigilanceTheme.level} en cours`
+          <AlertTriangle className="inline w-4 h-4 mr-2 alert-icon" />
+          <span className="hidden sm:inline">Vigilance {vigilanceTheme.level.toUpperCase()} : </span>
+          <span className="sm:hidden">⚠️ {vigilanceTheme.level.toUpperCase()} : </span>
+          {vigilanceTheme.risks && vigilanceTheme.risks.length > 0 
+            ? vigilanceTheme.risks[0].description || `Conditions météorologiques ${vigilanceTheme.level}`
+            : `Vigilance ${vigilanceTheme.level} en cours`
           }
         </div>
       )}
