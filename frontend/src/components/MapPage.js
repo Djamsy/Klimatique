@@ -555,29 +555,37 @@ const MapPage = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-center">
           <Info className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600 mr-2 flex-shrink-0" />
           <span className="text-xs sm:text-sm text-blue-800 font-medium text-center">
-            <span className="sm:hidden">Cliquez sur une commune</span>
-            <span className="hidden sm:inline">Vue satellite Guadeloupe • Navigation limitée à l'archipel • Cliquez sur une commune pour les détails</span>
+            {isMobile ? (
+              "Sélectionnez une commune pour voir les détails météo"
+            ) : (
+              "Vue satellite Guadeloupe • Navigation limitée à l'archipel • Cliquez sur une commune pour les détails"
+            )}
           </span>
         </div>
       </div>
 
-      {/* Map Container - Mobile optimized avec closePopupOnClick désactivé */}
+      {/* Contenu principal - Mobile: Liste / Desktop: Carte */}
       <div className="flex-1 relative">
-        <MapContainer
-          center={guadeloupeCenter}
-          zoom={window.innerWidth < 768 ? 8 : 9} // Zoom réduit sur mobile
-          minZoom={8}
-          maxZoom={12}
-          maxBounds={guadeloupeBounds}
-          maxBoundsViscosity={1.0}
-          style={{ height: '100%', width: '100%' }}
-          zoomControl={window.innerWidth >= 768} // Masquer les contrôles zoom sur mobile
-          touchZoom={true} // Activer le zoom tactile
-          doubleClickZoom={true}
-          scrollWheelZoom={false} // Désactiver le zoom avec scroll pour éviter les conflits
-          dragging={true}
-          closePopupOnClick={false} // Ne pas fermer les popups automatiquement
-        >
+        {isMobile ? (
+          // Vue mobile : Liste des communes
+          <CommuneListMobile />
+        ) : (
+          // Vue desktop : Carte interactive  
+          <MapContainer
+            center={guadeloupeCenter}
+            zoom={9}
+            minZoom={8}
+            maxZoom={12}
+            maxBounds={guadeloupeBounds}
+            maxBoundsViscosity={1.0}
+            style={{ height: '100%', width: '100%' }}
+            zoomControl={true}
+            touchZoom={true}
+            doubleClickZoom={true}
+            scrollWheelZoom={false}
+            dragging={true}
+            closePopupOnClick={false}
+          >
           {/* Couche de base satellite */}
           <TileLayer
             attribution='Satellite imagery © <a href="https://www.google.com/maps">Google</a> | <a href="https://klimaclique.gp">Klimaclique</a>'
