@@ -1,101 +1,88 @@
 <analysis>
-The previous AI engineer successfully developed a full-stack Météo Sentinelle application, transitioning from mock data to real API integrations. The initial focus was on a professional React frontend with mock data, followed by a FastAPI backend using MongoDB. Key decisions included adopting a hybrid NASA GIBS (for satellite imagery) and OpenWeatherMap (for detailed weather data and potentially AI) API strategy, implementing an intelligent caching mechanism to manage API call limits, and creating a dedicated interactive map page with all 32 Guadeloupe communes. The application matured into a robust, production-ready system covering weather visualization, commune-specific details, and a subscription service. The final task initiated involves integrating AI for predictive cyclonic damage.
+The previous AI engineer effectively transitioned the Météo Sentinelle application from its MVP stage to a more robust and functional system. The initial phase involved establishing the core React, FastAPI, MongoDB architecture with NASA GIBS and OpenWeatherMap integrations, alongside a cyclonic damage prediction AI. The trajectory highlights a strong focus on iterative development and direct response to user feedback. Key challenges tackled included persistent frontend display issues for weather overlays and the pluviometer widget, integrating dynamic Météo France vigilance with responsive UI theming, refining the AI's risk prediction logic to adapt to real-time weather and vigilance levels, and implementing an intelligent API quota management system for OpenWeatherMap. The engineer consistently diagnosed issues, applied targeted fixes in both frontend and backend, and confirmed resolutions with visual proof and API test results. The process culminated in all reported issues being resolved, delivering a performant and adaptively themed application.
 </analysis>
 
 <product_requirements>
-The Météo Sentinelle project aims to create a professional and impactful landing page for an innovative local weather prediction tool in Guadeloupe. This tool is designed to anticipate natural risks like cyclones, floods, and heavy rains, targeting citizens, communities, farmers, and emergency services. Key features include 5-day weather predictions with risk indicators, SMS/email alerts for extreme events, interactive maps (wind, rain, temperature, alerts), and local data combining weather, topography, and historical impact. The goal is to build trust, invite beta sign-ups/alert subscriptions, and highlight technical expertise.
+The Météo Sentinelle project aims to be an innovative local weather prediction tool for Guadeloupe, designed to anticipate natural risks like cyclones and floods. It targets citizens, communities, farmers, and emergency services. Core features include 5-day weather predictions with risk indicators, SMS/email alerts for extreme events, interactive maps showing wind, rain, temperature, and alerts, and local data combining weather, topography, and historical impact. The desired aesthetic is a serious, modern style with deep blue, white, and orange, featuring clear calls to action.
 
-The desired visual style is serious and modern, inspired by emergency and weather sites (e.g., Météo France, Windy), using a palette of deep blue, white, and orange for alerts. It should feature weather icons, an interactive map, and a testimonial section. The tone must be clear, informative, and credible, with clear CTAs like Receive alerts / Request beta access.
-
-Initial implementation included a fully functional frontend with mock data, followed by backend development. The user explicitly requested a hybrid API approach combining NASA (for satellite views) and OpenWeatherMap (for detailed local weather), and an intelligent caching strategy to manage API call limits. Subsequently, a full-screen interactive map with all 32 Guadeloupe communes was required, allowing users to click on communes to view detailed weather and risk information. The latest request is to integrate AI for predicting potential cyclonic damage.
+Initial work established a React frontend and FastAPI backend with MongoDB, integrating NASA and OpenWeatherMap APIs with intelligent caching. A full-screen interactive map for Guadeloupe's 32 communes was developed. Subsequent user requests included: implementing a predictive AI for cyclonic damage with global and detailed commune views; integrating Météo France vigilances to dynamically change site colors; making AI risk logic adaptive to real-time humidity/heat; enhancing the landing page; implementing an OpenWeatherMap data refresh/caching strategy; and adding cloud position and pluviometer views to the map. The immediate past focus was resolving display issues for map overlays and the pluviometer, followed by refining AI adaptation and implementing API quota management.
 </product_requirements>
 
 <key_technical_concepts>
--   **Full-Stack Architecture**: React (Frontend), FastAPI (Backend), MongoDB (Database).
--   **API Integration**: NASA GIBS (Satellite imagery and layers), OpenWeatherMap (Local weather data, AI).
--   **Data Caching**: Intelligent backend caching strategy for API call optimization.
--   **Interactive Mapping**: Leaflet.js with Google Satellite imagery and custom overlays.
--   **UI Framework**: Shadcn UI components for modern design.
--   **Environment Management**: Use of  files and Supervisor.
--   **AI/ML**: Future integration of predictive AI for cyclonic damage.
+-   **Full-Stack Architecture**: React, FastAPI, MongoDB.
+-   **API Integration**: NASA GIBS, OpenWeatherMap, Météo France.
+-   **Data Caching**: Intelligent backend caching for API optimization.
+-   **AI/ML**: RandomForestRegressor for cyclonic damage prediction.
+-   **Interactive Mapping**: Leaflet.js with Google Satellite, custom overlays.
+-   **Dynamic UI**: Adaptive theming based on Météo France vigilance.
+-   **API Quota Management**: Scheduled data updates and caching.
 </key_technical_concepts>
 
 <code_architecture>
-The application follows a standard full-stack architecture: a React frontend, a FastAPI backend, and a MongoDB database.
+The application employs a standard full-stack setup: React for the frontend, FastAPI for the backend, and MongoDB for data storage.
 
 
 
--   ****:
-    -   **Importance**: Main entry point for the React application, responsible for routing and global setup.
-    -   **Changes**: Initially contained the entire  component. Modified to include , , and  components to handle navigation to the , , and dynamic  routes. It also sets up  for API calls.
-
--   ****:
-    -   **Importance**: Renders the main landing page content, including hero section, features, testimonials, and contact form.
-    -   **Changes**: Initially built as a complete frontend-only mock-up. Later modified to remove the interactive map section (moved to ) and integrate real data through  for elements like current weather stats.
-
--   ****:
-    -   **Importance**: Stored mock data for initial frontend development.
-    -   **Changes**: Created to provide dummy data for the frontend when no backend was available. Functionality was later replaced by real API calls, and the file likely became obsolete or deprecated, although not explicitly deleted in the trajectory.
-
--   ****:
-    -   **Importance**: Documents the API endpoints, data models, and integration strategy between frontend and backend.
-    -   **Changes**: Created to outline the initial backend plan including MongoDB and FastAPI. Subsequently updated to detail the hybrid NASA + OpenWeatherMap architecture, the intelligent caching strategy, and specific API endpoints (, , etc.).
-
--   ****:
-    -   **Importance**: The core FastAPI application, defining routes, middleware, and integrating services.
-    -   **Changes**: Initial setup included basic  and  endpoints. Significantly expanded to include numerous API routes for weather data, satellite imagery, alerts, subscriptions, and configuration, integrating services like , , , and . Imports for  were implicitly added via .
-
--   ****:
-    -   **Importance**: Defines Pydantic models for request and response data validation and serialization.
-    -   **Changes**: Initially contained  and . Expanded to include models for weather data, alerts, subscriptions, satellite imagery data, and other relevant data structures required by the new services.
-
--   ** (directory and its contents)**:
-    -   **Importance**: Contains the business logic and external API integrations for the backend.
-    -   **Changes**:
-        -   : New file created to implement the intelligent caching mechanism for weather data, storing it in MongoDB and managing update frequencies based on risk levels.
-        -   : New file created to encapsulate logic for interacting with NASA GIBS API for satellite imagery and layers.
-        -   : New file created to handle OpenWeatherMap API interactions, especially for the latest AI integration.
-        -    and : New files created to manage user alerts (email/SMS) and beta access/subscription requests, respectively, persisting data in MongoDB.
-
--   ** (and later , )**:
-    -   **Importance**: Handles the interactive map display and commune-specific details.
-    -   **Changes**:  was initially created for a basic map with markers. This functionality was then refactored:  was created as a dedicated full-screen map page, and  was added to show detailed information for individual communes when clicked, resolving z-index issues. The map transitioned from OpenStreetMap to Google Satellite imagery at zoom level 9 and integrated NASA GIBS cloud layers.
-
--   ****:
-    -   **Importance**: Stores the static data for all Guadeloupe communes, including coordinates, population, and types.
-    -   **Changes**: Initially, a subset of communes was used. Later, it was updated to include all 32 communes of Guadeloupe with their precise coordinates and associated metadata, enabling comprehensive map coverage.
-
--   ****:
-    -   **Importance**: Provides client-side methods for fetching data from the FastAPI backend.
-    -   **Changes**: Developed to abstract API calls, replacing direct mock data usage in frontend components. It handles communication with the backend's , , , and  endpoints.
-
--   ****:
-    -   **Importance**: Placeholder for the upcoming AI model for predicting cyclonic damage.
-    -   **Changes**: Created recently to house the logic for the predictive AI model.
-
--   ****:
-    -   **Importance**: Stores environment variables, particularly sensitive API keys and database connection strings.
-    -   **Changes**: Updated to include  and  as provided by the user.
-
+-   ****: Main entry point; modified to integrate  for dynamic theme changes based on Météo France vigilance.
+-   ****: Renders the main landing page; updated to integrate real weather data, dynamic global risk display, improved responsiveness, and . Key changes include adding  for vigilance theme, removing static protégez les vôtres text and associated four-stat square section.
+-   ****: Dedicated map page.
+    -   Modified to include  and .
+    -   Updated to define  for , limiting map navigation and zoom (, ) to the Guadeloupe archipelago to optimize data usage.
+    -   Added informational text indicating map limitations.
+    -   Adjusted Pluviometer position and z-index to prevent obscuring.
+    -   Ensured Pluie button in commune popups is functional.
+-   ****: Displays Météo France vigilance alerts; modified to correctly display vigilance level and adapt the theme.
+-   ****: Manages and displays dynamic weather overlays (clouds, precipitation).
+    -   Modified to use  provided by the backend, rather than constructing its own URLs.
+    -   Integrated  for robust fallback mechanisms and retry logic.
+    -   Added visual indicators for overlay status (active/failure/backup).
+-   ****: Created to display real-time pluviometer data; functionality ensured to be correctly displayed.
+-   ** (NEW)**: Created to manage intelligent fallbacks for weather overlays, storing last successful data and scheduling retries.
+-   ****: Client-side service. Expanded to include calls for AI predictions, Météo France vigilance, and OpenWeatherMap overlays.
+-   ****: Modified to include dynamic CSS variables (, ) and remove the static  class to support adaptive theming.
+-   ****: FastAPI application.
+    -   Expanded API routes for weather, satellite, alerts, subscriptions, AI predictions, Météo France vigilance, and OpenWeatherMap overlays.
+    -   Modified AI endpoint to adapt risk based on Météo France vigilance levels.
+    -   Added new admin endpoints (, , ) for quota management.
+    -   Integrated  to start on application startup.
+    -   Temporary bypass of  for direct OpenWeatherMap API calls during debugging.
+-   ****: AI model for cyclonic damage.
+    -   Refined to use real-time weather data.
+    -   Adjusted  function's thresholds (, , , ) for better adaptation to normal weather conditions.
+    -   Reduced the base score for normal conditions from +8 to +3 to prevent consistently modéré risk levels during green vigilance.
+    -   Implemented  to ensure AI predictions align with official Météo France vigilance levels.
+-   ****: Handles OpenWeatherMap API interactions.
+    -   Implemented a  function for when the API limit is exceeded.
+    -   Modified  to use this fallback.
+    -   Corrected the  function to use the correct OpenWeatherMap tile URL format ().
+    -   Integrated with  for API call management.
+-   ****: Integrates with Météo France for official vigilance data; ensured dynamic data retrieval.
+-   ** (NEW)**: Created to manage OpenWeatherMap API quotas (1000 requests/day), distributing requests optimally and caching data.
+-   ** (NEW)**: Created to schedule API calls for data updates, cache cleaning, and daily quota resets.
 </code_architecture>
 
 <pending_tasks>
--   Implement the AI predictive model for potential cyclonic damage using the provided OpenWeatherMap API key.
+All explicit pending tasks mentioned at the beginning of the trajectory (resolving frontend display issues for overlays and pluviometer, and ensuring vigilance adaptation) have been successfully resolved. No new pending tasks were explicitly requested by the user after the final fixes.
 </pending_tasks>
 
 <current_work>
-Immediately before this summary request, the previous AI engineer was tasked with implementing an IA prédictive des potentiel dégat cyclonique (predictive AI for potential cyclonic damage). The user confirmed that vrai ia est faisable pour toi and provided an OpenWeatherMap API key ().
+Immediately before this summary request, the previous AI engineer was addressing the final set of user-reported issues and optimizing resource usage. This involved:
 
-To address this, the AI engineer took the following actions:
-1.  Updated the  file to include the new .
-2.  Installed necessary Python packages for AI/ML, specifically  and its dependencies (, ), along with  and .
-3.  Created two new files in the backend:
-    *   : This file is intended to contain the core logic for the cyclonic damage prediction AI model.
-    *   : This file was likely created to encapsulate interactions with the OpenWeatherMap API, which would be crucial for the AI model to fetch relevant weather data (e.g., wind speed, pressure, precipitation) needed for its predictions.
+1.  **Debugging Cloud Overlays Display**: The user reported that cloud overlays were still not visible.
+    *   **Diagnosis**: The problem was traced to an incorrect OpenWeatherMap tile URL format being used in  ( instead of ). Additionally, the frontend component  was found to be constructing its own URLs instead of consuming the correct  provided by the backend.
+    *   **Fixes**: The URL format in 's  was corrected, and  was modified to fetch and use the  from the backend's  endpoint. A temporary cache bypass was also implemented in the backend during debugging.
 
-The current state is that the necessary infrastructure for the AI model (file structure, dependencies, API key) has been set up, and the initial files for the AI model and its data source () have been created. The actual implementation of the predictive logic within  and its integration into the existing FastAPI backend (e.g., via a new API endpoint) is the ongoing task.
+2.  **Refining AI Risk Adaptation**: The user noted that the AI's risk level was consistently modéré even under vert vigilance, and it wasn't adapting sufficiently.
+    *   **Diagnosis**: The AI's  thresholds were too high, and a base score of +8 for normal conditions was pushing scores into modéré territory even for calm weather.
+    *   **Fixes**: The  thresholds in  were adjusted (, ). The base score for normal conditions was reduced from +8 to +3 to allow for faible risk predictions during green vigilance and normal weather.
+
+3.  **Implementing API Quota Management**: The OpenWeatherMap API hit its rate limit (429 error), making the AI unresponsive.
+    *   **Solution**: A comprehensive API quota management system was implemented. This involved creating  to distribute 1000 daily requests optimally with intelligent caching (3-hour validity per commune) and  to schedule hourly updates for priority communes, daily cache cleaning, and quota resets. Fallback to simulated data was also integrated into  if the API became unavailable. Backend endpoints were added to expose quota status and allow forced updates.
+
+The work concluded with all these issues confirmed as resolved, leading to a fully functional application with dynamic theming, accurate AI predictions, visible overlays, optimized map navigation, and robust API quota management.
+
 </current_work>
 
 <optional_next_step>
-Continue implementing the AI predictive model for cyclonic damage in  using the provided OpenWeatherMap API key.
+The previous engineer concluded that all reported issues were successfully resolved and the application is fully functional. There are no explicit pending tasks.
 </optional_next_step>
