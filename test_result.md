@@ -197,27 +197,33 @@ backend:
 
   - task: "Système témoignages utilisateurs"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py, /app/backend/services/user_activity_service.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         -working: "NA"
         -agent: "main"
         -comment: "Nouveau système permettant aux utilisateurs de laisser des témoignages. Support témoignages anonymes, validation contenu, modération auto-approval, stockage MongoDB. Endpoints POST /api/testimonials (soumission) et GET /api/testimonials (récupération avec limite)."
+        -working: true
+        -agent: "main"
+        -comment: "✅ TESTÉ ET VALIDÉ: Système témoignages fonctionnel. POST /api/testimonials soumission OK (complet et anonyme), GET /api/testimonials récupération OK avec paramètre limit. Témoignages anonymes deviennent 'Utilisateur anonyme'. Stockage MongoDB opérationnel. Validation rating 1-5 et contenu requis."
 
   - task: "Compteur utilisateurs actifs"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py, /app/backend/services/user_activity_service.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         -working: "NA"
         -agent: "main"
         -comment: "Système de tracking d'activité utilisateur en temps réel. Endpoints POST /api/users/activity (tracking session) et GET /api/users/active-count (comptage dans fenêtre 5 minutes). Nettoyage automatique sessions expirées. Affichage temps réel sur frontend."
+        -working: true
+        -agent: "main"
+        -comment: "✅ TESTÉ ET VALIDÉ: Compteur utilisateurs actifs opérationnel. POST /api/users/activity enregistrement session OK, GET /api/users/active-count comptage temps réel fonctionnel (fenêtre 5 minutes). Service user_activity_service initialisé correctement au démarrage. Réponse structurée avec active_count et last_updated."
 
 frontend:
   - task: "Encarts publicitaires page d'accueil"
