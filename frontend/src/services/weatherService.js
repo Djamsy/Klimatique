@@ -6,6 +6,15 @@ const API = `${BACKEND_URL}/api`;
 console.log('🔧 Backend URL:', BACKEND_URL);
 console.log('🔧 API URL:', API);
 
+// Configuration axios pour production
+const axiosConfig = {
+  timeout: 30000, // 30 secondes
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  }
+};
+
 // Weather API Service
 export class WeatherService {
   
