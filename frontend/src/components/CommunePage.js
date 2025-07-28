@@ -159,7 +159,7 @@ const CommunePage = () => {
             </div>
             <div className="flex items-center">
               <Shield className="h-6 w-6 text-blue-800 mr-2" />
-              <span className="font-semibold text-blue-800">Météo Sentinelle</span>
+              <span className="font-semibold text-blue-800">Klimaclique</span>
             </div>
           </div>
         </div>
