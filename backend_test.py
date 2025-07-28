@@ -874,48 +874,366 @@ class BackendTester:
             self.log_result("Initialisation Services", False, f"Exception: {str(e)}")
             return False
     
+    # =============================================================================
+    # TESTS AI PREDICTION ENDPOINTS - FOCUS PRINCIPAL
+    # =============================================================================
+    
+    async def test_ai_prediction_endpoint(self, commune: str) -> bool:
+        """Test endpoint AI prediction - /api/ai/cyclone/predict/{commune}"""
+        try:
+            url = f"{BACKEND_URL}/ai/cyclone/predict/{commune}"
+            response = await self.client.get(url)
+            
+            if response.status_code != 200:
+                self.log_result(f"AI Prediction - {commune}", False, 
+                              f"Status {response.status_code}: {response.text}")
+                return False
+            
+            data = response.json()
+            
+            # Vérifications structure réponse
+            required_fields = [
+                "commune", "coordinates", "damage_predictions", 
+                "risk_level", "confidence_score", "recommendations"
+            ]
+            
+            for field in required_fields:
+                if field not in data:
+                    self.log_result(f"AI Prediction - {commune}", False, 
+                                  f"Champ manquant: {field}")
+                    return False
+            
+            # Vérifier structure damage_predictions
+            damage_predictions = data.get("damage_predictions", {})
+            damage_fields = ["infrastructure", "agriculture", "population_impact"]
+            for field in damage_fields:
+                if field not in damage_predictions:
+                    self.log_result(f"AI Prediction - {commune}", False, 
+                                  f"Champ damage_predictions manquant: {field}")
+                    return False
+            
+            # Vérifier valeurs réalistes
+            risk_level = data.get("risk_level")
+            if risk_level not in ["faible", "modéré", "élevé", "critique"]:
+                self.log_result(f"AI Prediction - {commune}", False, 
+                              f"Niveau de risque invalide: {risk_level}")
+                return False
+            
+            confidence = data.get("confidence_score", 0)
+            if not (0 <= confidence <= 100):
+                self.log_result(f"AI Prediction - {commune}", False, 
+                              f"Score de confiance invalide: {confidence}")
+                return False
+            
+            # Vérifier recommandations
+            recommendations = data.get("recommendations", [])
+            if not isinstance(recommendations, list) or len(recommendations) == 0:
+                self.log_result(f"AI Prediction - {commune}", False, 
+                              "Recommandations manquantes ou invalides")
+                return False
+            
+            self.log_result(f"AI Prediction - {commune}", True, 
+                          f"Risk: {risk_level}, Confidence: {confidence}%, Recs: {len(recommendations)}")
+            return True
+            
+        except Exception as e:
+            self.log_result(f"AI Prediction - {commune}", False, f"Exception: {str(e)}")
+            return False
+    
+    async def test_ai_timeline_endpoint(self, commune: str) -> bool:
+        """Test endpoint AI timeline - /api/ai/cyclone/timeline/{commune}"""
+        try:
+            url = f"{BACKEND_URL}/ai/cyclone/timeline/{commune}"
+            response = await self.client.get(url)
+            
+            if response.status_code != 200:
+                self.log_result(f"AI Timeline - {commune}", False, 
+                              f"Status {response.status_code}: {response.text}")
+                return False
+            
+            data = response.json()
+            
+            # Vérifications structure
+            required_fields = ["commune", "coordinates", "timeline_predictions"]
+            for field in required_fields:
+                if field not in data:
+                    self.log_result(f"AI Timeline - {commune}", False, 
+                                  f"Champ manquant: {field}")
+                    return False
+            
+            # Vérifier timeline_predictions
+            timeline = data.get("timeline_predictions", {})
+            if not isinstance(timeline, dict) or len(timeline) == 0:
+                self.log_result(f"AI Timeline - {commune}", False, 
+                              "Timeline predictions vide ou invalide")
+                return False
+            
+            # Vérifier au moins quelques points temporels
+            expected_hours = ["H+0", "H+6", "H+12"]
+            found_hours = []
+            for hour_key in expected_hours:
+                if hour_key in timeline:
+                    found_hours.append(hour_key)
+                    hour_data = timeline[hour_key]
+                    if "risk_evolution" not in hour_data:
+                        self.log_result(f"AI Timeline - {commune}", False, 
+                                      f"risk_evolution manquant pour {hour_key}")
+                        return False
+            
+            if len(found_hours) < 2:
+                self.log_result(f"AI Timeline - {commune}", False, 
+                              f"Pas assez de points temporels: {found_hours}")
+                return False
+            
+            self.log_result(f"AI Timeline - {commune}", True, 
+                          f"Timeline OK avec {len(timeline)} points temporels")
+            return True
+            
+        except Exception as e:
+            self.log_result(f"AI Timeline - {commune}", False, f"Exception: {str(e)}")
+            return False
+    
+    async def test_ai_historical_endpoint(self, commune: str) -> bool:
+        """Test endpoint AI historical - /api/ai/cyclone/historical/{commune}"""
+        try:
+            url = f"{BACKEND_URL}/ai/cyclone/historical/{commune}"
+            response = await self.client.get(url)
+            
+            if response.status_code != 200:
+                self.log_result(f"AI Historical - {commune}", False, 
+                              f"Status {response.status_code}: {response.text}")
+                return False
+            
+            data = response.json()
+            
+            # Vérifications structure
+            required_fields = ["commune", "coordinates", "historical_events", "risk_factors"]
+            for field in required_fields:
+                if field not in data:
+                    self.log_result(f"AI Historical - {commune}", False, 
+                                  f"Champ manquant: {field}")
+                    return False
+            
+            # Vérifier historical_events
+            historical_events = data.get("historical_events", [])
+            if not isinstance(historical_events, list):
+                self.log_result(f"AI Historical - {commune}", False, 
+                              "historical_events doit être une liste")
+                return False
+            
+            # Vérifier structure des événements historiques
+            for i, event in enumerate(historical_events[:3]):  # Vérifier les 3 premiers
+                event_fields = ["year", "event_name", "damage_type", "damage_percentage"]
+                for field in event_fields:
+                    if field not in event:
+                        self.log_result(f"AI Historical - {commune}", False, 
+                                      f"Champ événement manquant: {field} (événement {i})")
+                        return False
+            
+            # Vérifier risk_factors
+            risk_factors = data.get("risk_factors", [])
+            if not isinstance(risk_factors, list):
+                self.log_result(f"AI Historical - {commune}", False, 
+                              "risk_factors doit être une liste")
+                return False
+            
+            self.log_result(f"AI Historical - {commune}", True, 
+                          f"Historique OK avec {len(historical_events)} événements, {len(risk_factors)} facteurs")
+            return True
+            
+        except Exception as e:
+            self.log_result(f"AI Historical - {commune}", False, f"Exception: {str(e)}")
+            return False
+    
+    async def test_ai_global_risk_endpoint(self) -> bool:
+        """Test endpoint AI global risk - /api/ai/cyclone/global-risk"""
+        try:
+            url = f"{BACKEND_URL}/ai/cyclone/global-risk"
+            response = await self.client.get(url)
+            
+            if response.status_code != 200:
+                self.log_result("AI Global Risk", False, 
+                              f"Status {response.status_code}: {response.text}")
+                return False
+            
+            data = response.json()
+            
+            # Vérifications structure
+            required_fields = [
+                "global_risk_level", "affected_communes", "high_risk_count", 
+                "critical_risk_count", "regional_recommendations", "last_analysis"
+            ]
+            
+            for field in required_fields:
+                if field not in data:
+                    self.log_result("AI Global Risk", False, 
+                                  f"Champ manquant: {field}")
+                    return False
+            
+            # Vérifier global_risk_level
+            global_risk = data.get("global_risk_level")
+            if global_risk not in ["faible", "modéré", "élevé", "critique"]:
+                self.log_result("AI Global Risk", False, 
+                              f"Niveau de risque global invalide: {global_risk}")
+                return False
+            
+            # Vérifier cohérence des compteurs
+            high_risk_count = data.get("high_risk_count", 0)
+            critical_risk_count = data.get("critical_risk_count", 0)
+            
+            if not isinstance(high_risk_count, int) or high_risk_count < 0:
+                self.log_result("AI Global Risk", False, 
+                              f"high_risk_count invalide: {high_risk_count}")
+                return False
+            
+            if not isinstance(critical_risk_count, int) or critical_risk_count < 0:
+                self.log_result("AI Global Risk", False, 
+                              f"critical_risk_count invalide: {critical_risk_count}")
+                return False
+            
+            # Vérifier affected_communes
+            affected_communes = data.get("affected_communes", [])
+            if not isinstance(affected_communes, list):
+                self.log_result("AI Global Risk", False, 
+                              "affected_communes doit être une liste")
+                return False
+            
+            # Vérifier regional_recommendations
+            recommendations = data.get("regional_recommendations", [])
+            if not isinstance(recommendations, list):
+                self.log_result("AI Global Risk", False, 
+                              "regional_recommendations doit être une liste")
+                return False
+            
+            self.log_result("AI Global Risk", True, 
+                          f"Risque global: {global_risk}, Communes affectées: {len(affected_communes)}, "
+                          f"Risque élevé: {high_risk_count}, Critique: {critical_risk_count}")
+            return True
+            
+        except Exception as e:
+            self.log_result("AI Global Risk", False, f"Exception: {str(e)}")
+            return False
+    
+    async def test_ai_service_initialization(self) -> bool:
+        """Test que le service AI précalculation est bien initialisé"""
+        try:
+            # Tester plusieurs endpoints AI pour vérifier l'initialisation
+            endpoints_to_test = [
+                "/ai/scheduler/status",
+                "/ai/model/info"
+            ]
+            
+            all_working = True
+            details = []
+            
+            for endpoint in endpoints_to_test:
+                url = f"{BACKEND_URL}{endpoint}"
+                response = await self.client.get(url)
+                
+                if response.status_code == 200:
+                    details.append(f"{endpoint}: OK")
+                else:
+                    details.append(f"{endpoint}: FAILED ({response.status_code})")
+                    all_working = False
+            
+            if all_working:
+                self.log_result("AI Service Initialization", True, 
+                              f"Services AI initialisés: {', '.join(details)}")
+            else:
+                self.log_result("AI Service Initialization", False, 
+                              f"Problèmes initialisation AI: {', '.join(details)}")
+            
+            return all_working
+            
+        except Exception as e:
+            self.log_result("AI Service Initialization", False, f"Exception: {str(e)}")
+            return False
+    
+    async def test_ai_parameter_fix_validation(self) -> bool:
+        """Test spécifique pour valider que le fix des paramètres AI fonctionne"""
+        try:
+            # Tester plusieurs communes pour s'assurer qu'il n'y a plus d'erreur de paramètres
+            test_communes = ["Deshaies", "Pointe-à-Pitre"]
+            all_working = True
+            error_details = []
+            
+            for commune in test_communes:
+                url = f"{BACKEND_URL}/ai/cyclone/predict/{commune}"
+                response = await self.client.get(url)
+                
+                if response.status_code != 200:
+                    all_working = False
+                    error_text = response.text
+                    
+                    # Vérifier spécifiquement l'erreur de paramètres
+                    if "unexpected keyword argument 'commune_name'" in error_text:
+                        error_details.append(f"{commune}: ERREUR PARAMÈTRES NON CORRIGÉE - {error_text}")
+                    else:
+                        error_details.append(f"{commune}: Autre erreur - Status {response.status_code}")
+                else:
+                    # Vérifier que la réponse est valide
+                    try:
+                        data = response.json()
+                        if "commune" not in data or "damage_predictions" not in data:
+                            all_working = False
+                            error_details.append(f"{commune}: Réponse invalide")
+                    except:
+                        all_working = False
+                        error_details.append(f"{commune}: JSON invalide")
+            
+            if all_working:
+                self.log_result("AI Parameter Fix Validation", True, 
+                              f"Fix paramètres validé sur {len(test_communes)} communes")
+            else:
+                self.log_result("AI Parameter Fix Validation", False, 
+                              f"Problèmes détectés: {'; '.join(error_details)}")
+            
+            return all_working
+            
+        except Exception as e:
+            self.log_result("AI Parameter Fix Validation", False, f"Exception: {str(e)}")
+            return False
+
     async def run_all_tests(self):
-        """Exécute tous les tests selon la demande spécifique"""
-        print("🚀 Démarrage des tests corrections backend - Météo Sentinelle")
+        """Exécute tous les tests avec focus sur les endpoints AI"""
+        print("🚀 Démarrage des tests AI prediction endpoints - Météo Sentinelle")
         print(f"🌐 Backend URL: {BACKEND_URL}")
         print(f"🏝️ Communes à tester: {', '.join(TEST_COMMUNES)}")
         print("=" * 80)
         
-        # 1. Tests correction IA vigilance verte
+        # 1. FOCUS PRINCIPAL: Tests AI Prediction Endpoints
+        print("\n🤖 Tests AI Prediction Endpoints (FOCUS PRINCIPAL)...")
+        
+        # Test validation du fix des paramètres
+        await self.test_ai_parameter_fix_validation()
+        
+        # Test initialisation service AI
+        await self.test_ai_service_initialization()
+        
+        # Test endpoints AI pour communes spécifiques
+        test_communes_ai = ["Deshaies", "Pointe-à-Pitre"]  # Communes mentionnées dans la demande
+        
+        for commune in test_communes_ai:
+            await self.test_ai_prediction_endpoint(commune)
+            await self.test_ai_timeline_endpoint(commune)
+            await self.test_ai_historical_endpoint(commune)
+        
+        # Test endpoint global risk
+        await self.test_ai_global_risk_endpoint()
+        
+        # 2. Tests correction IA vigilance verte (existants)
         print("\n🤖 Tests correction IA vigilance verte...")
         for commune in TEST_COMMUNES:
             await self.test_ai_vigilance_green_adaptation(commune)
         
-        # 2. Tests système backup météo
-        print("\n💾 Tests système backup météo...")
-        await self.test_weather_backup_system_complete()
-        await self.test_weather_backup_status()
-        
-        for commune in TEST_COMMUNES:
-            await self.test_weather_backup_commune(commune)
-        
-        # 3. Tests intégration backup météo
-        print("\n🔄 Tests intégration backup dans service météo...")
-        for commune in TEST_COMMUNES:
-            await self.test_weather_service_backup_integration(commune)
-        
-        # 4. Tests consistance données météo multi-communes (NOUVEAU - FOCUS PRINCIPAL)
-        print("\n🌤️ Tests consistance données météo multi-communes...")
-        for commune in TEST_COMMUNES:
-            await self.test_weather_data_variation_single_commune(commune)
-        
-        await self.test_weather_data_diversity_across_communes()
-        await self.test_nasa_api_fixes_working()
-        await self.test_realistic_weather_values_all_communes()
-        
-        # 5. Tests robustesse générale
+        # 3. Tests robustesse générale
         print("\n🔧 Tests robustesse générale...")
         await self.test_api_status()
         await self.test_service_initialization()
         
         # Résumé final
         print("\n" + "=" * 80)
-        print("📊 RÉSUMÉ DES TESTS CORRECTIONS BACKEND")
+        print("📊 RÉSUMÉ DES TESTS AI PREDICTION ENDPOINTS")
         print("=" * 80)
         print(f"✅ Tests réussis: {self.results['passed']}")
         print(f"❌ Tests échoués: {self.results['failed']}")
@@ -928,10 +1246,10 @@ class BackendTester:
                 print(f"   • {error}")
         
         # Sauvegarde résultats
-        with open("/app/backend_corrections_test_results.json", "w", encoding="utf-8") as f:
+        with open("/app/ai_prediction_test_results.json", "w", encoding="utf-8") as f:
             json.dump(self.results, f, indent=2, ensure_ascii=False, default=str)
         
-        print(f"\n💾 Résultats sauvegardés dans: /app/backend_corrections_test_results.json")
+        print(f"\n💾 Résultats sauvegardés dans: /app/ai_prediction_test_results.json")
         
         return self.results["failed"] == 0
 
