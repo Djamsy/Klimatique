@@ -17,11 +17,16 @@ import {
   EyeOff,
   Brain,
   Globe,
-  Activity
+  Activity,
+  Search,
+  ChevronRight,
+  Wind,
+  Droplets
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Card, CardContent, CardHeader } from './ui/card';
+import { Input } from './ui/input';
 import { Switch } from './ui/switch';
 import { CachedWeatherService, CycloneAIService } from '../services/weatherService';
 import { GUADELOUPE_COMMUNES } from '../data/communesData';
