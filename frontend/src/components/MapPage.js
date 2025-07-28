@@ -719,35 +719,50 @@ const MapPage = () => {
               </Marker>
             );
           })}
-        </MapContainer>
-
-        {/* Contrôles des couches NASA GIBS - Panneau compact repositionné */}
-        {showLayerControls && (
-          <div className="absolute top-16 right-2 sm:top-20 sm:right-4 bg-white rounded-lg shadow-lg p-2 sm:p-3 z-50 w-48 sm:w-56">
-            <div className="flex justify-between items-center mb-2">
-              <h4 className="font-medium text-gray-900 flex items-center gap-1 text-xs sm:text-sm">
-                <Layers className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span>Calques</span>
-              </h4>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowLayerControls(false)}
-                className="h-5 w-5 sm:h-6 sm:w-6 p-0 text-gray-400 hover:text-gray-600"
-              >
-                ×
-              </Button>
+          
+          {/* Contrôles des couches NASA GIBS - Panneau compact repositionné */}
+          {showLayerControls && (
+            <div className="absolute top-16 right-2 sm:top-20 sm:right-4 bg-white rounded-lg shadow-lg p-2 sm:p-3 z-50 w-48 sm:w-56">
+              <div className="flex justify-between items-center mb-2">
+                <h4 className="font-medium text-gray-900 flex items-center gap-1 text-xs sm:text-sm">
+                  <Layers className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span>Calques</span>
+                </h4>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowLayerControls(false)}
+                  className="h-5 w-5 sm:h-6 sm:w-6 p-0 text-gray-400 hover:text-gray-600"
+                >
+                  ×
+                </Button>
+              </div>
+              
+              <div className="space-y-1 sm:space-y-2">
+                {Object.entries(NASA_GIBS_LAYERS).map(([key, config]) => {
+                  const IconComponent = config.icon;
+                  return (
+                    <div key={key} className="flex items-center justify-between py-1">
+                      <div className="flex items-center gap-1 sm:gap-2 flex-1 min-w-0">
+                        <IconComponent className="w-3 h-3 sm:w-3 sm:h-3 text-blue-600 flex-shrink-0" />
+                        <div className="min-w-0 flex-1">
+                          <div className="font-medium text-xs truncate">{config.name}</div>
+                        </div>
+                      </div>
+                      <Switch
+                        checked={activeOverlays[key]}
+                        onCheckedChange={() => toggleOverlay(key)}
+                        className="ml-1 flex-shrink-0 scale-75 sm:scale-100"
+                      />
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-            
-            <div className="space-y-1 sm:space-y-2">
-              {Object.entries(NASA_GIBS_LAYERS).map(([key, config]) => {
-                const IconComponent = config.icon;
-                return (
-                  <div key={key} className="flex items-center justify-between py-1">
-                    <div className="flex items-center gap-1 sm:gap-2 flex-1 min-w-0">
-                      <IconComponent className="w-3 h-3 sm:w-3 sm:h-3 text-blue-600 flex-shrink-0" />
-                      <div className="min-w-0 flex-1">
-                        <div className="font-medium text-xs truncate">{config.name}</div>
+          )}
+        </MapContainer>
+        )}
+      </div>
                       </div>
                     </div>
                     <Switch
