@@ -468,7 +468,7 @@ class CycloneDamagePredictor:
             risk_score += 5
             risk_factors.append(f"Pluies modérées: {precipitation:.0f} mm/h")
         
-        # 6. Facteurs géographiques de la commune
+        # 7. Facteurs géographiques de la commune
         commune_type = commune_info.get('type', 'urbaine')
         if commune_type == 'côtière':
             risk_score += 8
