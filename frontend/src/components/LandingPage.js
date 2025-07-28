@@ -654,11 +654,20 @@ const LandingPage = () => {
             )}
             
             {/* Badge innovant */}
-            <div className="inline-flex items-center bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-8 border border-white/20">
+            <div className="inline-flex items-center bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-4 border border-white/20">
               <Shield className="w-4 h-4 text-cyan-400 mr-2" />
               <span className="text-cyan-100 text-sm font-medium">
                 {vigilanceData ? 'Vigilance Officielle' : 'Météo France'} • NASA • IA
               </span>
+            </div>
+            
+            {/* Compteur d'utilisateurs actifs */}
+            <div className="inline-flex items-center bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-8 border border-white/20">
+              <Users className="w-4 h-4 text-green-400 mr-2" />
+              <span className="text-green-100 text-sm font-medium">
+                {activeUsers} utilisateur{activeUsers > 1 ? 's' : ''} actif{activeUsers > 1 ? 's' : ''} maintenant
+              </span>
+              <div className="ml-2 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
             </div>
             
             {/* Titre principal avec adaptation */}
