@@ -85,8 +85,10 @@ const NASAOverlayController = ({ map, activeOverlays, setActiveOverlays }) => {
       const layer = L.tileLayer(url, {
         attribution: 'NASA GIBS',
         opacity: 0.7,
-        maxZoom: 9,
-        tileSize: 256
+        maxZoom: 12,  // Augmenté de 9 à 12
+        minZoom: 8,   // Ajout limite minimum
+        tileSize: 256,
+        bounds: guadeloupeBounds  // Limite à la Guadeloupe
       });
       
       layers[key] = layer;
