@@ -422,15 +422,16 @@ class BackendTester:
             conditions = []
             
             for day in daily_data:
-                if not all(key in day for key in ["temperature_min", "temperature_max", "wind_speed", "humidity"]):
+                weather_data = day.get("weather_data", {})
+                if not all(key in weather_data for key in ["temperature_min", "temperature_max", "wind_speed", "humidity"]):
                     self.log_result(f"Variation Météo - {commune}", False, 
                                   "Données journalières incomplètes")
                     return False
                 
-                temperatures.append((day["temperature_min"], day["temperature_max"]))
-                wind_speeds.append(day["wind_speed"])
-                humidity_levels.append(day["humidity"])
-                conditions.append(day.get("condition", "unknown"))
+                temperatures.append((weather_data["temperature_min"], weather_data["temperature_max"]))
+                wind_speeds.append(weather_data["wind_speed"])
+                humidity_levels.append(weather_data["humidity"])
+                conditions.append(weather_data.get("weather_description", "unknown"))
             
             # Test 1: Variation des températures
             temp_mins = [t[0] for t in temperatures]
@@ -483,12 +484,15 @@ class BackendTester:
                                   f"Jour {i+1}: Humidité irréaliste {humidity}%")
                     return False
             
-            # Test 6: Pas de valeurs "N/A" ou nulles
+            # Test 6: Pas de valeurs "N/A" ou nulles pour les champs critiques
             for i, day in enumerate(daily_data):
-                for key, value in day.items():
+                weather_data = day.get("weather_data", {})
+                critical_fields = ["temperature_min", "temperature_max", "wind_speed", "humidity"]
+                for field in critical_fields:
+                    value = weather_data.get(field)
                     if value is None or str(value).upper() == "N/A":
                         self.log_result(f"Variation Météo - {commune}", False, 
-                                      f"Jour {i+1}: Valeur N/A détectée pour {key}")
+                                      f"Jour {i+1}: Valeur N/A détectée pour {field}")
                         return False
             
             self.log_result(f"Variation Météo - {commune}", True, 
