@@ -386,6 +386,372 @@ class BackendTester:
             return False
     
     # =============================================================================
+    # TESTS CONSISTANCE DONNÉES MÉTÉO MULTI-COMMUNES
+    # =============================================================================
+    
+    async def test_weather_data_variation_single_commune(self, commune: str) -> bool:
+        """Test variation des données météo sur 5 jours pour une commune"""
+        try:
+            url = f"{BACKEND_URL}/weather/{commune}"
+            response = await self.client.get(url)
+            
+            if response.status_code != 200:
+                self.log_result(f"Variation Météo - {commune}", False, 
+                              f"Status {response.status_code}: {response.text}")
+                return False
+            
+            data = response.json()
+            
+            # Vérifier structure
+            if "forecast" not in data or not isinstance(data["forecast"], list):
+                self.log_result(f"Variation Météo - {commune}", False, 
+                              "Forecast manquant ou invalide")
+                return False
+            
+            forecast = data["forecast"]
+            if len(forecast) < 5:
+                self.log_result(f"Variation Météo - {commune}", False, 
+                              f"Forecast insuffisant: {len(forecast)} jours (minimum 5)")
+                return False
+            
+            # Analyser les 5 premiers jours
+            daily_data = forecast[:5]
+            temperatures = []
+            wind_speeds = []
+            humidity_levels = []
+            conditions = []
+            
+            for day in daily_data:
+                if not all(key in day for key in ["temperature_min", "temperature_max", "wind_speed", "humidity"]):
+                    self.log_result(f"Variation Météo - {commune}", False, 
+                                  "Données journalières incomplètes")
+                    return False
+                
+                temperatures.append((day["temperature_min"], day["temperature_max"]))
+                wind_speeds.append(day["wind_speed"])
+                humidity_levels.append(day["humidity"])
+                conditions.append(day.get("condition", "unknown"))
+            
+            # Test 1: Variation des températures
+            temp_mins = [t[0] for t in temperatures]
+            temp_maxs = [t[1] for t in temperatures]
+            
+            temp_min_variation = max(temp_mins) - min(temp_mins)
+            temp_max_variation = max(temp_maxs) - min(temp_maxs)
+            
+            if temp_min_variation < 1.0 and temp_max_variation < 1.0:
+                self.log_result(f"Variation Météo - {commune}", False, 
+                              f"Températures identiques sur 5 jours: min_var={temp_min_variation}, max_var={temp_max_variation}")
+                return False
+            
+            # Test 2: Variation des vitesses de vent
+            wind_variation = max(wind_speeds) - min(wind_speeds)
+            if wind_variation < 2.0:
+                self.log_result(f"Variation Météo - {commune}", False, 
+                              f"Vitesses de vent identiques: variation={wind_variation} km/h")
+                return False
+            
+            # Test 3: Vérifier que les vents ne sont pas tous à 72 km/h (problème précédent)
+            if all(abs(ws - 72.0) < 0.1 for ws in wind_speeds):
+                self.log_result(f"Variation Météo - {commune}", False, 
+                              "Tous les vents à 72 km/h - données figées détectées")
+                return False
+            
+            # Test 4: Variation de l'humidité
+            humidity_variation = max(humidity_levels) - min(humidity_levels)
+            if humidity_variation < 5.0:
+                self.log_result(f"Variation Météo - {commune}", False, 
+                              f"Humidité trop uniforme: variation={humidity_variation}%")
+                return False
+            
+            # Test 5: Valeurs réalistes
+            for i, (temp_min, temp_max) in enumerate(temperatures):
+                if not (20 <= temp_min <= 35) or not (25 <= temp_max <= 40):
+                    self.log_result(f"Variation Météo - {commune}", False, 
+                                  f"Jour {i+1}: Températures irréalistes {temp_min}-{temp_max}°C")
+                    return False
+            
+            for i, wind_speed in enumerate(wind_speeds):
+                if not (0 <= wind_speed <= 100):
+                    self.log_result(f"Variation Météo - {commune}", False, 
+                                  f"Jour {i+1}: Vitesse vent irréaliste {wind_speed} km/h")
+                    return False
+            
+            for i, humidity in enumerate(humidity_levels):
+                if not (40 <= humidity <= 100):
+                    self.log_result(f"Variation Météo - {commune}", False, 
+                                  f"Jour {i+1}: Humidité irréaliste {humidity}%")
+                    return False
+            
+            # Test 6: Pas de valeurs "N/A" ou nulles
+            for i, day in enumerate(daily_data):
+                for key, value in day.items():
+                    if value is None or str(value).upper() == "N/A":
+                        self.log_result(f"Variation Météo - {commune}", False, 
+                                      f"Jour {i+1}: Valeur N/A détectée pour {key}")
+                        return False
+            
+            self.log_result(f"Variation Météo - {commune}", True, 
+                          f"Variation OK - Temp: {temp_min_variation:.1f}-{temp_max_variation:.1f}°C, "
+                          f"Vent: {wind_variation:.1f}km/h, Humidité: {humidity_variation:.1f}%")
+            return True
+            
+        except Exception as e:
+            self.log_result(f"Variation Météo - {commune}", False, f"Exception: {str(e)}")
+            return False
+    
+    async def test_weather_data_diversity_across_communes(self) -> bool:
+        """Test diversité des données météo entre communes différentes"""
+        try:
+            # Récupérer données pour toutes les communes
+            commune_data = {}
+            
+            for commune in TEST_COMMUNES:
+                url = f"{BACKEND_URL}/weather/{commune}"
+                response = await self.client.get(url)
+                
+                if response.status_code != 200:
+                    self.log_result("Diversité Inter-Communes", False, 
+                                  f"Erreur récupération {commune}: {response.status_code}")
+                    return False
+                
+                data = response.json()
+                if "current" not in data or "forecast" not in data:
+                    self.log_result("Diversité Inter-Communes", False, 
+                                  f"Structure invalide pour {commune}")
+                    return False
+                
+                commune_data[commune] = data
+            
+            # Analyser les données actuelles
+            current_temps = []
+            current_winds = []
+            current_humidity = []
+            
+            for commune, data in commune_data.items():
+                current = data["current"]
+                current_temps.append((current.get("temperature_min", 0), current.get("temperature_max", 0)))
+                current_winds.append(current.get("wind_speed", 0))
+                current_humidity.append(current.get("humidity", 0))
+            
+            # Test 1: Les communes ne doivent pas avoir des données identiques
+            temp_mins = [t[0] for t in current_temps]
+            temp_maxs = [t[1] for t in current_temps]
+            
+            # Vérifier qu'il n'y a pas plus de 3 communes avec la même température
+            from collections import Counter
+            temp_min_counts = Counter(temp_mins)
+            temp_max_counts = Counter(temp_maxs)
+            
+            if any(count >= 4 for count in temp_min_counts.values()):
+                self.log_result("Diversité Inter-Communes", False, 
+                              f"Trop de communes avec même temp min: {temp_min_counts}")
+                return False
+            
+            if any(count >= 4 for count in temp_max_counts.values()):
+                self.log_result("Diversité Inter-Communes", False, 
+                              f"Trop de communes avec même temp max: {temp_max_counts}")
+                return False
+            
+            # Test 2: Variation des vents entre communes
+            wind_variation = max(current_winds) - min(current_winds)
+            if wind_variation < 3.0:
+                self.log_result("Diversité Inter-Communes", False, 
+                              f"Vents trop similaires entre communes: variation={wind_variation} km/h")
+                return False
+            
+            # Test 3: Pas toutes les communes avec le même vent
+            wind_counts = Counter(current_winds)
+            if any(count >= 4 for count in wind_counts.values()):
+                self.log_result("Diversité Inter-Communes", False, 
+                              f"Trop de communes avec même vitesse vent: {wind_counts}")
+                return False
+            
+            # Test 4: Variation de l'humidité entre communes
+            humidity_variation = max(current_humidity) - min(current_humidity)
+            if humidity_variation < 5.0:
+                self.log_result("Diversité Inter-Communes", False, 
+                              f"Humidité trop similaire entre communes: variation={humidity_variation}%")
+                return False
+            
+            # Test 5: Vérifier les prévisions ne sont pas identiques
+            forecast_similarity_count = 0
+            communes_list = list(commune_data.keys())
+            
+            for i in range(len(communes_list)):
+                for j in range(i + 1, len(communes_list)):
+                    commune1, commune2 = communes_list[i], communes_list[j]
+                    forecast1 = commune_data[commune1]["forecast"][:3]  # 3 premiers jours
+                    forecast2 = commune_data[commune2]["forecast"][:3]
+                    
+                    # Comparer les températures des 3 premiers jours
+                    identical_days = 0
+                    for day1, day2 in zip(forecast1, forecast2):
+                        if (abs(day1.get("temperature_min", 0) - day2.get("temperature_min", 0)) < 0.1 and
+                            abs(day1.get("temperature_max", 0) - day2.get("temperature_max", 0)) < 0.1):
+                            identical_days += 1
+                    
+                    if identical_days >= 3:
+                        forecast_similarity_count += 1
+            
+            if forecast_similarity_count > 1:
+                self.log_result("Diversité Inter-Communes", False, 
+                              f"Trop de communes avec prévisions identiques: {forecast_similarity_count} paires")
+                return False
+            
+            # Test 6: Cohérence géographique (optionnel - les communes côtières vs intérieures)
+            coastal_communes = ["Pointe-à-Pitre", "Sainte-Anne", "Le Gosier", "Saint-François"]
+            inland_communes = ["Basse-Terre"]
+            
+            coastal_temps = [commune_data[c]["current"]["temperature_max"] for c in coastal_communes if c in commune_data]
+            inland_temps = [commune_data[c]["current"]["temperature_max"] for c in inland_communes if c in commune_data]
+            
+            if coastal_temps and inland_temps:
+                avg_coastal = sum(coastal_temps) / len(coastal_temps)
+                avg_inland = sum(inland_temps) / len(inland_temps)
+                
+                # Les températures ne doivent pas être aberrantes (différence > 15°C)
+                if abs(avg_coastal - avg_inland) > 15:
+                    self.log_result("Diversité Inter-Communes", False, 
+                                  f"Différence température aberrante côte/intérieur: {abs(avg_coastal - avg_inland):.1f}°C")
+                    return False
+            
+            self.log_result("Diversité Inter-Communes", True, 
+                          f"Diversité OK - Temp var: {max(temp_maxs)-min(temp_maxs):.1f}°C, "
+                          f"Vent var: {wind_variation:.1f}km/h, Humidité var: {humidity_variation:.1f}%")
+            return True
+            
+        except Exception as e:
+            self.log_result("Diversité Inter-Communes", False, f"Exception: {str(e)}")
+            return False
+    
+    async def test_nasa_api_fixes_working(self) -> bool:
+        """Test que les corrections NASA API fonctionnent (pas de valeurs N/A)"""
+        try:
+            all_working = True
+            na_values_found = []
+            
+            for commune in TEST_COMMUNES:
+                url = f"{BACKEND_URL}/weather/{commune}"
+                response = await self.client.get(url)
+                
+                if response.status_code != 200:
+                    self.log_result("Corrections NASA API", False, 
+                                  f"Erreur {commune}: {response.status_code}")
+                    return False
+                
+                data = response.json()
+                
+                # Vérifier récursivement toutes les valeurs
+                def check_for_na_values(obj, path=""):
+                    if isinstance(obj, dict):
+                        for key, value in obj.items():
+                            check_for_na_values(value, f"{path}.{key}" if path else key)
+                    elif isinstance(obj, list):
+                        for i, item in enumerate(obj):
+                            check_for_na_values(item, f"{path}[{i}]")
+                    else:
+                        if str(obj).upper() == "N/A" or obj is None:
+                            na_values_found.append(f"{commune}: {path} = {obj}")
+                
+                check_for_na_values(data)
+            
+            if na_values_found:
+                self.log_result("Corrections NASA API", False, 
+                              f"Valeurs N/A trouvées: {'; '.join(na_values_found[:5])}")
+                return False
+            
+            self.log_result("Corrections NASA API", True, 
+                          f"Aucune valeur N/A trouvée sur {len(TEST_COMMUNES)} communes")
+            return True
+            
+        except Exception as e:
+            self.log_result("Corrections NASA API", False, f"Exception: {str(e)}")
+            return False
+    
+    async def test_realistic_weather_values_all_communes(self) -> bool:
+        """Test que toutes les valeurs météo sont réalistes pour le climat tropical"""
+        try:
+            unrealistic_values = []
+            
+            for commune in TEST_COMMUNES:
+                url = f"{BACKEND_URL}/weather/{commune}"
+                response = await self.client.get(url)
+                
+                if response.status_code != 200:
+                    continue
+                
+                data = response.json()
+                
+                # Vérifier données actuelles
+                current = data.get("current", {})
+                temp_min = current.get("temperature_min", 0)
+                temp_max = current.get("temperature_max", 0)
+                wind_speed = current.get("wind_speed", 0)
+                humidity = current.get("humidity", 0)
+                pressure = current.get("pressure", 0)
+                
+                # Températures tropicales réalistes (Guadeloupe)
+                if not (18 <= temp_min <= 35):
+                    unrealistic_values.append(f"{commune}: temp_min={temp_min}°C (attendu: 18-35°C)")
+                
+                if not (22 <= temp_max <= 40):
+                    unrealistic_values.append(f"{commune}: temp_max={temp_max}°C (attendu: 22-40°C)")
+                
+                # Vents réalistes (pas de vents destructeurs constants)
+                if wind_speed > 80:
+                    unrealistic_values.append(f"{commune}: vent={wind_speed}km/h (>80km/h suspect)")
+                
+                if wind_speed < 0:
+                    unrealistic_values.append(f"{commune}: vent={wind_speed}km/h (négatif)")
+                
+                # Humidité tropicale
+                if not (40 <= humidity <= 100):
+                    unrealistic_values.append(f"{commune}: humidité={humidity}% (attendu: 40-100%)")
+                
+                # Pression atmosphérique
+                if pressure > 0 and not (980 <= pressure <= 1040):
+                    unrealistic_values.append(f"{commune}: pression={pressure}hPa (attendu: 980-1040hPa)")
+                
+                # Vérifier forecast (3 premiers jours)
+                forecast = data.get("forecast", [])[:3]
+                for i, day in enumerate(forecast):
+                    day_temp_min = day.get("temperature_min", 0)
+                    day_temp_max = day.get("temperature_max", 0)
+                    day_wind = day.get("wind_speed", 0)
+                    day_humidity = day.get("humidity", 0)
+                    
+                    if not (18 <= day_temp_min <= 35):
+                        unrealistic_values.append(f"{commune} J{i+1}: temp_min={day_temp_min}°C")
+                    
+                    if not (22 <= day_temp_max <= 40):
+                        unrealistic_values.append(f"{commune} J{i+1}: temp_max={day_temp_max}°C")
+                    
+                    if day_wind > 80:
+                        unrealistic_values.append(f"{commune} J{i+1}: vent={day_wind}km/h")
+                    
+                    if not (40 <= day_humidity <= 100):
+                        unrealistic_values.append(f"{commune} J{i+1}: humidité={day_humidity}%")
+            
+            if unrealistic_values:
+                # Limiter l'affichage aux 10 premières erreurs
+                displayed_errors = unrealistic_values[:10]
+                error_msg = "; ".join(displayed_errors)
+                if len(unrealistic_values) > 10:
+                    error_msg += f" ... et {len(unrealistic_values)-10} autres"
+                
+                self.log_result("Valeurs Météo Réalistes", False, error_msg)
+                return False
+            
+            self.log_result("Valeurs Météo Réalistes", True, 
+                          f"Toutes les valeurs réalistes sur {len(TEST_COMMUNES)} communes")
+            return True
+            
+        except Exception as e:
+            self.log_result("Valeurs Météo Réalistes", False, f"Exception: {str(e)}")
+            return False
+
+    # =============================================================================
     # TESTS ROBUSTESSE GÉNÉRALE
     # =============================================================================
     
