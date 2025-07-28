@@ -388,8 +388,8 @@ class CycloneDamagePredictor:
         else:
             return 1
     
-    def _calculate_enhanced_risk_score(self, weather_data, commune_info):
-        """Calcule un score de risque amélioré basé sur les conditions météorologiques réelles"""
+    def _calculate_enhanced_risk_score(self, weather_data, commune_info, vigilance_level='vert'):
+        """Calcule un score de risque amélioré basé sur les conditions météorologiques réelles et vigilance"""
         
         # Données météorologiques
         wind_speed = weather_data.get('wind_speed', 0)
@@ -401,6 +401,39 @@ class CycloneDamagePredictor:
         risk_score = 0
         risk_factors = []
         
+        # VIGILANCE VERTE = CONDITIONS NORMALES FORCÉES
+        if vigilance_level == 'vert':
+            # En vigilance verte, forcer des conditions tropicales normales
+            risk_score = 5  # Score de base très faible
+            
+            # Seuls ajustements mineurs autorisés
+            if precipitation > 5:  # Pluie un peu plus forte
+                risk_score += 2
+                risk_factors.append(f"Précipitations normales: {precipitation:.1f} mm/h")
+            
+            if humidity > 85:  # Humidité tropicale normale
+                risk_score += 1
+                risk_factors.append(f"Humidité tropicale: {humidity}%")
+            
+            if temperature > 32:  # Chaleur forte mais normale
+                risk_score += 2
+                risk_factors.append(f"Température élevée normale: {temperature:.1f}°C")
+            
+            # Vents normaux seulement
+            if wind_speed > 25:  # Brise forte mais normale
+                risk_score += 3
+                risk_factors.append(f"Brise soutenue: {wind_speed:.0f} km/h")
+            elif wind_speed > 15:
+                risk_score += 1
+                risk_factors.append(f"Vents normaux: {wind_speed:.0f} km/h")
+            
+            # Plafonner à 12 maximum en vigilance verte (= risque faible garanti)
+            risk_score = min(12, risk_score)
+            risk_factors.append("Conditions météo normales - Vigilance VERTE")
+            
+            return risk_score, risk_factors
+        
+        # SINON - logique normale pour vigilances jaune/orange/rouge
         # 1. Analyse vitesse du vent (facteur principal)
         if wind_speed > 200:  # Ouragan majeur
             risk_score += 40
@@ -414,10 +447,10 @@ class CycloneDamagePredictor:
         elif wind_speed > 62:  # Vents forts
             risk_score += 10
             risk_factors.append(f"Vents forts: {wind_speed:.0f} km/h")
-        elif wind_speed > 40:  # Vents modérés - NOUVEAU
+        elif wind_speed > 40:  # Vents modérés
             risk_score += 5
             risk_factors.append(f"Vents modérés: {wind_speed:.0f} km/h")
-        elif wind_speed > 20:  # Brise modérée - NOUVEAU
+        elif wind_speed > 20:  # Brise modérée
             risk_score += 2
             risk_factors.append(f"Brise modérée: {wind_speed:.0f} km/h")
         
