@@ -65,31 +65,54 @@ const WeatherOverlays = ({ onOverlayChange }) => {
     try {
       setOverlays(prev => ({
         ...prev,
-        [type]: { ...prev[type], loading: true }
+        [type]: { ...prev[type], loading: true, status: 'loading' }
       }));
       setError(null);
 
       let data;
-      switch (type) {
-        case 'clouds':
-          data = await WeatherOverlayService.getCloudsOverlay();
-          break;
-        case 'precipitation':
-          data = await WeatherOverlayService.getPrecipitationOverlay();
-          break;
-        case 'radar':
-          data = await WeatherOverlayService.getRadarOverlay();
-          break;
-        default:
-          throw new Error(`Type d'overlay non supporté: ${type}`);
+      let success = false;
+      
+      try {
+        // Tentative de chargement principal
+        switch (type) {
+          case 'clouds':
+            data = await WeatherOverlayService.getCloudsOverlay();
+            break;
+          case 'precipitation':
+            data = await WeatherOverlayService.getPrecipitationOverlay();
+            break;
+          case 'radar':
+            data = await WeatherOverlayService.getRadarOverlay();
+            break;
+          default:
+            throw new Error(`Type d'overlay non supporté: ${type}`);
+        }
+        success = true;
+        
+      } catch (primaryError) {
+        console.warn(`Primary load failed for ${type}:`, primaryError);
+        
+        // Tentative avec le fallback
+        const fallbackData = overlayBackupService.getBackupData(type);
+        if (fallbackData) {
+          data = fallbackData;
+          success = true;
+          console.log(`✅ Using backup data for ${type}`);
+        } else {
+          throw primaryError;
+        }
       }
+      
+      // Enregistrer le résultat
+      overlayBackupService.recordAttempt(type, success, data);
       
       setOverlays(prev => ({
         ...prev,
         [type]: {
           ...prev[type],
-          data: data.data,
-          loading: false
+          data: data.data || data,
+          loading: false,
+          status: success ? 'active' : 'failed'
         }
       }));
 
@@ -97,11 +120,15 @@ const WeatherOverlays = ({ onOverlayChange }) => {
 
     } catch (err) {
       console.error(`Error loading ${type} overlay:`, err);
-      setError(err.message);
+      
+      // Enregistrer l'échec
+      overlayBackupService.recordAttempt(type, false);
+      
+      setError(`Erreur ${type}: ${err.message}`);
       
       setOverlays(prev => ({
         ...prev,
-        [type]: { ...prev[type], loading: false }
+        [type]: { ...prev[type], loading: false, status: 'failed' }
       }));
     }
   };
