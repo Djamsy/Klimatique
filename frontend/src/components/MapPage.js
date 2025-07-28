@@ -566,9 +566,9 @@ const MapPage = () => {
           })}
         </MapContainer>
 
-        {/* Contrôles des couches NASA GIBS - Version mobile compacte */}
+        {/* Contrôles des couches NASA GIBS - Panneau compact repositionné */}
         {showLayerControls && (
-          <div className="absolute top-16 left-2 right-2 sm:top-20 sm:left-4 sm:right-auto bg-white rounded-lg shadow-lg p-2 sm:p-3 z-50 sm:max-w-64">
+          <div className="absolute top-16 right-2 sm:top-20 sm:right-4 bg-white rounded-lg shadow-lg p-2 sm:p-3 z-50 w-48 sm:w-56">
             <div className="flex justify-between items-center mb-2">
               <h4 className="font-medium text-gray-900 flex items-center gap-1 text-xs sm:text-sm">
                 <Layers className="w-3 h-3 sm:w-4 sm:h-4" />
